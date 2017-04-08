@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using NTouchTypeTrainer.Contracts.Enums;
 using NTouchTypeTrainer.Contracts;
 using System.IO;
+using NTouchTypeTrainer.Serialization;
 
 namespace NTouchTypeTrainer
 {
@@ -16,15 +17,10 @@ namespace NTouchTypeTrainer
             // ReSharper disable once ObjectCreationAsStatement
 		    new Application(Eto.Platform.Detect);
 
-            if (false)
-            {
-                var layout = CreateAndSaveQuertzLayout();
-            }
-
-            if (true)
-            {
-                var layout = LoadLayout();
-            }
+            // ReSharper disable once NotAccessedVariable
+            var layout = CreateAndSaveQuertzLayout();
+            // ReSharper disable once RedundantAssignment
+            layout = LoadLayout();
         }
 
 	    private static KeyboardLayout CreateAndSaveQuertzLayout()
@@ -51,8 +47,9 @@ namespace NTouchTypeTrainer
 	            using (var reader = new StreamReader(ofd.FileName))
 	            {
 	                var exportedString = reader.ReadToEnd();
-	                var layout = KeyboardLayout.Import(exportedString);
-	                return layout;
+	                var layout = KeyboardLayoutImporter.Import(exportedString);
+
+                    return layout;
 	            }
 	        }
 

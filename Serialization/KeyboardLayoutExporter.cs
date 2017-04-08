@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using NTouchTypeTrainer.Contracts;
 using NTouchTypeTrainer.Contracts.Enums;
 
@@ -17,36 +18,57 @@ namespace NTouchTypeTrainer.Serialization
                 throw new ArgumentNullException(nameof(layout));
             }
 
-            var exportedKeyboardMappings = new List<string>();
+            var exportedKeyboardMappings = new StringBuilder();
 
             foreach (var modifier in Modifier.All.GetAllCombinations())
             {
                 if (ContainsMapping(layout, modifier))
                 {
-                    var exported = GetModifierStartToken(modifier) + Export(layout, modifier);
-                    exportedKeyboardMappings.Add(exported);
+                    exportedKeyboardMappings.Append(GetModifierStartToken(modifier));
+
+                    Export(layout, modifier, exportedKeyboardMappings);
+
+                    exportedKeyboardMappings.Append(NewLine);
                 }
             }
 
-            return string.Join(NewLine, exportedKeyboardMappings);
+            return exportedKeyboardMappings.ToString();
         }
 
-        private static string Export(IKeyboardLayout layout, Modifier modifier)
+        private static void Export(IKeyboardLayout layout, Modifier modifier, StringBuilder exportBuilder)
         {
-            return ExportRow(layout.DigitsRow, modifier) + RowSeparator
-                   + ExportRow(layout.UpperCharacterRow, modifier) + RowSeparator
-                   + ExportRow(layout.MiddleCharacterRow, modifier) + RowSeparator
-                   + ExportRow(layout.LowerCharacterRow, modifier) + RowSeparator
-                   + ExportRow(layout.ControlKeyRow, modifier) + RowSeparator;
+            ExportRow(layout.DigitsRow, modifier, exportBuilder);
+            exportBuilder.Append(RowSeparator);
+
+            ExportRow(layout.UpperCharacterRow, modifier, exportBuilder);
+            exportBuilder.Append(RowSeparator);
+
+            ExportRow(layout.MiddleCharacterRow, modifier, exportBuilder);
+            exportBuilder.Append(RowSeparator);
+
+            ExportRow(layout.LowerCharacterRow, modifier, exportBuilder);
+            exportBuilder.Append(RowSeparator);
+
+            ExportRow(layout.ControlKeyRow, modifier, exportBuilder);
+            exportBuilder.Append(RowSeparator);
         }
 
-        private static string ExportRow(IEnumerable<IKeyMapping> rowOfKeys, Modifier modifier)
+        private static void ExportRow(IEnumerable<IKeyMapping> rowOfKeys, Modifier modifier, StringBuilder exportBuilder)
         {
-            var mappedKeys = rowOfKeys
-                .OrderBy(km => (int)km.PressedKey)
-                .Select(km => km.Export(modifier));
+            var mappedKeys = rowOfKeys.OrderBy(km => (int) km.PressedKey).ToList();
 
-            return string.Join(KeySeparator, mappedKeys);
+            int numberOfMappedKeys = mappedKeys.Count();
+
+            for (int i = 0; i < numberOfMappedKeys; i++)
+            {
+                exportBuilder.Append(mappedKeys[i].Export(modifier));
+
+                var isLast = (i == numberOfMappedKeys - 1);
+                if (!isLast)
+                {
+                    exportBuilder.Append(KeySeparator);
+                }
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class KeyboardLayout : IKeyboardLayout, IImmutable, IStringExport, IStringImport<KeyboardLayout>
+    public class KeyboardLayout : IKeyboardLayout, IImmutable, IStringExport
     {
         private readonly List<IKeyMapping> _digitsRow;
         private readonly List<IKeyMapping> _upperCharacterRow;
@@ -17,7 +17,6 @@ namespace NTouchTypeTrainer.Domain
         private readonly List<IKeyMapping> _allRows;
 
         private readonly IKeyboardLayoutExporter _layoutExporter;
-        private readonly IKeyboardLayoutImporter _layoutImporter;
 
         public IReadOnlyList<IKeyMapping> DigitsRow => _digitsRow.AsReadOnly();
         public IReadOnlyList<IKeyMapping> UpperCharacterRow => _upperCharacterRow.AsReadOnly();
@@ -48,16 +47,9 @@ namespace NTouchTypeTrainer.Domain
                 .ToList();
 
             _layoutExporter = new KeyboardLayoutExporter();
-            _layoutImporter = new KeyboardLayoutImporter();
         }
 
-        public string Export() => _layoutExporter.Export(this);        
-
-        KeyboardLayout IStringImport<KeyboardLayout>.Import(string exportString) => 
-            _layoutImporter.Import(exportString);
-
-        bool IStringImport<KeyboardLayout>.TryImport(string exportedName, out KeyboardLayout mappedOutputKey) =>
-            _layoutImporter.TryImport(exportedName, out mappedOutputKey);        
+        public string Export() => _layoutExporter.Export(this);  
         
     }
 }

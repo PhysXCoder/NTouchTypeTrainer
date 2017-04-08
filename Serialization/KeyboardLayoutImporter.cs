@@ -143,10 +143,9 @@ namespace NTouchTypeTrainer.Serialization
             HardwareKey rowStartKey,
             ref string exportString)
         {
-            var mappingTargetLine = GetMappingTargetLine(ref exportString);
+            var mappingTargetsLine = GetMappingTargetsLine(ref exportString);
 
-            var mappingTargets =
-                mappingTargetLine.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
+            var mappingTargets = mappingTargetsLine.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
 
             HardwareKey currentKey = rowStartKey;
             foreach (var mappingTarget in mappingTargets)
@@ -158,7 +157,7 @@ namespace NTouchTypeTrainer.Serialization
 
                     if (mappingSuccess)
                     {
-                        Add(mapping, outputRow);
+                        AddToRow(mapping, outputRow);
                     }
                     else
                     {
@@ -176,14 +175,13 @@ namespace NTouchTypeTrainer.Serialization
             HardwareKey rowStartKey,
             ref string exportString)
         {
-            string mappingTargetLine;
-            if (!TryGetMappingTargetLine(ref exportString, out mappingTargetLine))
+            string mappingTargetsLine;
+            if (!TryGetMappingTargetLine(ref exportString, out mappingTargetsLine))
             {
                 return false;
             }
 
-            var mappingTargets =
-                mappingTargetLine.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
+            var mappingTargets = mappingTargetsLine.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
 
             HardwareKey currentKey = rowStartKey;
             foreach (var mappingTarget in mappingTargets)
@@ -195,7 +193,7 @@ namespace NTouchTypeTrainer.Serialization
 
                     if (mappingSuccess)
                     {
-                        Add(mapping, outputRow);
+                        AddToRow(mapping, outputRow);
                     }
                     else
                     {
@@ -209,7 +207,7 @@ namespace NTouchTypeTrainer.Serialization
             return true;
         }
 
-        private static string GetMappingTargetLine(ref string exportString)
+        private static string GetMappingTargetsLine(ref string exportString)
         {
             exportString = exportString.TrimStart();
 
@@ -282,7 +280,7 @@ namespace NTouchTypeTrainer.Serialization
             return parseSuccess;
         }
 
-        private static void Add(IKeyMapping mapping, ICollection<IKeyMapping> outputRow)
+        private static void AddToRow(IKeyMapping mapping, ICollection<IKeyMapping> outputRow)
         {
             var oldKeyMapping = outputRow.FirstOrDefault(m => m.PressedKey == mapping.PressedKey);
 
