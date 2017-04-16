@@ -1,6 +1,6 @@
-﻿using NTouchTypeTrainer.Contracts;
-using NTouchTypeTrainer.Contracts.Common;
+﻿using NTouchTypeTrainer.Contracts.Common;
 using NTouchTypeTrainer.Serialization;
+using NTouchTypeTrainer.Contracts.Domain;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,8 +49,7 @@ namespace NTouchTypeTrainer.Domain
             _layoutExporter = new KeyboardLayoutExporter();
         }
 
-        public string Export() => _layoutExporter.Export(this);  
-        
+        public string Export() => _layoutExporter.Export(this);
+
     }
 }
-

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NTouchTypeTrainer.Contracts;
 using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Contracts.Enums;
+using NTouchTypeTrainer.Contracts.Domain;
 using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Serialization
 {
@@ -18,15 +18,15 @@ namespace NTouchTypeTrainer.Serialization
 
         public static KeyboardLayout Import(string exportString)
         {
-            List<IKeyMapping> digitsRow = new List<IKeyMapping>();
-            List<IKeyMapping> upperCharacterRow = new List<IKeyMapping>();
-            List<IKeyMapping> middleCharacterRow = new List<IKeyMapping>();
-            List<IKeyMapping> lowerCharacterRow = new List<IKeyMapping>();
-            List<IKeyMapping> controlKeyRow = new List<IKeyMapping>();
+            var digitsRow = new List<IKeyMapping>();
+            var upperCharacterRow = new List<IKeyMapping>();
+            var middleCharacterRow = new List<IKeyMapping>();
+            var lowerCharacterRow = new List<IKeyMapping>();
+            var controlKeyRow = new List<IKeyMapping>();
 
             while (exportString.Length > 0)
             {
-                Modifier modifier = GetModifier(exportString, AllModifiers);
+                var modifier = GetModifier(exportString, AllModifiers);
                 exportString = exportString.Remove(0, GetModifierStartToken(modifier).Length);
 
                 ImportRow(digitsRow, modifier, HardwareKey.Grave, ref exportString);
@@ -56,16 +56,15 @@ namespace NTouchTypeTrainer.Serialization
         {
             layout = null;
 
-            List<IKeyMapping> digitsRow = new List<IKeyMapping>();
-            List<IKeyMapping> upperCharacterRow = new List<IKeyMapping>();
-            List<IKeyMapping> middleCharacterRow = new List<IKeyMapping>();
-            List<IKeyMapping> lowerCharacterRow = new List<IKeyMapping>();
-            List<IKeyMapping> controlKeyRow = new List<IKeyMapping>();
+            var digitsRow = new List<IKeyMapping>();
+            var upperCharacterRow = new List<IKeyMapping>();
+            var middleCharacterRow = new List<IKeyMapping>();
+            var lowerCharacterRow = new List<IKeyMapping>();
+            var controlKeyRow = new List<IKeyMapping>();
 
             while (exportString.Length > 0)
             {
-                Modifier modifier;
-                if (!TryGetModifier(exportString, AllModifiers, out modifier))
+                if (!TryGetModifier(exportString, AllModifiers, out Modifier modifier))
                 {
                     return false;
                 }
@@ -115,7 +114,9 @@ namespace NTouchTypeTrainer.Serialization
             return nextModifier.Value;
         }
 
-        private static bool TryGetModifier(string exportString, IEnumerable<Modifier?> allModifiers,
+        private static bool TryGetModifier(
+            string exportString,
+            IEnumerable<Modifier?> allModifiers,
             out Modifier modifier)
         {
             var nextModifier = allModifiers
@@ -147,13 +148,12 @@ namespace NTouchTypeTrainer.Serialization
 
             var mappingTargets = mappingTargetsLine.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
 
-            HardwareKey currentKey = rowStartKey;
+            var currentKey = rowStartKey;
             foreach (var mappingTarget in mappingTargets)
             {
                 if (mappingTarget != KeyMapping.Undefined)
                 {
-                    IKeyMapping mapping;
-                    bool mappingSuccess = TryImportMapping(mappingTarget, modifier, currentKey, out mapping);
+                    var mappingSuccess = TryImportMapping(mappingTarget, modifier, currentKey, out IKeyMapping mapping);
 
                     if (mappingSuccess)
                     {
@@ -175,21 +175,19 @@ namespace NTouchTypeTrainer.Serialization
             HardwareKey rowStartKey,
             ref string exportString)
         {
-            string mappingTargetsLine;
-            if (!TryGetMappingTargetLine(ref exportString, out mappingTargetsLine))
+            if (!TryGetMappingTargetLine(ref exportString, out string mappingTargetsLine))
             {
                 return false;
             }
 
             var mappingTargets = mappingTargetsLine.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
 
-            HardwareKey currentKey = rowStartKey;
+            var currentKey = rowStartKey;
             foreach (var mappingTarget in mappingTargets)
             {
                 if (mappingTarget != KeyMapping.Undefined)
                 {
-                    IKeyMapping mapping;
-                    bool mappingSuccess = TryImportMapping(mappingTarget, modifier, currentKey, out mapping);
+                    var mappingSuccess = TryImportMapping(mappingTarget, modifier, currentKey, out IKeyMapping mapping);
 
                     if (mappingSuccess)
                     {
@@ -211,7 +209,7 @@ namespace NTouchTypeTrainer.Serialization
         {
             exportString = exportString.TrimStart();
 
-            int iRowSep = exportString.IndexOf(RowSeparator, StringComparison.Ordinal);
+            var iRowSep = exportString.IndexOf(RowSeparator, StringComparison.Ordinal);
 
             if (iRowSep < 0)
             {
@@ -229,7 +227,7 @@ namespace NTouchTypeTrainer.Serialization
         {
             exportString = exportString.TrimStart();
 
-            int iRowSep = exportString.IndexOf(RowSeparator, StringComparison.Ordinal);
+            var iRowSep = exportString.IndexOf(RowSeparator, StringComparison.Ordinal);
 
             if (iRowSep < 0)
             {
@@ -243,10 +241,12 @@ namespace NTouchTypeTrainer.Serialization
             return true;
         }
 
-        private static bool TryImportMapping(string mappingTarget, Modifier modifier, HardwareKey currentKey,
+        private static bool TryImportMapping(string mappingTarget,
+            Modifier modifier,
+            HardwareKey currentKey,
             out IKeyMapping keyMapping)
         {
-            bool mappingSuccess = TryImportPrintableMapping(mappingTarget, modifier, currentKey, out keyMapping);
+            var mappingSuccess = TryImportPrintableMapping(mappingTarget, modifier, currentKey, out keyMapping);
 
             if (!mappingSuccess)
             {
@@ -256,11 +256,13 @@ namespace NTouchTypeTrainer.Serialization
             return mappingSuccess;
         }
 
-        private static bool TryImportUnprintableMapping(string mappingTarget, Modifier modifier,
-            HardwareKey currentKey, out IKeyMapping keyMapping)
+        private static bool TryImportUnprintableMapping(
+            string mappingTarget,
+            Modifier modifier,
+            HardwareKey currentKey,
+            out IKeyMapping keyMapping)
         {
-            MappedUnprintable unprintable;
-            var parseSuccess = MappedUnprintable.TryImport(mappingTarget, out unprintable);
+            var parseSuccess = MappedUnprintable.TryImport(mappingTarget, out MappedUnprintable unprintable);
 
             keyMapping = parseSuccess
                 ? new KeyMapping(currentKey, new Tuple<Modifier, IMappedKey>(modifier, unprintable))
@@ -271,8 +273,7 @@ namespace NTouchTypeTrainer.Serialization
         private static bool TryImportPrintableMapping(string mappingTarget, Modifier modifier,
             HardwareKey currentKey, out IKeyMapping keyMapping)
         {
-            MappedCharacter character;
-            var parseSuccess = MappedCharacter.TryImport(mappingTarget, out character);
+            var parseSuccess = MappedCharacter.TryImport(mappingTarget, out MappedCharacter character);
 
             keyMapping = parseSuccess
                 ? new KeyMapping(currentKey, new Tuple<Modifier, IMappedKey>(modifier, character))
@@ -289,9 +290,7 @@ namespace NTouchTypeTrainer.Serialization
                 outputRow.Remove(oldKeyMapping);
             }
 
-            var newMappings = (oldKeyMapping?.Mappings != null)
-                ? oldKeyMapping.Mappings.Concat(mapping.Mappings)
-                : mapping.Mappings;
+            var newMappings = oldKeyMapping?.Mappings?.Concat(mapping.Mappings) ?? mapping.Mappings;
 
             outputRow.Add(new KeyMapping(mapping.PressedKey, newMappings));
         }

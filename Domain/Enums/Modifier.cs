@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NTouchTypeTrainer.Contracts.Enums
+namespace NTouchTypeTrainer.Domain.Enums
 {
     [Flags]
     public enum Modifier
@@ -27,4 +27,3 @@ namespace NTouchTypeTrainer.Contracts.Enums
         }
     }
 }
-

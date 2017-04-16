@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NTouchTypeTrainer.Contracts;
-using NTouchTypeTrainer.Contracts.Enums;
+using NTouchTypeTrainer.Contracts.Domain;
+using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Serialization
 {
@@ -17,12 +17,11 @@ namespace NTouchTypeTrainer.Serialization
 
         protected static string GetModifierStartToken(Modifier modifier)
         {
-            return modifier.ToString() + MappingNameSeparator;
+            return modifier + MappingNameSeparator;
         }
         protected static bool ContainsMapping(IKeyboardLayout layout, Modifier modifier)
         {
             return layout.AllRows.Any(km => km.Mappings.ContainsKey(modifier));
         }
     }
-
 }

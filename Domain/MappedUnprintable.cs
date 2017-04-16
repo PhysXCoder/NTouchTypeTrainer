@@ -1,11 +1,11 @@
 ﻿using System;
-using NTouchTypeTrainer.Contracts;
 using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Contracts.Enums;
+using NTouchTypeTrainer.Contracts.Domain;
+using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class MappedUnprintable : IMappedKey, IImmutable, IStringImport<MappedUnprintable>, IStringImport<IMappedKey>
+    public class MappedUnprintable : IMappedKey, IStringImport<MappedUnprintable>, IStringImport<IMappedKey>, IImmutable
     {
         public HardwareKey Key { get; }
 
@@ -21,8 +21,7 @@ namespace NTouchTypeTrainer.Domain
 
         public static bool TryImport(string exportedName, out MappedUnprintable mappedOutputKey)
         {
-            HardwareKey mappedKey;
-            var parseSuccess = Enum.TryParse(exportedName, true, out mappedKey);
+            var parseSuccess = Enum.TryParse(exportedName, true, out HardwareKey mappedKey);
 
             mappedOutputKey = parseSuccess ? new MappedUnprintable(mappedKey) : null;
             return parseSuccess;
@@ -35,19 +34,18 @@ namespace NTouchTypeTrainer.Domain
 
         #region Interface implementations 
 
-        MappedUnprintable IStringImport<MappedUnprintable>.Import(string exportedName) => 
+        MappedUnprintable IStringImport<MappedUnprintable>.Import(string exportedName) =>
             Import(exportedName);
 
         bool IStringImport<MappedUnprintable>.TryImport(string exportedName, out MappedUnprintable mappedOutputKey) =>
             TryImport(exportedName, out mappedOutputKey);
 
-        IMappedKey IStringImport<IMappedKey>.Import(string exportedName) => 
+        IMappedKey IStringImport<IMappedKey>.Import(string exportedName) =>
             Import(exportedName);
 
         bool IStringImport<IMappedKey>.TryImport(string exportedName, out IMappedKey mappedOutputKey)
         {
-            MappedUnprintable result;
-            var parseSuccess = TryImport(exportedName, out result);
+            var parseSuccess = TryImport(exportedName, out MappedUnprintable result);
 
             mappedOutputKey = parseSuccess ? result : null;
             return parseSuccess;

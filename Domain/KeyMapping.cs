@@ -1,13 +1,14 @@
-﻿using NTouchTypeTrainer.Contracts;
-using NTouchTypeTrainer.Contracts.Enums;
+﻿using NTouchTypeTrainer.Contracts.Domain;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using NTouchTypeTrainer.Contracts.Common;
+using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class KeyMapping : IKeyMapping
+    public class KeyMapping : IKeyMapping, IImmutable
     {
         public HardwareKey PressedKey { get; }
         public IReadOnlyDictionary<Modifier, IMappedKey> Mappings { get; }
@@ -48,4 +49,3 @@ namespace NTouchTypeTrainer.Domain
         }
     }
 }
-

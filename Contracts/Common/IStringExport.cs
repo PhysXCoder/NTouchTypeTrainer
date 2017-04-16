@@ -1,8 +1,8 @@
 ﻿namespace NTouchTypeTrainer.Contracts.Common
 {
-	public interface IStringExport
-	{
-		string Export();
-	}
+    public interface IStringExport
+    {
+        string Export();
+    }
 }
 

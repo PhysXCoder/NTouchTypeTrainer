@@ -1,4 +1,4 @@
-﻿namespace NTouchTypeTrainer.Contracts
+﻿namespace NTouchTypeTrainer.Contracts.Domain
 {
     public interface IKeyboardLayoutExporter
     {

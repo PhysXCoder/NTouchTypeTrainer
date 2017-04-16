@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NTouchTypeTrainer.Contracts;
-using NTouchTypeTrainer.Contracts.Enums;
+using NTouchTypeTrainer.Contracts.Domain;
+using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Serialization
 {
@@ -55,9 +55,9 @@ namespace NTouchTypeTrainer.Serialization
 
         private static void ExportRow(IEnumerable<IKeyMapping> rowOfKeys, Modifier modifier, StringBuilder exportBuilder)
         {
-            var mappedKeys = rowOfKeys.OrderBy(km => (int) km.PressedKey).ToList();
+            var mappedKeys = rowOfKeys.OrderBy(km => (int)km.PressedKey).ToList();
 
-            int numberOfMappedKeys = mappedKeys.Count();
+            var numberOfMappedKeys = mappedKeys.Count;
 
             for (int i = 0; i < numberOfMappedKeys; i++)
             {
