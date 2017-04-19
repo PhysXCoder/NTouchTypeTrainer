@@ -72,6 +72,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\DataBinding\BindingExtensions.cs" />
     <Compile Include="Common\Exceptions\DeadlockException.cs" />
     <Compile Include="Common\GuiExtensions\EventExtensions.cs" />
     <Compile Include="Common\GuiExtensions\FontsExtensions.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Common\GuiExtensions\SizeExtensions.cs" />
     <Compile Include="Common\GuiExtensions\SizeFExtensions.cs" />
     <Compile Include="Common\Logging\LoggingExtensions.cs" />
+    <Compile Include="Common\Strings\StringBuilderExtensions.cs" />
     <Compile Include="Common\Strings\ToStringConverterHelper.cs" />
     <Compile Include="Common\Threading\ActionDelayer.cs" />
     <Compile Include="Common\Threading\GuiDispatcher.cs" />
@@ -86,12 +88,23 @@
     <Compile Include="Contracts\Common\Graphics\IGraphicsProvider.cs" />
     <Compile Include="Contracts\Common\Threading\IGuiDispatcher.cs" />
     <Compile Include="Contracts\Common\Threading\ISynchronizationProvider.cs" />
+    <Compile Include="Contracts\Domain\IFingerColors.cs" />
+    <Compile Include="Contracts\Domain\IFingerPositions.cs" />
+    <Compile Include="Contracts\Domain\IFingerPositionsExporter.cs" />
+    <Compile Include="Contracts\Domain\IFingerPositionsImporter.cs" />
     <Compile Include="Contracts\Domain\IKeyboardLayoutExporter.cs" />
     <Compile Include="Contracts\Domain\IKeyboardLayoutImporter.cs" />
     <Compile Include="Contracts\Views\IDependentSizeGroup.cs" />
     <Compile Include="Contracts\Views\ISharedSizeGroup.cs" />
     <Compile Include="Contracts\Views\ISizeGroup.cs" />
+    <Compile Include="Domain\Enums\Finger.cs" />
+    <Compile Include="Domain\Enums\FingerExtensions.cs" />
     <Compile Include="Domain\Enums\HardwareKeyExtensions.cs" />
+    <Compile Include="Domain\FingerColors.cs" />
+    <Compile Include="Serialization\FingerColorsBasePorter.cs" />
+    <Compile Include="Serialization\FingerColorsExporter.cs" />
+    <Compile Include="Serialization\FingerColorsImporter.cs" />
+    <Compile Include="Domain\FingerPositions.cs" />
     <Compile Include="Messages\SizeGroupChangedMsg.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,9 +120,16 @@
     <Compile Include="Domain\MappedCharacter.cs" />
     <Compile Include="Contracts\Common\IStringExport.cs" />
     <Compile Include="Contracts\Common\IStringImport.cs" />
+    <Compile Include="Serialization\BasePorter.cs" />
+    <Compile Include="Serialization\FingerPositionsBasePorter.cs" />
+    <Compile Include="Serialization\FingerPositionsExporter.cs" />
+    <Compile Include="Serialization\FingerPositionsImporter.cs" />
     <Compile Include="Serialization\KeyboardLayoutExporter.cs" />
     <Compile Include="Serialization\KeyboardLayoutImporter.cs" />
     <Compile Include="Serialization\KeyboardLayoutBasePorter.cs" />
+    <Compile Include="ViewModels\KeyboardFingerPositionsViewModel.cs" />
+    <Compile Include="ViewModels\KeyViewModel.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="Views\Common\DependentSizeGroup.cs" />
     <Compile Include="Views\Common\SharedSizeGroup.cs" />
     <Compile Include="Views\Controls\HardwareKeyControl.cs" />
@@ -119,9 +139,7 @@
     <Compile Include="Views\TestForm.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

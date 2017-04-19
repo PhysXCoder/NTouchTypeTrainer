@@ -2,8 +2,8 @@
 {
     public interface IStringImport<T>
     {
-        bool TryImport(string exportedName, out T mappedOutputKey);
+        bool TryImport(string exportedString, out T outputInstance);
 
-        T Import(string exportedName);
+        T Import(string exportedString);
     }
 }

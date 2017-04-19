@@ -43,7 +43,7 @@ namespace NTouchTypeTrainer.Common.Strings
                     builder.Append(idVal?.ToString() ?? ParamNull);
                     builder.Append(ParamsSeparator);
                 }
-                builder.Remove(builder.Length - ParamsSeparator.Length, ParamsSeparator.Length);
+                builder.RemoveLast(ParamsSeparator);
 
                 builder.Append(ParamsEnd);
             }
@@ -63,7 +63,7 @@ namespace NTouchTypeTrainer.Common.Strings
                         .Append(param.Compile().Invoke()?.ToString() ?? ParamNull);
                     builder.Append(ParamsSeparator);
                 }
-                builder.Remove(builder.Length - ParamsSeparator.Length, ParamsSeparator.Length);
+                builder.RemoveLast(ParamsSeparator);
 
                 builder.Append(ParamsEnd);
             }

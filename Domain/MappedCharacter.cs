@@ -16,33 +16,33 @@ namespace NTouchTypeTrainer.Domain
 
         public string Export() => Name;
 
-        public static bool TryImport(string exportedName, out MappedCharacter mappedOutputKey)
+        public static bool TryImport(string exportedString, out MappedCharacter outputMappedCharacter)
         {
-            var parsingSuccess = char.TryParse(exportedName.Trim(), out char printableCharacter);
+            var parsingSuccess = char.TryParse(exportedString.Trim(), out char printableCharacter);
 
-            mappedOutputKey = parsingSuccess ? new MappedCharacter(printableCharacter) : null;
+            outputMappedCharacter = parsingSuccess ? new MappedCharacter(printableCharacter) : null;
             return parsingSuccess;
         }
 
-        public static MappedCharacter Import(string exportedName) =>
-            new MappedCharacter(char.Parse(exportedName.Trim()));
+        public static MappedCharacter Import(string exportedString) =>
+            new MappedCharacter(char.Parse(exportedString.Trim()));
 
         #region Interface implementations
 
-        MappedCharacter IStringImport<MappedCharacter>.Import(string exportedName) =>
-            Import(exportedName);
+        MappedCharacter IStringImport<MappedCharacter>.Import(string exportedString) =>
+            Import(exportedString);
 
-        bool IStringImport<MappedCharacter>.TryImport(string exportedName, out MappedCharacter mappedOutputKey) =>
-            TryImport(exportedName, out mappedOutputKey);
+        bool IStringImport<MappedCharacter>.TryImport(string exportedString, out MappedCharacter outputMappedCharacter) =>
+            TryImport(exportedString, out outputMappedCharacter);
 
-        IMappedKey IStringImport<IMappedKey>.Import(string exportedName)
-            => Import(exportedName);
+        IMappedKey IStringImport<IMappedKey>.Import(string exportedString)
+            => Import(exportedString);
 
-        bool IStringImport<IMappedKey>.TryImport(string exportedName, out IMappedKey mappedOutputKey)
+        bool IStringImport<IMappedKey>.TryImport(string exportedString, out IMappedKey outputMappedCharacter)
         {
-            var parseSuccess = TryImport(exportedName, out MappedCharacter result);
+            var parseSuccess = TryImport(exportedString, out MappedCharacter result);
 
-            mappedOutputKey = parseSuccess ? result : null;
+            outputMappedCharacter = parseSuccess ? result : null;
             return parseSuccess;
         }
 

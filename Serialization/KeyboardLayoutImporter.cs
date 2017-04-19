@@ -10,11 +10,11 @@ namespace NTouchTypeTrainer.Serialization
 {
     public class KeyboardLayoutImporter : KeyboardLayoutBasePorter, IKeyboardLayoutImporter
     {
-        bool IStringImport<KeyboardLayout>.TryImport(string exportedName, out KeyboardLayout mappedOutputKey) =>
-            TryImport(exportedName, out mappedOutputKey);
+        bool IStringImport<KeyboardLayout>.TryImport(string exportedString, out KeyboardLayout outputLayout) =>
+            TryImport(exportedString, out outputLayout);
 
-        KeyboardLayout IStringImport<KeyboardLayout>.Import(string exportedName) =>
-            Import(exportedName);
+        KeyboardLayout IStringImport<KeyboardLayout>.Import(string exportedString) =>
+            Import(exportedString);
 
         public static KeyboardLayout Import(string exportString)
         {
@@ -29,7 +29,7 @@ namespace NTouchTypeTrainer.Serialization
                 var modifier = GetModifier(exportString, AllModifiers);
                 exportString = exportString.Remove(0, GetModifierStartToken(modifier).Length);
 
-                ImportRow(digitsRow, modifier, HardwareKey.Grave, ref exportString);
+                ImportRow(digitsRow, modifier, HardwareKey.AccentGrave, ref exportString);
                 ImportRow(upperCharacterRow, modifier, HardwareKey.Tab, ref exportString);
                 ImportRow(middleCharacterRow, modifier, HardwareKey.CapsLock, ref exportString);
                 ImportRow(lowerCharacterRow, modifier, HardwareKey.ShiftLeft, ref exportString);
@@ -71,7 +71,7 @@ namespace NTouchTypeTrainer.Serialization
 
                 exportString = exportString.Remove(0, GetModifierStartToken(modifier).Length);
 
-                if (!TryImportForRow(digitsRow, modifier, HardwareKey.Grave, ref exportString)
+                if (!TryImportForRow(digitsRow, modifier, HardwareKey.AccentGrave, ref exportString)
                     || !TryImportForRow(upperCharacterRow, modifier, HardwareKey.Tab, ref exportString)
                     || !TryImportForRow(middleCharacterRow, modifier, HardwareKey.CapsLock, ref exportString)
                     || !TryImportForRow(lowerCharacterRow, modifier, HardwareKey.ShiftLeft, ref exportString)
@@ -151,7 +151,7 @@ namespace NTouchTypeTrainer.Serialization
             var currentKey = rowStartKey;
             foreach (var mappingTarget in mappingTargets)
             {
-                if (mappingTarget != KeyMapping.Undefined)
+                if (mappingTarget != Undefined)
                 {
                     var mappingSuccess = TryImportMapping(mappingTarget, modifier, currentKey, out IKeyMapping mapping);
 
@@ -185,7 +185,7 @@ namespace NTouchTypeTrainer.Serialization
             var currentKey = rowStartKey;
             foreach (var mappingTarget in mappingTargets)
             {
-                if (mappingTarget != KeyMapping.Undefined)
+                if (mappingTarget != Undefined)
                 {
                     var mappingSuccess = TryImportMapping(mappingTarget, modifier, currentKey, out IKeyMapping mapping);
 

@@ -6,7 +6,6 @@ using NLog;
 using NTouchTypeTrainer.Common.GuiExtensions;
 using NTouchTypeTrainer.Contracts.Common.Graphics;
 using NTouchTypeTrainer.Contracts.Views;
-using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Messages;
 using static NTouchTypeTrainer.Common.Logging.LoggingExtensions;
 using static NTouchTypeTrainer.Common.Strings.ToStringConverterHelper;
@@ -21,12 +20,6 @@ namespace NTouchTypeTrainer.Views.Controls
 
         protected readonly Size PaddingSize = new Size(8, 5);
 
-        public HardwareKey Key
-        {
-            get;
-            set;
-        }
-
         public override string Text
         {
             get => base.Text;
@@ -37,7 +30,7 @@ namespace NTouchTypeTrainer.Views.Controls
             }
         }
 
-        private HardwareKeyControl(IGraphicsProvider graphicsProvider)
+        protected HardwareKeyControl(IGraphicsProvider graphicsProvider)
         {
             GraphicsProvider = graphicsProvider;
             Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -46,31 +39,19 @@ namespace NTouchTypeTrainer.Views.Controls
         }
 
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
-        protected HardwareKeyControl(HardwareKey key, IGraphicsProvider graphicsProvider)
-            : this(graphicsProvider)
-        {
-            Key = key;
-            Text = key.GetDefaultText();
-        }
-
-        [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         protected HardwareKeyControl(
-            HardwareKey key,
             ISizeGroup sizeGroup,
             IEventAggregator eventAggregator,
             IGraphicsProvider graphicsProvider)
-            : this(key, graphicsProvider)
+            : this(graphicsProvider)
         {
             SizeGroup = sizeGroup;
-
-            Text = key.GetDefaultText();
 
             eventAggregator.Subscribe(this);
         }
 
         private void InitValues()
         {
-            Enabled = false;
             Size = new Size(1, 1);
             TextColor = SystemColors.ControlText;
         }
@@ -84,6 +65,7 @@ namespace NTouchTypeTrainer.Views.Controls
                 UpdateSize();
             }
         }
+
 
         public override string ToString() => GetObjectId<HardwareKeyControl>(Text);
 

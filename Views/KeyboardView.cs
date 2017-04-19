@@ -1,9 +1,11 @@
-﻿using Caliburn.Micro;
+﻿using System;
+using Caliburn.Micro;
 using Eto.Forms;
+using NTouchTypeTrainer.Common.DataBinding;
 using NTouchTypeTrainer.Common.GuiExtensions;
 using NTouchTypeTrainer.Contracts.Common.Graphics;
 using NTouchTypeTrainer.Contracts.Views;
-using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.ViewModels;
 using NTouchTypeTrainer.Views.Common;
 using NTouchTypeTrainer.Views.Controls;
 
@@ -21,7 +23,7 @@ namespace NTouchTypeTrainer.Views
         private StackLayout _lowerCharRowStackLayout;
         private StackLayout _controlKeyRowStackLayout;
 
-        private SharedSizeHardwareKeyControl _keyGrave;
+        private SharedSizeHardwareKeyControl _keyAccentGrave;
         private SharedSizeHardwareKeyControl _keyD1;
         private SharedSizeHardwareKeyControl _keyD2;
         private SharedSizeHardwareKeyControl _keyD3;
@@ -88,30 +90,110 @@ namespace NTouchTypeTrainer.Views
         private ProportionalSizeHardwareKeyControl _keyMenu;
         private ProportionalSizeHardwareKeyControl _keyControlRight;
 
+        private readonly IEventAggregator _eventAggregator;
+        private readonly IGraphicsProvider _graphicsProvider;
+
         private const float BackspaceFactor = 2.7f;
         private const float TabFactor = 1.7f;
         private const float EnterFactor = 2.0f;
         private const float CapsLockFactor = 2.2f;
         private const float ShiftLeftFactor = 1.5f;
         private const float ShiftRightFactor = 3.4f;
-        private const float SmallKeyFactor = 1.5f;
+        private const float ControlKeyFactor = 1.5f;
         private const float SpaceKeyFactor = 6.2f;
 
         public KeyboardView(IEventAggregator eventAggregator, IGraphicsProvider graphicsProvider)
         {
+            _eventAggregator = eventAggregator;
+            _graphicsProvider = graphicsProvider;
+
             _regularKeySharedSizeGroup = new SharedSizeGroup(eventAggregator, "RegularKeys");
 
-            InitRows(eventAggregator, graphicsProvider);
+            DataContextChanged += KeyboardView_DataContextChanged;
+
+            InitRows();
+
             Content = _allRowsStackLayout;
         }
 
-        private void InitRows(IEventAggregator eventAggregator, IGraphicsProvider graphicsProvider)
+        private void KeyboardView_DataContextChanged(object sender, EventArgs e)
         {
-            InitDigitRow(eventAggregator, graphicsProvider);
-            InitUpperCharRow(eventAggregator, graphicsProvider);
-            InitMiddleCharRow(eventAggregator, graphicsProvider);
-            InitLowerCharRow(eventAggregator, graphicsProvider);
-            InitControlKeyRow(eventAggregator, graphicsProvider);
+            var dataCtx = DataContext as KeyboardFingerPositionsViewModel;
+            _keyAccentGrave.DataContext = dataCtx?.AccentGraveKeyViewModel;
+            _keyD1.DataContext = dataCtx?.D1KeyViewModel;
+            _keyD2.DataContext = dataCtx?.D2KeyViewModel;
+            _keyD3.DataContext = dataCtx?.D3KeyViewModel;
+            _keyD4.DataContext = dataCtx?.D4KeyViewModel;
+            _keyD5.DataContext = dataCtx?.D5KeyViewModel;
+            _keyD6.DataContext = dataCtx?.D6KeyViewModel;
+            _keyD7.DataContext = dataCtx?.D7KeyViewModel;
+            _keyD8.DataContext = dataCtx?.D8KeyViewModel;
+            _keyD9.DataContext = dataCtx?.D9KeyViewModel;
+            _keyD0.DataContext = dataCtx?.D0KeyViewModel;
+            _keyMinus.DataContext = dataCtx?.MinusKeyViewModel;
+            _keyEqual.DataContext = dataCtx?.EqualKeyViewModel;
+            _keyBackspace.DataContext = dataCtx?.BackspaceKeyViewModel;
+
+            _keyTab.DataContext = dataCtx?.TabKeyViewModel;
+            _keyQ.DataContext = dataCtx?.QKeyViewModel;
+            _keyW.DataContext = dataCtx?.WKeyViewModel;
+            _keyE.DataContext = dataCtx?.EKeyViewModel;
+            _keyR.DataContext = dataCtx?.RKeyViewModel;
+            _keyT.DataContext = dataCtx?.TKeyViewModel;
+            _keyY.DataContext = dataCtx?.YKeyViewModel;
+            _keyU.DataContext = dataCtx?.UKeyViewModel;
+            _keyI.DataContext = dataCtx?.IKeyViewModel;
+            _keyO.DataContext = dataCtx?.OKeyViewModel;
+            _keyP.DataContext = dataCtx?.PKeyViewModel;
+            _keyBracketOpen.DataContext = dataCtx?.BracketOpenKeyViewModel;
+            _keyBracketClose.DataContext = dataCtx?.BracketCloseKeyViewModel;
+            _keyEnter.DataContext = dataCtx?.EnterKeyViewModel;
+
+            _keyCapsLock.DataContext = dataCtx?.CapsLockKeyViewModel;
+            _keyA.DataContext = dataCtx?.AKeyViewModel;
+            _keyS.DataContext = dataCtx?.SKeyViewModel;
+            _keyD.DataContext = dataCtx?.DKeyViewModel;
+            _keyF.DataContext = dataCtx?.FKeyViewModel;
+            _keyG.DataContext = dataCtx?.GKeyViewModel;
+            _keyH.DataContext = dataCtx?.HKeyViewModel;
+            _keyJ.DataContext = dataCtx?.JKeyViewModel;
+            _keyK.DataContext = dataCtx?.KKeyViewModel;
+            _keyL.DataContext = dataCtx?.LKeyViewModel;
+            _keySemicolon.DataContext = dataCtx?.SemicolonKeyViewModel;
+            _keyApostrophe.DataContext = dataCtx?.ApostropheKeyViewModel;
+            _keyNumberSign.DataContext = dataCtx?.NumberSignKeyViewModel;
+
+            _keyShiftLeft.DataContext = dataCtx?.ShiftLeftKeyViewModel;
+            _keyBackslash.DataContext = dataCtx?.BackslashKeyViewModel;
+            _keyZ.DataContext = dataCtx?.ZKeyViewModel;
+            _keyX.DataContext = dataCtx?.XKeyViewModel;
+            _keyC.DataContext = dataCtx?.CKeyViewModel;
+            _keyV.DataContext = dataCtx?.VKeyViewModel;
+            _keyB.DataContext = dataCtx?.BKeyViewModel;
+            _keyN.DataContext = dataCtx?.NKeyViewModel;
+            _keyM.DataContext = dataCtx?.MKeyViewModel;
+            _keyComma.DataContext = dataCtx?.CommaKeyViewModel;
+            _keyDot.DataContext = dataCtx?.DotKeyViewModel;
+            _keySlash.DataContext = dataCtx?.SlashKeyViewModel;
+            _keyShiftRight.DataContext = dataCtx?.ShiftRightKeyViewModel;
+
+            _keyControlLeft.DataContext = dataCtx?.ControlLeftKeyViewModel;
+            _keySuperLeft.DataContext = dataCtx?.SuperLeftKeyViewModel;
+            _keyAlt.DataContext = dataCtx?.AltKeyViewModel;
+            _keySpace.DataContext = dataCtx?.SpaceKeyViewModel;
+            _keyAltGr.DataContext = dataCtx?.AltGrKeyViewModel;
+            _keySuperRight.DataContext = dataCtx?.SuperRightKeyViewModel;
+            _keyMenu.DataContext = dataCtx?.MenuKeyViewModel;
+            _keyControlRight.DataContext = dataCtx?.ControlRightViewModel;
+        }
+
+        private void InitRows()
+        {
+            InitDigitRow();
+            InitUpperCharRow();
+            InitMiddleCharRow();
+            InitLowerCharRow();
+            InitControlKeyRow();
 
             _allRowsStackLayout = new StackLayout()
             {
@@ -130,27 +212,22 @@ namespace NTouchTypeTrainer.Views
             };
         }
 
-        private void InitDigitRow(IEventAggregator eventAggregator, IGraphicsProvider graphicsProvider)
+        private void InitDigitRow()
         {
-            _keyGrave = new SharedSizeHardwareKeyControl(HardwareKey.Grave, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD1 = new SharedSizeHardwareKeyControl(HardwareKey.D1, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD2 = new SharedSizeHardwareKeyControl(HardwareKey.D2, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD3 = new SharedSizeHardwareKeyControl(HardwareKey.D3, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD4 = new SharedSizeHardwareKeyControl(HardwareKey.D4, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD5 = new SharedSizeHardwareKeyControl(HardwareKey.D5, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD6 = new SharedSizeHardwareKeyControl(HardwareKey.D6, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD7 = new SharedSizeHardwareKeyControl(HardwareKey.D7, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD8 = new SharedSizeHardwareKeyControl(HardwareKey.D8, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD9 = new SharedSizeHardwareKeyControl(HardwareKey.D9, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD0 = new SharedSizeHardwareKeyControl(HardwareKey.D0, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyMinus = new SharedSizeHardwareKeyControl(HardwareKey.Minus, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyEqual = new SharedSizeHardwareKeyControl(HardwareKey.Equal, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyBackspace = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.Backspace,
-                factor: BackspaceFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
+            _keyAccentGrave = CreateRegularSharedSizeKeyControl();
+            _keyD1 = CreateRegularSharedSizeKeyControl();
+            _keyD2 = CreateRegularSharedSizeKeyControl();
+            _keyD3 = CreateRegularSharedSizeKeyControl();
+            _keyD4 = CreateRegularSharedSizeKeyControl();
+            _keyD5 = CreateRegularSharedSizeKeyControl();
+            _keyD6 = CreateRegularSharedSizeKeyControl();
+            _keyD7 = CreateRegularSharedSizeKeyControl();
+            _keyD8 = CreateRegularSharedSizeKeyControl();
+            _keyD9 = CreateRegularSharedSizeKeyControl();
+            _keyD0 = CreateRegularSharedSizeKeyControl();
+            _keyMinus = CreateRegularSharedSizeKeyControl();
+            _keyEqual = CreateRegularSharedSizeKeyControl();
+            _keyBackspace = CreateProportionalSizeKeyControl(BackspaceFactor);
             _keyBackspace.Font = _keyBackspace.Font.Inflate(2.0f);
 
             _digitRowStackLayout = new StackLayout()
@@ -161,7 +238,7 @@ namespace NTouchTypeTrainer.Views
                 Spacing = 5,
                 Items =
                 {
-                    _keyGrave,
+                    _keyAccentGrave,
                     _keyD1,
                     _keyD2,
                     _keyD3,
@@ -179,32 +256,22 @@ namespace NTouchTypeTrainer.Views
             };
         }
 
-        private void InitUpperCharRow(IEventAggregator eventAggregator, IGraphicsProvider graphicsProvider)
+        private void InitUpperCharRow()
         {
-            _keyTab = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.Tab,
-                factor: TabFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
-            _keyQ = new SharedSizeHardwareKeyControl(HardwareKey.Q, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyW = new SharedSizeHardwareKeyControl(HardwareKey.W, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyE = new SharedSizeHardwareKeyControl(HardwareKey.E, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyR = new SharedSizeHardwareKeyControl(HardwareKey.R, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyT = new SharedSizeHardwareKeyControl(HardwareKey.T, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyY = new SharedSizeHardwareKeyControl(HardwareKey.Z, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyU = new SharedSizeHardwareKeyControl(HardwareKey.U, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyI = new SharedSizeHardwareKeyControl(HardwareKey.I, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyO = new SharedSizeHardwareKeyControl(HardwareKey.O, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyP = new SharedSizeHardwareKeyControl(HardwareKey.P, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyBracketOpen = new SharedSizeHardwareKeyControl(HardwareKey.BracketOpen, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyBracketClose = new SharedSizeHardwareKeyControl(HardwareKey.BracketClose, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyEnter = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.Enter,
-                factor: EnterFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
+            _keyTab = CreateProportionalSizeKeyControl(TabFactor);
+            _keyQ = CreateRegularSharedSizeKeyControl();
+            _keyW = CreateRegularSharedSizeKeyControl();
+            _keyE = CreateRegularSharedSizeKeyControl();
+            _keyR = CreateRegularSharedSizeKeyControl();
+            _keyT = CreateRegularSharedSizeKeyControl();
+            _keyY = CreateRegularSharedSizeKeyControl();
+            _keyU = CreateRegularSharedSizeKeyControl();
+            _keyI = CreateRegularSharedSizeKeyControl();
+            _keyO = CreateRegularSharedSizeKeyControl();
+            _keyP = CreateRegularSharedSizeKeyControl();
+            _keyBracketOpen = CreateRegularSharedSizeKeyControl();
+            _keyBracketClose = CreateRegularSharedSizeKeyControl();
+            _keyEnter = CreateProportionalSizeKeyControl(EnterFactor);
             _keyEnter.Font = _keyEnter.Font.Inflate(2.0f);
 
             _upperCharRowStackLayout = new StackLayout()
@@ -233,27 +300,22 @@ namespace NTouchTypeTrainer.Views
             };
         }
 
-        private void InitMiddleCharRow(IEventAggregator eventAggregator, IGraphicsProvider graphicsProvider)
+        private void InitMiddleCharRow()
         {
-            _keyCapsLock = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.CapsLock,
-                factor: CapsLockFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
+            _keyCapsLock = CreateProportionalSizeKeyControl(CapsLockFactor);
             _keyCapsLock.Font = _keyCapsLock.Font.Inflate(2.0f);
-            _keyA = new SharedSizeHardwareKeyControl(HardwareKey.A, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyS = new SharedSizeHardwareKeyControl(HardwareKey.S, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyD = new SharedSizeHardwareKeyControl(HardwareKey.D, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyF = new SharedSizeHardwareKeyControl(HardwareKey.F, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyG = new SharedSizeHardwareKeyControl(HardwareKey.G, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyH = new SharedSizeHardwareKeyControl(HardwareKey.H, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyJ = new SharedSizeHardwareKeyControl(HardwareKey.J, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyK = new SharedSizeHardwareKeyControl(HardwareKey.K, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyL = new SharedSizeHardwareKeyControl(HardwareKey.L, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keySemicolon = new SharedSizeHardwareKeyControl(HardwareKey.Semicolon, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyApostrophe = new SharedSizeHardwareKeyControl(HardwareKey.Apostrophe, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyNumberSign = new SharedSizeHardwareKeyControl(HardwareKey.NumberSign, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
+            _keyA = CreateRegularSharedSizeKeyControl();
+            _keyS = CreateRegularSharedSizeKeyControl();
+            _keyD = CreateRegularSharedSizeKeyControl();
+            _keyF = CreateRegularSharedSizeKeyControl();
+            _keyG = CreateRegularSharedSizeKeyControl();
+            _keyH = CreateRegularSharedSizeKeyControl();
+            _keyJ = CreateRegularSharedSizeKeyControl();
+            _keyK = CreateRegularSharedSizeKeyControl();
+            _keyL = CreateRegularSharedSizeKeyControl();
+            _keySemicolon = CreateRegularSharedSizeKeyControl();
+            _keyApostrophe = CreateRegularSharedSizeKeyControl();
+            _keyNumberSign = CreateRegularSharedSizeKeyControl();
 
             _middleCharRowStackLayout = new StackLayout()
             {
@@ -280,32 +342,22 @@ namespace NTouchTypeTrainer.Views
             };
         }
 
-        private void InitLowerCharRow(IEventAggregator eventAggregator, IGraphicsProvider graphicsProvider)
+        private void InitLowerCharRow()
         {
-            _keyShiftLeft = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.ShiftLeft,
-                factor: ShiftLeftFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
+            _keyShiftLeft = CreateProportionalSizeKeyControl(ShiftLeftFactor);
             _keyShiftLeft.Font = _keyShiftLeft.Font.Inflate(3.0f);
-            _keyBackslash = new SharedSizeHardwareKeyControl(HardwareKey.Backslash, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyZ = new SharedSizeHardwareKeyControl(HardwareKey.Z, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyX = new SharedSizeHardwareKeyControl(HardwareKey.X, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyC = new SharedSizeHardwareKeyControl(HardwareKey.C, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyV = new SharedSizeHardwareKeyControl(HardwareKey.V, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyB = new SharedSizeHardwareKeyControl(HardwareKey.B, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyN = new SharedSizeHardwareKeyControl(HardwareKey.N, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyM = new SharedSizeHardwareKeyControl(HardwareKey.M, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyComma = new SharedSizeHardwareKeyControl(HardwareKey.Comma, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyDot = new SharedSizeHardwareKeyControl(HardwareKey.Dot, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keySlash = new SharedSizeHardwareKeyControl(HardwareKey.Slash, _regularKeySharedSizeGroup, eventAggregator, graphicsProvider);
-            _keyShiftRight = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.ShiftRight,
-                factor: ShiftRightFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
+            _keyBackslash = CreateRegularSharedSizeKeyControl();
+            _keyZ = CreateRegularSharedSizeKeyControl();
+            _keyX = CreateRegularSharedSizeKeyControl();
+            _keyC = CreateRegularSharedSizeKeyControl();
+            _keyV = CreateRegularSharedSizeKeyControl();
+            _keyB = CreateRegularSharedSizeKeyControl();
+            _keyN = CreateRegularSharedSizeKeyControl();
+            _keyM = CreateRegularSharedSizeKeyControl();
+            _keyComma = CreateRegularSharedSizeKeyControl();
+            _keyDot = CreateRegularSharedSizeKeyControl();
+            _keySlash = CreateRegularSharedSizeKeyControl();
+            _keyShiftRight = CreateProportionalSizeKeyControl(ShiftRightFactor);
             _keyShiftRight.Font = _keyShiftRight.Font.Inflate(3.0f);
 
             _lowerCharRowStackLayout = new StackLayout()
@@ -333,56 +385,16 @@ namespace NTouchTypeTrainer.Views
             };
         }
 
-        private void InitControlKeyRow(IEventAggregator eventAggregator, IGraphicsProvider graphicsProvider)
+        private void InitControlKeyRow()
         {
-            _keyControlLeft = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.ControlLeft,
-                factor: SmallKeyFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
-            _keySuperLeft = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.SuperLeft,
-                factor: SmallKeyFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
-            _keyAlt = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.Alt,
-                factor: SmallKeyFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
-            _keySpace = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.Space,
-                factor: SpaceKeyFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
-            _keyAltGr = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.AltGr,
-                factor: SmallKeyFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
-            _keySuperRight = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.SuperRight,
-                factor: SmallKeyFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
-            _keyMenu = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.Menu,
-                factor: SmallKeyFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
-            _keyControlRight = new ProportionalSizeHardwareKeyControl(
-                key: HardwareKey.ControlRight,
-                factor: SmallKeyFactor,
-                sourceSizeGroup: _regularKeySharedSizeGroup,
-                eventAggregator: eventAggregator,
-                graphicsProvider: graphicsProvider);
+            _keyControlLeft = CreateProportionalSizeKeyControl(ControlKeyFactor);
+            _keySuperLeft = CreateProportionalSizeKeyControl(ControlKeyFactor);
+            _keyAlt = CreateProportionalSizeKeyControl(ControlKeyFactor);
+            _keySpace = CreateProportionalSizeKeyControl(SpaceKeyFactor);
+            _keyAltGr = CreateProportionalSizeKeyControl(ControlKeyFactor);
+            _keySuperRight = CreateProportionalSizeKeyControl(ControlKeyFactor);
+            _keyMenu = CreateProportionalSizeKeyControl(ControlKeyFactor);
+            _keyControlRight = CreateProportionalSizeKeyControl(ControlKeyFactor);
 
             _controlKeyRowStackLayout = new StackLayout()
             {
@@ -402,6 +414,28 @@ namespace NTouchTypeTrainer.Views
                     _keyControlRight,
                 }
             };
+        }
+
+        private SharedSizeHardwareKeyControl CreateRegularSharedSizeKeyControl()
+        {
+            var keyControl = new SharedSizeHardwareKeyControl(_regularKeySharedSizeGroup, _eventAggregator, _graphicsProvider);
+
+            keyControl.BindToKeyViewModelDataContext();
+
+            return keyControl;
+        }
+
+        private ProportionalSizeHardwareKeyControl CreateProportionalSizeKeyControl(float widthFactor)
+        {
+            var keyControl = new ProportionalSizeHardwareKeyControl(
+                widthFactor,
+                _regularKeySharedSizeGroup,
+                _eventAggregator,
+                _graphicsProvider);
+
+            keyControl.BindToKeyViewModelDataContext();
+
+            return keyControl;
         }
     }
 }

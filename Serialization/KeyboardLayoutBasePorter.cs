@@ -5,14 +5,11 @@ using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Serialization
 {
-    public abstract class KeyboardLayoutBasePorter
+    public abstract class KeyboardLayoutBasePorter : BasePorter
     {
         protected static readonly IEnumerable<Modifier?> AllModifiers =
             Modifier.All.GetAllCombinations().Select(m => (Modifier?)m);
 
-        protected const string NewLine = "\r\n";
-        protected const string KeySeparator = " ";
-        protected const string RowSeparator = NewLine;
         protected const string MappingNameSeparator = ":" + NewLine;
 
         protected static string GetModifierStartToken(Modifier modifier)

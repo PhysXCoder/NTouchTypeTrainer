@@ -5,15 +5,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using NTouchTypeTrainer.Contracts.Common;
 using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Serialization;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class KeyMapping : IKeyMapping, IImmutable
+    public class KeyMapping : BasePorter, IKeyMapping, IImmutable
     {
         public HardwareKey PressedKey { get; }
         public IReadOnlyDictionary<Modifier, IMappedKey> Mappings { get; }
-
-        public const string Undefined = "UD";
 
         public KeyMapping(HardwareKey pressedKey, IMappedKey mappedTarget)
             : this(pressedKey, new Tuple<Modifier, IMappedKey>(Modifier.None, mappedTarget))
@@ -42,10 +41,8 @@ namespace NTouchTypeTrainer.Domain
             {
                 return Mappings[selectedModifier].Export();
             }
-            else
-            {
-                return Undefined;
-            }
+
+            return Undefined;
         }
     }
 }
