@@ -1,9 +1,12 @@
-﻿using System.IO;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using Eto.Drawing;
 using Eto.Forms;
+using NTouchTypeTrainer.Common.Files;
 using NTouchTypeTrainer.Common.Graphics;
+using NTouchTypeTrainer.Contracts.Common.Files;
+using NTouchTypeTrainer.Contracts.Views;
 using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Serialization;
 using NTouchTypeTrainer.ViewModels;
 
@@ -14,6 +17,8 @@ namespace NTouchTypeTrainer.Views
         private bool _firstShown;
         private readonly IEventAggregator _eventAggregator;
         private readonly GraphicsProvider _graphicsProvider;
+        private readonly IDialogProvider _dialogProvider;
+        private readonly IFileReaderWriter<string> _stringFileReaderWriter;
 
         public TestForm()
         {
@@ -22,6 +27,8 @@ namespace NTouchTypeTrainer.Views
 
             _eventAggregator = new EventAggregator();
             _graphicsProvider = new GraphicsProvider();
+            _dialogProvider = new DialogProvider();
+            _stringFileReaderWriter = new StringFileReaderWriter(new FileStreamProvider());
 
             Shown += TestForm_Shown;
         }
@@ -32,16 +39,20 @@ namespace NTouchTypeTrainer.Views
             {
                 var fingerColors = LoadFingerColors();
                 var fingerPos = LoadFingerPositions();
+                var mechanicalLayout = LoadMechanicalLayout();
 
-                var fingerPosViewModel = new KeyboardFingerPositionsViewModel();
-                fingerPosViewModel.LoadFingerPositions(fingerPos);
-                fingerPosViewModel.LoadFingerColors(fingerColors);
+                var keyboardViewModel = new KeyboardViewModel();
+                keyboardViewModel.LoadFingerPositions(fingerPos);
+                keyboardViewModel.LoadFingerColors(fingerColors);
+                keyboardViewModel.LoadMechanicalLayout(mechanicalLayout);
 
-                fingerPosViewModel.GKeyViewModel.IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel.Keys[HardwareKey.G].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel.Keys[HardwareKey.Y].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel.Keys[HardwareKey.Backslash].IsHighlighted = true;
 
                 var keyboardView = new KeyboardView(_eventAggregator, _graphicsProvider)
                 {
-                    DataContext = fingerPosViewModel
+                    DataContext = keyboardViewModel
                 };
                 Content = keyboardView;
             }
@@ -51,21 +62,11 @@ namespace NTouchTypeTrainer.Views
 
         private FingerColors LoadFingerColors()
         {
-            var fingerColors = new FingerColors();
-
-            var ofd = new OpenFileDialog()
+            var fileToOpen = _dialogProvider.OpenFile("Select FingerColors file", "FingerColors file", "*.t3c", this);
+            if (fileToOpen != null)
             {
-                Title = "Select FingerColors file"
-            };
-            if (ofd.ShowDialog(this) == DialogResult.Ok)
-            {
-                using (var reader = new StreamReader(ofd.FileName))
-                {
-                    var exportedString = reader.ReadToEnd();
-                    fingerColors = fingerColors.Import(exportedString);
-                }
-
-                return fingerColors;
+                var exportedString = _stringFileReaderWriter.Read(fileToOpen);
+                return FingerColorsImporter.Import(exportedString);
             }
 
             return null;
@@ -73,18 +74,23 @@ namespace NTouchTypeTrainer.Views
 
         private FingerPositions LoadFingerPositions()
         {
-            var ofd = new OpenFileDialog()
+            var fileToOpen = _dialogProvider.OpenFile("Select FingerPositions file", "FingerPositions file", "*.t3p", this);
+            if (fileToOpen != null)
             {
-                Title = "Select FingerPositions file"
-            };
+                var exportedString = _stringFileReaderWriter.Read(fileToOpen);
+                return FingerPositionsImporter.Import(exportedString);
+            }
 
-            if (ofd.ShowDialog(this) == DialogResult.Ok)
+            return null;
+        }
+
+        private MechanicalKeyboardLayout LoadMechanicalLayout()
+        {
+            var fileToOpen = _dialogProvider.OpenFile("Select mechanical layout file", "Mechanical layout file", "*.t3m", this);
+            if (fileToOpen != null)
             {
-                using (var reader = new StreamReader(ofd.FileName))
-                {
-                    var exportedString = reader.ReadToEnd();
-                    return (new FingerPositionsImporter()).Import(exportedString);
-                }
+                var exportedString = _stringFileReaderWriter.Read(fileToOpen);
+                return MechanicalKeyboardLayoutImporter.Import(exportedString);
             }
 
             return null;

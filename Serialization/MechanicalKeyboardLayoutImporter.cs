@@ -1,22 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Contracts.Domain;
 using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Serialization
 {
-    public class KeyboardLayoutImporter : KeyboardLayoutBasePorter, IKeyboardLayoutImporter
+    public class MechanicalKeyboardLayoutImporter : KeyboardLayoutBasePorter, IStringImport<MechanicalKeyboardLayout>
     {
-        bool IStringImport<KeyboardLayout>.TryImport(string exportedString, out KeyboardLayout outputLayout) =>
+        bool IStringImport<MechanicalKeyboardLayout>.TryImport(string exportedString, out MechanicalKeyboardLayout outputLayout)
+            => TryImport(exportedString, out outputLayout);
+
+        MechanicalKeyboardLayout IStringImport<MechanicalKeyboardLayout>.Import(string exportedString)
+            => Import(exportedString);
+
+        public static MechanicalKeyboardLayout Import(string exportString)
+        {
+            Import(exportString, true, out MechanicalKeyboardLayout outputKeyboard);
+            return outputKeyboard;
+        }
+
+        public static bool TryImport(string exportString, out MechanicalKeyboardLayout outputLayout)
+            => Import(exportString, false, out outputLayout);
+
+        private static bool Import(string exportString, bool throwExceptions, out MechanicalKeyboardLayout outputLayout)
+        {
+            outputLayout = null;
+            var rows = new List<List<HardwareKey>>();
+
+            exportString = exportString.Trim();
+            var lines = exportString.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var line in lines)
+            {
+                var keysInRow = new List<HardwareKey>();
+
+                var keyStrings = line.Trim().Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var keyString in keyStrings)
+                {
+                    HardwareKey key;
+                    if (throwExceptions)
+                    {
+                        key = HardwareKeyExtensions.Parse(keyString);
+                    }
+                    else
+                    {
+                        if (!HardwareKeyExtensions.TryParse(keyString, out key))
+                        {
+                            return false;
+                        }
+                    }
+
+                    keysInRow.Add(key);
+                }
+
+                rows.Add(keysInRow);
+            }
+
+            outputLayout = new MechanicalKeyboardLayout(rows);
+            return true;
+        }
+    }
+
+#if false
+    public class MechanicalKeyboardLayoutImporter : KeyboardLayoutBasePorter, IKeyboardLayoutImporter
+    {
+        bool IStringImport<MechanicalKeyboardLayout>.TryImport(string exportedString, out MechanicalKeyboardLayout outputLayout) =>
             TryImport(exportedString, out outputLayout);
 
-        KeyboardLayout IStringImport<KeyboardLayout>.Import(string exportedString) =>
+        MechanicalKeyboardLayout IStringImport<MechanicalKeyboardLayout>.Import(string exportedString) =>
             Import(exportedString);
 
-        public static KeyboardLayout Import(string exportString)
+        public static MechanicalKeyboardLayout Import(string exportString)
         {
             var digitsRow = new List<IKeyMapping>();
             var upperCharacterRow = new List<IKeyMapping>();
@@ -44,7 +100,7 @@ namespace NTouchTypeTrainer.Serialization
             lowerCharacterRow = SortRow(lowerCharacterRow).ToList();
             controlKeyRow = SortRow(controlKeyRow).ToList();
 
-            return new KeyboardLayout(
+            return new MechanicalKeyboardLayout(
                 digitsRow,
                 upperCharacterRow,
                 middleCharacterRow,
@@ -52,7 +108,7 @@ namespace NTouchTypeTrainer.Serialization
                 controlKeyRow);
         }
 
-        public static bool TryImport(string exportString, out KeyboardLayout layout)
+        public static bool TryImport(string exportString, out MechanicalKeyboardLayout layout)
         {
             layout = null;
 
@@ -89,7 +145,7 @@ namespace NTouchTypeTrainer.Serialization
             lowerCharacterRow = SortRow(lowerCharacterRow).ToList();
             controlKeyRow = SortRow(controlKeyRow).ToList();
 
-            layout = new KeyboardLayout(
+            layout = new MechanicalKeyboardLayout(
                 digitsRow,
                 upperCharacterRow,
                 middleCharacterRow,
@@ -300,4 +356,5 @@ namespace NTouchTypeTrainer.Serialization
             return keyMappingRow.OrderBy(mapping => mapping.PressedKey).ToList();
         }
     }
+#endif
 }

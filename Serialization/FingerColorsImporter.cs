@@ -1,24 +1,31 @@
 using System;
 using System.Linq;
 using Eto.Drawing;
+using NTouchTypeTrainer.Contracts.Common;
 using NTouchTypeTrainer.Domain;
 
 namespace NTouchTypeTrainer.Serialization
 {
-    public class FingerColorsImporter : FingerColorsBasePorter
+    public class FingerColorsImporter : FingerColorsBasePorter, IStringImport<FingerColors>
     {
-        public FingerColors Import(string exportedString)
+        bool IStringImport<FingerColors>.TryImport(string exportedString, out FingerColors outputInstance)
+            => TryImport(exportedString, out outputInstance);
+
+        FingerColors IStringImport<FingerColors>.Import(string exportedString)
+            => Import(exportedString);
+
+        public static FingerColors Import(string exportedString)
         {
             Import(exportedString, true, out FingerColors fingerColors);
             return fingerColors;
         }
 
-        public bool TryImport(string exportedString, out FingerColors outputInstance)
+        public static bool TryImport(string exportedString, out FingerColors outputInstance)
         {
             return Import(exportedString, false, out outputInstance);
         }
 
-        private bool Import(string exportedString, bool throwExceptions, out FingerColors outputInstance)
+        private static bool Import(string exportedString, bool throwExceptions, out FingerColors outputInstance)
         {
             outputInstance = new FingerColors();
 

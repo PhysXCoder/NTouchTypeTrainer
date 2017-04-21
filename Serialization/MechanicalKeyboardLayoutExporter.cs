@@ -1,17 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using NTouchTypeTrainer.Common.Strings;
+using NTouchTypeTrainer.Contracts.Common;
 using NTouchTypeTrainer.Contracts.Domain;
 using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Serialization
 {
-    public class KeyboardLayoutExporter : KeyboardLayoutBasePorter, IKeyboardLayoutExporter
+    public class MechanicalKeyboardLayoutExporter : KeyboardLayoutBasePorter, IStringExporter<IMechanicalKeyboardLayout>
     {
-        string IKeyboardLayoutExporter.Export(IKeyboardLayout layout) => Export(layout);
+        string IStringExporter<IMechanicalKeyboardLayout>.Export(IMechanicalKeyboardLayout layout)
+            => Export(layout);
 
-        public static string Export(IKeyboardLayout layout)
+        public static string Export(IMechanicalKeyboardLayout layout)
+        {
+            if (layout == null)
+            {
+                throw new ArgumentNullException(nameof(layout));
+            }
+
+            var exportedKeyboardMappings = new StringBuilder();
+
+            foreach (var row in layout.KeyboardRows)
+            {
+                Export(row, exportedKeyboardMappings);
+                exportedKeyboardMappings.Append(NewLine);
+            }
+            exportedKeyboardMappings.RemoveLast(NewLine);
+
+            return exportedKeyboardMappings.ToString();
+        }
+
+        private static void Export(IEnumerable<HardwareKey> row, StringBuilder exportBuilder)
+        {
+            foreach (var hardwareKey in row)
+            {
+                exportBuilder
+                    .Append(hardwareKey)
+                    .Append(KeySeparator);
+            }
+            exportBuilder.RemoveLast(KeySeparator);
+        }
+    }
+
+#if false
+    public class MechanicalKeyboardLayoutExporter : KeyboardLayoutBasePorter, IMechanicalKeyboardLayoutExporter
+    {
+        string IMechanicalKeyboardLayoutExporter.Export(IMechanicalKeyboardLayout layout) => Export(layout);
+
+        public static string Export(IMechanicalKeyboardLayout layout)
         {
             if (layout == null)
             {
@@ -35,7 +73,7 @@ namespace NTouchTypeTrainer.Serialization
             return exportedKeyboardMappings.ToString();
         }
 
-        private static void Export(IKeyboardLayout layout, Modifier modifier, StringBuilder exportBuilder)
+        private static void Export(IMechanicalKeyboardLayout layout, Modifier modifier, StringBuilder exportBuilder)
         {
             ExportRow(layout.DigitsRow, modifier, exportBuilder);
             exportBuilder.Append(RowSeparator);
@@ -71,4 +109,5 @@ namespace NTouchTypeTrainer.Serialization
             }
         }
     }
+#endif
 }

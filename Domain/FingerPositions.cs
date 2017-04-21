@@ -10,15 +10,9 @@ namespace NTouchTypeTrainer.Domain
     {
         private readonly Dictionary<HardwareKey, Finger> _positionsDictionary;
 
-        private readonly IFingerPositionsExporter _exporter;
-        private readonly IFingerPositionsImporter _importer;
-
         public FingerPositions(IDictionary<HardwareKey, Finger> positions)
         {
             _positionsDictionary = new Dictionary<HardwareKey, Finger>(positions);
-
-            _exporter = new FingerPositionsExporter();
-            _importer = new FingerPositionsImporter();
         }
 
         public Finger this[HardwareKey key]
@@ -34,13 +28,19 @@ namespace NTouchTypeTrainer.Domain
             }
         }
 
-        public bool ContainsKey(HardwareKey key) => _positionsDictionary.ContainsKey(key);
+        public bool ContainsKey(HardwareKey key)
+            => _positionsDictionary.ContainsKey(key);
 
-        public bool TryImport(string exportedString, out FingerPositions outputFingerPositions) =>
-            _importer.TryImport(exportedString, out outputFingerPositions);
+        public IEnumerable<KeyValuePair<HardwareKey, Finger>> GetAllKeyFingerPairs()
+            => _positionsDictionary;
 
-        public FingerPositions Import(string exportedString) => _importer.Import(exportedString);
+        public bool TryImport(string exportedString, out FingerPositions outputFingerPositions)
+            => FingerPositionsImporter.TryImport(exportedString, out outputFingerPositions);
 
-        public string Export() => _exporter.Export(this);
+        public FingerPositions Import(string exportedString)
+            => FingerPositionsImporter.Import(exportedString);
+
+        public string Export()
+            => FingerPositionsExporter.Export(this);
     }
 }

@@ -23,14 +23,8 @@ namespace NTouchTypeTrainer.Domain
         public Color RingRightFingerColor { get; private set; }
         public Color SmallRightFingerColor { get; private set; }
 
-        private readonly FingerColorsExporter _fingerColorsExporter;
-        private readonly FingerColorsImporter _fingerColorsImporter;
-
         public FingerColors()
         {
-            _fingerColorsExporter = new FingerColorsExporter();
-            _fingerColorsImporter = new FingerColorsImporter();
-
             SetDefaultColors();
         }
 
@@ -51,13 +45,13 @@ namespace NTouchTypeTrainer.Domain
             SmallRightFingerColor = Color.FromArgb(0xb0, 0x70, 0xff);
         }
 
-        public string Export() => _fingerColorsExporter.Export(this);
+        public string Export() => FingerColorsExporter.Export(this);
 
         public bool TryImport(string exportedString, out FingerColors outputInstance) =>
-            _fingerColorsImporter.TryImport(exportedString, out outputInstance);
+            FingerColorsImporter.TryImport(exportedString, out outputInstance);
 
         public FingerColors Import(string exportedString) =>
-            _fingerColorsImporter.Import(exportedString);
+            FingerColorsImporter.Import(exportedString);
 
         public Color this[Finger? finger]
         {

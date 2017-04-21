@@ -6,6 +6,7 @@ using NLog;
 using NTouchTypeTrainer.Common.GuiExtensions;
 using NTouchTypeTrainer.Contracts.Common.Graphics;
 using NTouchTypeTrainer.Contracts.Views;
+using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Messages;
 using static NTouchTypeTrainer.Common.Logging.LoggingExtensions;
 using static NTouchTypeTrainer.Common.Strings.ToStringConverterHelper;
@@ -20,6 +21,8 @@ namespace NTouchTypeTrainer.Views.Controls
 
         protected readonly Size PaddingSize = new Size(8, 5);
 
+        public HardwareKey Key { get; }
+
         public override string Text
         {
             get => base.Text;
@@ -30,8 +33,9 @@ namespace NTouchTypeTrainer.Views.Controls
             }
         }
 
-        protected HardwareKeyControl(IGraphicsProvider graphicsProvider)
+        protected HardwareKeyControl(HardwareKey key, IGraphicsProvider graphicsProvider)
         {
+            Key = key;
             GraphicsProvider = graphicsProvider;
             Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -40,10 +44,11 @@ namespace NTouchTypeTrainer.Views.Controls
 
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         protected HardwareKeyControl(
+            HardwareKey key,
             ISizeGroup sizeGroup,
             IEventAggregator eventAggregator,
             IGraphicsProvider graphicsProvider)
-            : this(graphicsProvider)
+            : this(key, graphicsProvider)
         {
             SizeGroup = sizeGroup;
 

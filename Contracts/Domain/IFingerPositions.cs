@@ -1,4 +1,5 @@
-﻿using NTouchTypeTrainer.Domain.Enums;
+﻿using System.Collections.Generic;
+using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Contracts.Domain
 {
@@ -7,5 +8,7 @@ namespace NTouchTypeTrainer.Contracts.Domain
         Finger this[HardwareKey key] { get; }
 
         bool ContainsKey(HardwareKey key);
+
+        IEnumerable<KeyValuePair<HardwareKey, Finger>> GetAllKeyFingerPairs();
     }
 }

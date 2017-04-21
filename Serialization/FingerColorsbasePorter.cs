@@ -9,7 +9,7 @@ namespace NTouchTypeTrainer.Serialization
     {
         protected const string NameColorSeparator = ": ";
 
-        protected PropertyInfo[] GetColorProperties() =>
+        protected static PropertyInfo[] GetColorProperties() =>
             typeof(FingerColors).GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Where(p => p.PropertyType == typeof(Color))
                 .ToArray();

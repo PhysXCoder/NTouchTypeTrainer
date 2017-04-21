@@ -1,99 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NTouchTypeTrainer.Domain.Enums
 {
     public static class HardwareKeyExtensions
     {
-        public static readonly List<HardwareKey> DigitsRow = new List<HardwareKey>()
+        public static bool TryParse(string exportedString, out HardwareKey hardwareKey, bool ignoreCase = true)
         {
-            HardwareKey.AccentGrave,
-            HardwareKey.D1,
-            HardwareKey.D2,
-            HardwareKey.D3,
-            HardwareKey.D4,
-            HardwareKey.D5,
-            HardwareKey.D6,
-            HardwareKey.D7,
-            HardwareKey.D8,
-            HardwareKey.D9,
-            HardwareKey.D0,
-            HardwareKey.Minus,
-            HardwareKey.Equal,
-            HardwareKey.Backspace
-        };
+            return Enum.TryParse(exportedString, ignoreCase, out hardwareKey);
+        }
 
-        public static readonly List<HardwareKey> UpperCharacterRow = new List<HardwareKey>()
+        public static HardwareKey Parse(string exportedString, bool ignoreCase = true)
         {
-            HardwareKey.Tab,
-            HardwareKey.Q,
-            HardwareKey.W,
-            HardwareKey.E,
-            HardwareKey.R,
-            HardwareKey.T,
-            HardwareKey.Y,
-            HardwareKey.U,
-            HardwareKey.I,
-            HardwareKey.O,
-            HardwareKey.P,
-            HardwareKey.BracketOpen,
-            HardwareKey.BracketClose,
-            HardwareKey.Enter
-        };
+            if (!TryParse(exportedString, out HardwareKey hardwareKey, ignoreCase))
+            {
+                throw new FormatException($"Couldn't parse hardware key '{exportedString}'!");
+            }
 
-        public static readonly List<HardwareKey> MiddleCharacterRow = new List<HardwareKey>()
-        {
-            HardwareKey.CapsLock,
-            HardwareKey.A,
-            HardwareKey.S,
-            HardwareKey.D,
-            HardwareKey.F,
-            HardwareKey.G,
-            HardwareKey.H,
-            HardwareKey.J,
-            HardwareKey.K,
-            HardwareKey.L,
-            HardwareKey.Semicolon,
-            HardwareKey.Apostrophe,
-            HardwareKey.NumberSign,
-        };
+            return hardwareKey;
+        }
 
-        public static readonly List<HardwareKey> LowerCharacterRow = new List<HardwareKey>()
-        {
-            HardwareKey.ShiftLeft,
-            HardwareKey.Backslash,
-            HardwareKey.Z,
-            HardwareKey.X,
-            HardwareKey.C,
-            HardwareKey.V,
-            HardwareKey.B,
-            HardwareKey.N,
-            HardwareKey.M,
-            HardwareKey.Comma,
-            HardwareKey.Dot,
-            HardwareKey.Slash,
-            HardwareKey.ShiftRight,
-        };
-
-        public static readonly List<HardwareKey> ControlKeyRow = new List<HardwareKey>()
-        {
-            HardwareKey.ControlLeft,
-            HardwareKey.SuperLeft,
-            HardwareKey.Alt,
-            HardwareKey.Space,
-            HardwareKey.AltGr,
-            HardwareKey.SuperRight,
-            HardwareKey.Menu,
-            HardwareKey.ControlRight
-        };
-
-        public static readonly List<List<HardwareKey>> AllRows = new List<List<HardwareKey>>()
-        {
-            DigitsRow,
-            UpperCharacterRow,
-            MiddleCharacterRow,
-            LowerCharacterRow,
-            ControlKeyRow
-        };
+        public static IEnumerable<HardwareKey> GetAllKeys()
+            => Enum.GetValues(typeof(HardwareKey)).Cast<HardwareKey>();
 
         private static readonly Dictionary<HardwareKey, string> SpecialDefaultTexts =
             new Dictionary<HardwareKey, string>

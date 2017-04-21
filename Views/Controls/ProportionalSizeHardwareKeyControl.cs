@@ -3,6 +3,7 @@ using Caliburn.Micro;
 using Eto.Drawing;
 using NTouchTypeTrainer.Contracts.Common.Graphics;
 using NTouchTypeTrainer.Contracts.Views;
+using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Views.Common;
 
 namespace NTouchTypeTrainer.Views.Controls
@@ -12,11 +13,13 @@ namespace NTouchTypeTrainer.Views.Controls
         protected IDependentSizeGroup DependentSizeGroup => SizeGroup as IDependentSizeGroup;
 
         public ProportionalSizeHardwareKeyControl(
+            HardwareKey key,
             float factor,
             ISizeGroup sourceSizeGroup,
             IEventAggregator eventAggregator,
             IGraphicsProvider graphicsProvider)
             : base(
+                  key,
                   CreateDependetSizeGroup(factor, sourceSizeGroup, eventAggregator),
                   eventAggregator,
                   graphicsProvider)
