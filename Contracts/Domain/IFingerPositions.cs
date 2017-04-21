@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.Domain.Enums;
+using System.Collections.Generic;
 
 namespace NTouchTypeTrainer.Contracts.Domain
 {
     public interface IFingerPositions
     {
-        Finger this[HardwareKey key] { get; }
+        Finger this[KeyPosition key] { get; }
 
-        bool ContainsKey(HardwareKey key);
+        bool ContainsKey(KeyPosition keyPosition);
 
-        IEnumerable<KeyValuePair<HardwareKey, Finger>> GetAllKeyFingerPairs();
+        IEnumerable<KeyValuePair<KeyPosition, Finger>> GetAllKeyFingerPairs();
     }
 }

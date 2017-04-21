@@ -1,14 +1,15 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using Eto.Forms;
 using NTouchTypeTrainer.Common.DataBinding;
 using NTouchTypeTrainer.Contracts.Common.Graphics;
 using NTouchTypeTrainer.Contracts.Views;
-using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.ViewModels;
 using NTouchTypeTrainer.Views.Common;
 using NTouchTypeTrainer.Views.Controls;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace NTouchTypeTrainer.Views
 {
@@ -64,7 +65,9 @@ namespace NTouchTypeTrainer.Views
             var keyboardViewModel = DataContext as KeyboardViewModel;
             if (keyboardViewModel != null)
             {
-                foreach (var keyRow in keyboardViewModel.MechanicalKeyboardLayoutViewModel.Rows)
+                var mechLayoutVm = keyboardViewModel.MechanicalKeyboardLayoutViewModel;
+
+                foreach (var iRow in mechLayoutVm.KeyIndexsInRow.Keys)
                 {
                     var row = new StackLayout
                     {
@@ -74,10 +77,17 @@ namespace NTouchTypeTrainer.Views
                         Spacing = 5,
                     };
 
-                    foreach (var hardwareKey in keyRow)
+                    var keyIndexes = mechLayoutVm.KeyIndexsInRow[iRow];
+                    for (var iKey = keyIndexes.Min(); iKey <= keyIndexes.Max(); iKey++)
                     {
-                        var keyView = CreateRegularSharedSizeKeyControl(hardwareKey);   // ToDo: Also add ProportionalSized controls
-                        keyView.DataContext = keyboardViewModel.AllKeysViewModel.Keys[hardwareKey];
+                        var keyPos = new KeyPosition(iRow, iKey);
+                        var keySize = mechLayoutVm.KeySizes[keyPos];
+
+                        var keyView = (keySize == null)
+                            ? (HardwareKeyControl)CreateRegularSharedSizeKeyControl(keyPos)
+                            : CreateProportionalSizeKeyControl(keyPos, keySize.Value);
+
+                        keyView.DataContext = keyboardViewModel.AllKeysViewModel.Keys[keyPos];
 
                         row.Items.Add(keyView);
                     }
@@ -87,19 +97,19 @@ namespace NTouchTypeTrainer.Views
             }
         }
 
-        private SharedSizeHardwareKeyControl CreateRegularSharedSizeKeyControl(HardwareKey key)
+        private SharedSizeHardwareKeyControl CreateRegularSharedSizeKeyControl(KeyPosition keyPosition)
         {
-            var keyControl = new SharedSizeHardwareKeyControl(key, _regularKeySharedSizeGroup, _eventAggregator, _graphicsProvider);
+            var keyControl = new SharedSizeHardwareKeyControl(keyPosition, _regularKeySharedSizeGroup, _eventAggregator, _graphicsProvider);
 
             keyControl.BindToKeyViewModelDataContext();
 
             return keyControl;
         }
 
-        private ProportionalSizeHardwareKeyControl CreateProportionalSizeKeyControl(HardwareKey key, float widthFactor)
+        private ProportionalSizeHardwareKeyControl CreateProportionalSizeKeyControl(KeyPosition keyPosition, float widthFactor)
         {
             var keyControl = new ProportionalSizeHardwareKeyControl(
-                key,
+                keyPosition,
                 widthFactor,
                 _regularKeySharedSizeGroup,
                 _eventAggregator,

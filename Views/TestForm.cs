@@ -6,7 +6,6 @@ using NTouchTypeTrainer.Common.Graphics;
 using NTouchTypeTrainer.Contracts.Common.Files;
 using NTouchTypeTrainer.Contracts.Views;
 using NTouchTypeTrainer.Domain;
-using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Serialization;
 using NTouchTypeTrainer.ViewModels;
 
@@ -46,9 +45,9 @@ namespace NTouchTypeTrainer.Views
                 keyboardViewModel.LoadFingerColors(fingerColors);
                 keyboardViewModel.LoadMechanicalLayout(mechanicalLayout);
 
-                keyboardViewModel.AllKeysViewModel.Keys[HardwareKey.G].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel.Keys[HardwareKey.Y].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel.Keys[HardwareKey.Backslash].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel.Keys[new KeyPosition(3, 6)].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel.Keys[new KeyPosition(4, 3)].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel.Keys[new KeyPosition(1, 12)].IsHighlighted = true;
 
                 var keyboardView = new KeyboardView(_eventAggregator, _graphicsProvider)
                 {

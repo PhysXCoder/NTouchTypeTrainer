@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using NTouchTypeTrainer.Contracts.Common;
+﻿using NTouchTypeTrainer.Contracts.Common;
 using NTouchTypeTrainer.Domain;
-using NTouchTypeTrainer.Domain.Enums;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace NTouchTypeTrainer.Serialization
 {
-    public class MechanicalKeyboardLayoutImporter : KeyboardLayoutBasePorter, IStringImport<MechanicalKeyboardLayout>
+    public class MechanicalKeyboardLayoutImporter : MechanicalKeyboardLayoutBasePorter, IStringImport<MechanicalKeyboardLayout>
     {
         bool IStringImport<MechanicalKeyboardLayout>.TryImport(string exportedString, out MechanicalKeyboardLayout outputLayout)
             => TryImport(exportedString, out outputLayout);
@@ -26,45 +26,66 @@ namespace NTouchTypeTrainer.Serialization
         private static bool Import(string exportString, bool throwExceptions, out MechanicalKeyboardLayout outputLayout)
         {
             outputLayout = null;
-            var rows = new List<List<HardwareKey>>();
+            var sizeDict = new Dictionary<KeyPosition, float?>();
 
             exportString = exportString.Trim();
             var lines = exportString.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
+            var iRow = 0;
             foreach (var line in lines)
             {
-                var keysInRow = new List<HardwareKey>();
-
+                iRow++;
                 var keyStrings = line.Trim().Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
 
+                var iKey = 0;
                 foreach (var keyString in keyStrings)
                 {
-                    HardwareKey key;
-                    if (throwExceptions)
+                    iKey++;
+                    var position = new KeyPosition(iRow, iKey);
+
+                    if (keyString == RegularKey)
                     {
-                        key = HardwareKeyExtensions.Parse(keyString);
+                        sizeDict.Add(position, null);
                     }
-                    else
+                    else if (keyString.StartsWith(ProportionalKey))
                     {
-                        if (!HardwareKeyExtensions.TryParse(keyString, out key))
+                        var sizeString = keyString.Replace(ProportionalKey, "");
+
+                        if (!GetSize(throwExceptions, sizeString, out float size))
                         {
                             return false;
                         }
+
+                        sizeDict.Add(position, size);
                     }
-
-                    keysInRow.Add(key);
+                    else
+                    {
+                        throw new FormatException($"Couldn't parse '{keyString}'! Must either be '{RegularKey}' or "
+                                                  + $"'{ProportionalKey}{1.234f.ToString(FloatFormat)}'!");
+                    }
                 }
-
-                rows.Add(keysInRow);
             }
 
-            outputLayout = new MechanicalKeyboardLayout(rows);
+            outputLayout = new MechanicalKeyboardLayout(sizeDict);
+            return true;
+        }
+
+        private static bool GetSize(bool throwExceptions, string sizeString, out float size)
+        {
+            if (!float.TryParse(sizeString, NumberStyles.Number, FloatFormat, out size))
+            {
+                if (throwExceptions)
+                {
+                    throw new FormatException($"Couldn't parse '{sizeString}' to a floating point variable!");
+                }
+                return false;
+            }
             return true;
         }
     }
 
 #if false
-    public class MechanicalKeyboardLayoutImporter : KeyboardLayoutBasePorter, IKeyboardLayoutImporter
+    public class MechanicalKeyboardLayoutImporter : MechanicalKeyboardLayoutBasePorter, IKeyboardLayoutImporter
     {
         bool IStringImport<MechanicalKeyboardLayout>.TryImport(string exportedString, out MechanicalKeyboardLayout outputLayout) =>
             TryImport(exportedString, out outputLayout);

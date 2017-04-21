@@ -104,6 +104,7 @@
     <Compile Include="Domain\Enums\FingerExtensions.cs" />
     <Compile Include="Domain\Enums\HardwareKeyExtensions.cs" />
     <Compile Include="Domain\FingerColors.cs" />
+    <Compile Include="Domain\KeyPosition.cs" />
     <Compile Include="Serialization\FingerColorsBasePorter.cs" />
     <Compile Include="Serialization\FingerColorsExporter.cs" />
     <Compile Include="Serialization\FingerColorsImporter.cs" />
@@ -129,7 +130,7 @@
     <Compile Include="Serialization\FingerPositionsImporter.cs" />
     <Compile Include="Serialization\MechanicalKeyboardLayoutExporter.cs" />
     <Compile Include="Serialization\MechanicalKeyboardLayoutImporter.cs" />
-    <Compile Include="Serialization\KeyboardLayoutBasePorter.cs" />
+    <Compile Include="Serialization\MechanicalKeyboardLayoutBasePorter.cs" />
     <Compile Include="ViewModels\AllKeysViewModel.cs" />
     <Compile Include="ViewModels\KeyboardViewModel.cs" />
     <Compile Include="ViewModels\KeyViewModel.cs" />

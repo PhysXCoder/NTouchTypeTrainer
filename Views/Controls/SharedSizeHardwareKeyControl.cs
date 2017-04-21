@@ -2,7 +2,7 @@
 using Eto.Drawing;
 using NTouchTypeTrainer.Contracts.Common.Graphics;
 using NTouchTypeTrainer.Contracts.Views;
-using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Domain;
 
 namespace NTouchTypeTrainer.Views.Controls
 {
@@ -10,16 +10,16 @@ namespace NTouchTypeTrainer.Views.Controls
     {
         protected ISharedSizeGroup SharedSizeGroup => SizeGroup as ISharedSizeGroup;
 
-        protected SharedSizeHardwareKeyControl(HardwareKey key, IGraphicsProvider graphicsProvider)
-            : base(key, graphicsProvider)
+        protected SharedSizeHardwareKeyControl(KeyPosition keyPosition, IGraphicsProvider graphicsProvider)
+            : base(keyPosition, graphicsProvider)
         { }
 
         public SharedSizeHardwareKeyControl(
-            HardwareKey key,
+            KeyPosition keyPosition,
             ISharedSizeGroup sharedSizeGroup,
             IEventAggregator eventAggregator,
             IGraphicsProvider graphicsProvider)
-            : base(key, sharedSizeGroup, eventAggregator, graphicsProvider)
+            : base(keyPosition, sharedSizeGroup, eventAggregator, graphicsProvider)
         { }
 
         protected override void UpdateSize()

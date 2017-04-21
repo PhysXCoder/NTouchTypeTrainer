@@ -1,11 +1,12 @@
-﻿using System;
+﻿using NTouchTypeTrainer.Common.Strings;
+using NTouchTypeTrainer.Contracts.Common;
+using NTouchTypeTrainer.Contracts.Domain;
+using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NTouchTypeTrainer.Common.Strings;
-using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Contracts.Domain;
-using NTouchTypeTrainer.Domain.Enums;
 
 namespace NTouchTypeTrainer.Serialization
 {
@@ -18,29 +19,28 @@ namespace NTouchTypeTrainer.Serialization
         {
             var builder = new StringBuilder();
 
-            var keysForFingerDictionary = Enum.GetValues(typeof(Finger))
+            var keyPositionsForFinger = Enum.GetValues(typeof(Finger))
                 .Cast<Finger>()
-                .ToDictionary(finger => finger, finger => new List<HardwareKey>());
+                .ToDictionary(finger => finger, finger => new List<KeyPosition>());
 
             foreach (var keyFingerPair in fingerPositions.GetAllKeyFingerPairs())
             {
                 var finger = keyFingerPair.Value;
-                var key = keyFingerPair.Key;
+                var keyPosition = keyFingerPair.Key;
 
-                keysForFingerDictionary[finger].Add(key);
+                keyPositionsForFinger[finger].Add(keyPosition);
             }
 
-            foreach (var finger in keysForFingerDictionary.Keys)
+            foreach (var finger in keyPositionsForFinger.Keys)
             {
                 builder
                     .Append(finger)
-                    .Append(Separator)
-                    .Append(KeySeparator);
+                    .Append(Separator).Append(KeySeparator);
 
-                foreach (var hardwareKey in keysForFingerDictionary[finger])
+                foreach (var keyPosition in keyPositionsForFinger[finger])
                 {
                     builder
-                        .Append(hardwareKey)
+                        .Append(keyPosition.Row).Append(RowKeySeparator).Append(keyPosition.Key)
                         .Append(KeySeparator);
                 }
                 builder.RemoveLast(KeySeparator);

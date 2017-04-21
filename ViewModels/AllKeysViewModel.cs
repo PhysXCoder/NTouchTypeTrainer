@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Eto.Drawing;
+﻿using Eto.Drawing;
 using NTouchTypeTrainer.Common.DataBinding;
 using NTouchTypeTrainer.Contracts.Domain;
 using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.Domain.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 #pragma warning disable 659
 namespace NTouchTypeTrainer.ViewModels
 {
     public class AllKeysViewModel : BaseViewModel, IEquatable<AllKeysViewModel>
     {
-        private ObservableDictionary<HardwareKey, KeyViewModel> _keys;
+        private ObservableDictionary<KeyPosition, KeyViewModel> _keys;
 
         private IFingerPositions _fingerPositions;
         private IFingerColors _fingerColors;
 
-        public ObservableDictionary<HardwareKey, KeyViewModel> Keys
+        public ObservableDictionary<KeyPosition, KeyViewModel> Keys
         {
             get => _keys;
             set
@@ -31,7 +31,7 @@ namespace NTouchTypeTrainer.ViewModels
         public AllKeysViewModel()
         {
             _fingerColors = new FingerColors();
-            _keys = new ObservableDictionary<HardwareKey, KeyViewModel>();
+            _keys = new ObservableDictionary<KeyPosition, KeyViewModel>();
         }
 
         public void LoadFingerColors(IFingerColors fingerColors)
@@ -48,22 +48,22 @@ namespace NTouchTypeTrainer.ViewModels
 
         public void LoadMechanicalKeyboardLayout(IMechanicalKeyboardLayout keyboardLayout)
         {
-            var toRemove = new List<HardwareKey>(Keys.Keys);
+            var toRemove = new List<KeyPosition>(Keys.Keys);
 
-            foreach (var keyboardRow in keyboardLayout.KeyboardRows)
+            for (int iRow = keyboardLayout.IndexMinRow; iRow <= keyboardLayout.IndexMaxRow; iRow++)
             {
-                foreach (var hardwareKey in keyboardRow)
+                foreach (var keyPosition in keyboardLayout.KeySizes.Keys.Where(keyPos => (keyPos.Row == iRow)))
                 {
-                    if (Keys.Keys.Contains(hardwareKey))
+                    if (Keys.Keys.Contains(keyPosition))
                     {
-                        toRemove.Remove(hardwareKey);
+                        toRemove.Remove(keyPosition);
                     }
                     else
                     {
                         var viewModel = new KeyViewModel();
-                        Keys.Add(hardwareKey, viewModel);
+                        Keys.Add(keyPosition, viewModel);
 
-                        UpdateKey(hardwareKey, viewModel);
+                        UpdateKey(keyPosition, viewModel);
                     }
                 }
             }
@@ -105,17 +105,18 @@ namespace NTouchTypeTrainer.ViewModels
                 UpdateKey(hardwareKey, Keys[hardwareKey]);
             }
         }
-        private void UpdateKey(HardwareKey key, KeyViewModel keyViewModel)
+        private void UpdateKey(KeyPosition keyPosition, KeyViewModel keyViewModel)
         {
-            var finger = GetFingerForKey(key);
+            var finger = GetFingerForKeyPosition(keyPosition);
 
-            keyViewModel.Name = key.GetDefaultText();
+            // ToDo: use visual layout here
+            keyViewModel.Name = "UD";//keyPosition.GetDefaultText();
             keyViewModel.HighlightedColor = GetColor(finger);
         }
 
-        private Finger? GetFingerForKey(HardwareKey key)
+        private Finger? GetFingerForKeyPosition(KeyPosition keyPosition)
         {
-            return _fingerPositions.ContainsKey(key) ? (Finger?)_fingerPositions[key] : null;
+            return _fingerPositions.ContainsKey(keyPosition) ? (Finger?)_fingerPositions[keyPosition] : null;
         }
 
         private Color GetColor(Finger? finger)

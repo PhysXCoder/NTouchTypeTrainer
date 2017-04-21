@@ -1,39 +1,70 @@
-﻿using System.Collections.ObjectModel;
+﻿using NTouchTypeTrainer.Common.DataBinding;
 using NTouchTypeTrainer.Contracts.Domain;
-using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Domain;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace NTouchTypeTrainer.ViewModels
 {
     public class MechanicalKeyboardLayoutViewModel : BaseViewModel
     {
-        private ObservableCollection<ObservableCollection<HardwareKey>> _rows;
+        private ObservableDictionary<int, ObservableCollection<int>> _keyIndexesInRow;
+        private ObservableDictionary<KeyPosition, float?> _keySizes;
 
-        public ObservableCollection<ObservableCollection<HardwareKey>> Rows
+        public ObservableDictionary<int, ObservableCollection<int>> KeyIndexsInRow
         {
-            get => _rows;
+            get => _keyIndexesInRow;
             set
             {
-                _rows = value;
+                _keyIndexesInRow = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableDictionary<KeyPosition, float?> KeySizes
+        {
+            get => _keySizes;
+            set
+            {
+                _keySizes = value;
                 OnPropertyChanged();
             }
         }
 
         public MechanicalKeyboardLayoutViewModel()
         {
-            _rows = new ObservableCollection<ObservableCollection<HardwareKey>>();
+            _keyIndexesInRow = new ObservableDictionary<int, ObservableCollection<int>>();
+            _keySizes = new ObservableDictionary<KeyPosition, float?>();
         }
 
         public void LoadMechanicalLayout(IMechanicalKeyboardLayout layout)
         {
-            var newRows = new ObservableCollection<ObservableCollection<HardwareKey>>();
+            var newSizes = new ObservableDictionary<KeyPosition, float?>();
+            var newIndexes = new ObservableDictionary<int, ObservableCollection<int>>();
 
-            foreach (var keyboardRow in layout.KeyboardRows)
+            for (var iRow = layout.IndexMinRow; iRow <= layout.IndexMaxRow; iRow++)
             {
-                var currentNewRow = new ObservableCollection<HardwareKey>(keyboardRow);
-                newRows.Add(currentNewRow);
+                var keyIndexes = new List<int>();
+                keyIndexes.AddRange(
+                    layout.KeySizes.Keys
+                        .Where(keyPos => keyPos.Row == iRow)
+                        .Select(keyPos => keyPos.Key));
+
+                var keyIndexesObservable = new ObservableCollection<int>();
+                foreach (var iKey in keyIndexes)
+                {
+                    keyIndexesObservable.Add(iKey);
+
+                    var keyPosition = new KeyPosition(iRow, iKey);
+                    newSizes[keyPosition] = layout.GetSize(keyPosition);
+                }
+
+                newIndexes.Add(iRow, keyIndexesObservable);
             }
 
-            Rows = newRows;
+            KeyIndexsInRow = newIndexes;
+            KeySizes = newSizes;
         }
     }
 }

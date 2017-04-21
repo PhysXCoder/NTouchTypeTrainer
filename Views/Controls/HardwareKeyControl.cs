@@ -1,13 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using Eto.Drawing;
 using Eto.Forms;
 using NLog;
 using NTouchTypeTrainer.Common.GuiExtensions;
 using NTouchTypeTrainer.Contracts.Common.Graphics;
 using NTouchTypeTrainer.Contracts.Views;
-using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.Messages;
+using System.Diagnostics.CodeAnalysis;
 using static NTouchTypeTrainer.Common.Logging.LoggingExtensions;
 using static NTouchTypeTrainer.Common.Strings.ToStringConverterHelper;
 
@@ -21,7 +21,7 @@ namespace NTouchTypeTrainer.Views.Controls
 
         protected readonly Size PaddingSize = new Size(8, 5);
 
-        public HardwareKey Key { get; }
+        public KeyPosition Position { get; }
 
         public override string Text
         {
@@ -33,9 +33,9 @@ namespace NTouchTypeTrainer.Views.Controls
             }
         }
 
-        protected HardwareKeyControl(HardwareKey key, IGraphicsProvider graphicsProvider)
+        protected HardwareKeyControl(KeyPosition keyPosition, IGraphicsProvider graphicsProvider)
         {
-            Key = key;
+            Position = keyPosition;
             GraphicsProvider = graphicsProvider;
             Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -44,11 +44,11 @@ namespace NTouchTypeTrainer.Views.Controls
 
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         protected HardwareKeyControl(
-            HardwareKey key,
+            KeyPosition keyPosition,
             ISizeGroup sizeGroup,
             IEventAggregator eventAggregator,
             IGraphicsProvider graphicsProvider)
-            : this(key, graphicsProvider)
+            : this(keyPosition, graphicsProvider)
         {
             SizeGroup = sizeGroup;
 
@@ -70,7 +70,6 @@ namespace NTouchTypeTrainer.Views.Controls
                 UpdateSize();
             }
         }
-
 
         public override string ToString() => GetObjectId<HardwareKeyControl>(Text);
 

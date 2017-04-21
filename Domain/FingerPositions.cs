@@ -1,37 +1,37 @@
-﻿using System.Collections.Generic;
-using NTouchTypeTrainer.Contracts.Common;
+﻿using NTouchTypeTrainer.Contracts.Common;
 using NTouchTypeTrainer.Contracts.Domain;
 using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Serialization;
+using System.Collections.Generic;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class FingerPositions : IImmutable, IFingerPositions, IStringExport, IStringImport<FingerPositions>
+    public class FingerPositions : IFingerPositions, IStringExport, IStringImport<FingerPositions>, IImmutable
     {
-        private readonly Dictionary<HardwareKey, Finger> _positionsDictionary;
+        private readonly Dictionary<KeyPosition, Finger> _positionsDictionary;
 
-        public FingerPositions(IDictionary<HardwareKey, Finger> positions)
+        public FingerPositions(IDictionary<KeyPosition, Finger> positions)
         {
-            _positionsDictionary = new Dictionary<HardwareKey, Finger>(positions);
+            _positionsDictionary = new Dictionary<KeyPosition, Finger>(positions);
         }
 
-        public Finger this[HardwareKey key]
+        public Finger this[KeyPosition keyPosition]
         {
             get
             {
-                if (ContainsKey(key))
+                if (ContainsKey(keyPosition))
                 {
-                    return _positionsDictionary[key];
+                    return _positionsDictionary[keyPosition];
                 }
 
-                throw new KeyNotFoundException($"No finger is associated with key '{key}'!");
+                throw new KeyNotFoundException($"No finger is associated with position '{keyPosition}'!");
             }
         }
 
-        public bool ContainsKey(HardwareKey key)
-            => _positionsDictionary.ContainsKey(key);
+        public bool ContainsKey(KeyPosition keyPosition)
+            => _positionsDictionary.ContainsKey(keyPosition);
 
-        public IEnumerable<KeyValuePair<HardwareKey, Finger>> GetAllKeyFingerPairs()
+        public IEnumerable<KeyValuePair<KeyPosition, Finger>> GetAllKeyFingerPairs()
             => _positionsDictionary;
 
         public bool TryImport(string exportedString, out FingerPositions outputFingerPositions)

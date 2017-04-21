@@ -1,14 +1,20 @@
-﻿using System.Collections.Generic;
-using NTouchTypeTrainer.Domain.Enums;
+﻿using NTouchTypeTrainer.Domain;
+using System.Collections.Generic;
 
 namespace NTouchTypeTrainer.Contracts.Domain
 {
     public interface IMechanicalKeyboardLayout
     {
-        IReadOnlyList<IReadOnlyList<HardwareKey>> KeyboardRows { get; }
+        int NumberOfRows { get; }
 
-        IReadOnlyList<HardwareKey> this[int iRow] { get; }
+        int IndexMinRow { get; }
 
-        HardwareKey this[int iRow, int iKey] { get; }
+        int IndexMaxRow { get; }
+
+        IReadOnlyDictionary<KeyPosition, float?> KeySizes { get; }
+
+        int GetNumberOfKeysInRow(int iRow);
+
+        float? GetSize(KeyPosition position);
     }
 }

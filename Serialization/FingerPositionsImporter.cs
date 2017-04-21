@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using NTouchTypeTrainer.Contracts.Common;
+﻿using NTouchTypeTrainer.Contracts.Common;
 using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.Domain.Enums;
-using static NTouchTypeTrainer.Domain.Enums.HardwareKeyExtensions;
+using System;
+using System.Collections.Generic;
 
 namespace NTouchTypeTrainer.Serialization
 {
@@ -35,7 +34,7 @@ namespace NTouchTypeTrainer.Serialization
         private static bool Import(string exportedString, bool throwExceptions, out FingerPositions outputInstance)
         {
             outputInstance = null;
-            var positionsDict = new Dictionary<HardwareKey, Finger>();
+            var positionsDict = new Dictionary<KeyPosition, Finger>();
 
             var lines = exportedString.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in lines)
@@ -60,13 +59,13 @@ namespace NTouchTypeTrainer.Serialization
                 {
                     foreach (var token in tokens)
                     {
-                        if (!GetHardwareKey(throwExceptions, token, out HardwareKey hardwareKey))
+                        if (!GetKeyPosition(throwExceptions, token, out KeyPosition keyPosition))
                         {
                             return false;
                         }
 
                         // ReSharper disable once PossibleInvalidOperationException
-                        positionsDict.Add(hardwareKey, finger.Value);
+                        positionsDict.Add(keyPosition, finger.Value);
                     }
                 }
             }
@@ -93,16 +92,41 @@ namespace NTouchTypeTrainer.Serialization
             }
         }
 
-        private static bool GetHardwareKey(bool throwExceptions, string token, out HardwareKey hardwareKey)
+        private static bool GetKeyPosition(bool throwExceptions, string token, out KeyPosition keyPosition)
         {
-            if (!throwExceptions)
+            keyPosition = default(KeyPosition);
+
+            var indexes = token.Split(new[] { RowKeySeparator }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (indexes.Length == 2)
             {
-                return TryParse(token, out hardwareKey);
+                var rowIndexString = indexes[0];
+                if (!int.TryParse(rowIndexString, out int iRow))
+                {
+                    return throwExceptions
+                        ? false
+                        : throw new FormatException(
+                            $"Couldn't parse '{rowIndexString}' to a row index e.g. '2'");
+                }
+
+                var keyIndexString = indexes[1];
+                if (!int.TryParse(keyIndexString, out int iKey))
+                {
+                    return throwExceptions
+                        ? false
+                        : throw new FormatException(
+                            $"Couldn't parse '{keyIndexString}' to a key index e.g. '10'");
+                }
+
+                keyPosition = new KeyPosition(iRow, iKey);
+                return true;
             }
             else
             {
-                hardwareKey = Parse(token);
-                return true;
+                return throwExceptions
+                    ? false
+                    : throw new FormatException(
+                        $"Couldn't parse '{token}' to a row/key index pair e.g. '2{RowKeySeparator}10'");
             }
         }
 

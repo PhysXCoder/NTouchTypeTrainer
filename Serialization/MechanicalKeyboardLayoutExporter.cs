@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NTouchTypeTrainer.Common.Strings;
+﻿using NTouchTypeTrainer.Common.Strings;
 using NTouchTypeTrainer.Contracts.Common;
 using NTouchTypeTrainer.Contracts.Domain;
-using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Domain;
+using System;
+using System.Text;
 
 namespace NTouchTypeTrainer.Serialization
 {
-    public class MechanicalKeyboardLayoutExporter : KeyboardLayoutBasePorter, IStringExporter<IMechanicalKeyboardLayout>
+    public class MechanicalKeyboardLayoutExporter : MechanicalKeyboardLayoutBasePorter, IStringExporter<IMechanicalKeyboardLayout>
     {
         string IStringExporter<IMechanicalKeyboardLayout>.Export(IMechanicalKeyboardLayout layout)
             => Export(layout);
@@ -22,9 +21,9 @@ namespace NTouchTypeTrainer.Serialization
 
             var exportedKeyboardMappings = new StringBuilder();
 
-            foreach (var row in layout.KeyboardRows)
+            for (var iRow = 0; iRow < layout.NumberOfRows; iRow++)
             {
-                Export(row, exportedKeyboardMappings);
+                Export(iRow, layout, exportedKeyboardMappings);
                 exportedKeyboardMappings.Append(NewLine);
             }
             exportedKeyboardMappings.RemoveLast(NewLine);
@@ -32,20 +31,31 @@ namespace NTouchTypeTrainer.Serialization
             return exportedKeyboardMappings.ToString();
         }
 
-        private static void Export(IEnumerable<HardwareKey> row, StringBuilder exportBuilder)
+        private static void Export(int iRow, IMechanicalKeyboardLayout layout, StringBuilder exportBuilder)
         {
-            foreach (var hardwareKey in row)
+            for (var iKey = 0; iKey < layout.GetNumberOfKeysInRow(iRow); iKey++)
             {
-                exportBuilder
-                    .Append(hardwareKey)
-                    .Append(KeySeparator);
+                var size = layout.GetSize(new KeyPosition(iRow, iKey));
+
+                if (size == null)
+                {
+                    exportBuilder.Append(RegularKey);
+                }
+                else
+                {
+                    exportBuilder
+                        .Append(ProportionalKey)
+                        .Append(size.Value.ToString(FloatFormat));
+                }
+
+                exportBuilder.Append(KeySeparator);
             }
             exportBuilder.RemoveLast(KeySeparator);
         }
     }
 
 #if false
-    public class MechanicalKeyboardLayoutExporter : KeyboardLayoutBasePorter, IMechanicalKeyboardLayoutExporter
+    public class MechanicalKeyboardLayoutExporter : MechanicalKeyboardLayoutBasePorter, IMechanicalKeyboardLayoutExporter
     {
         string IMechanicalKeyboardLayoutExporter.Export(IMechanicalKeyboardLayout layout) => Export(layout);
 
@@ -97,7 +107,7 @@ namespace NTouchTypeTrainer.Serialization
 
             var numberOfMappedKeys = mappedKeys.Count;
 
-            for (int i = 0; i < numberOfMappedKeys; i++)
+            for (var i = 0; i < numberOfMappedKeys; i++)
             {
                 exportBuilder.Append(mappedKeys[i].Export(modifier));
 
