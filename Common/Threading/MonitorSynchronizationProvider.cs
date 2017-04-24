@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading;
-using NLog;
+﻿using NLog;
 using NTouchTypeTrainer.Common.Exceptions;
-using NTouchTypeTrainer.Contracts.Common.Threading;
+using NTouchTypeTrainer.Interfaces.Common.Threading;
+using System;
+using System.Threading;
 using static NTouchTypeTrainer.Common.Logging.LoggingExtensions;
 
 namespace NTouchTypeTrainer.Common.Threading

@@ -1,4 +1,4 @@
-﻿using NTouchTypeTrainer.Contracts.Views;
+﻿using NTouchTypeTrainer.Interfaces.Views;
 
 namespace NTouchTypeTrainer.Messages
 {

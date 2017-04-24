@@ -32,10 +32,6 @@ namespace NTouchTypeTrainer.Domain.Enums
             StringToFinger.Add(UndefinedFinger, null);
         }
 
-        public static string Export(this Finger finger) => Export((Finger?)finger);
-
-        public static string Export(this Finger? finger) => (finger != null) ? FingerToString[finger] : UndefinedFinger;
-
         public static Finger? Import(string exportedString)
         {
             Finger? finger;

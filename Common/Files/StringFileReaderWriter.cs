@@ -1,5 +1,5 @@
-﻿using System.IO;
-using NTouchTypeTrainer.Contracts.Common.Files;
+﻿using NTouchTypeTrainer.Interfaces.Common.Files;
+using System.IO;
 
 namespace NTouchTypeTrainer.Common.Files
 {

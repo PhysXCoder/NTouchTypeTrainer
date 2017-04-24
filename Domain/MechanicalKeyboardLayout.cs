@@ -1,16 +1,13 @@
-﻿using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Contracts.Domain;
-using NTouchTypeTrainer.Serialization;
+﻿using NTouchTypeTrainer.Interfaces.Common;
+using NTouchTypeTrainer.Interfaces.Domain;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class MechanicalKeyboardLayout : IMechanicalKeyboardLayout, IStringExport, IImmutable
+    public class MechanicalKeyboardLayout : IMechanicalKeyboardLayout, IImmutable
     {
-        private readonly IStringExporter<IMechanicalKeyboardLayout> _layoutExporter;
-
         private readonly Dictionary<KeyPosition, float?> _keySizesDict;
 
         public int NumberOfRows { get; private set; }
@@ -24,7 +21,6 @@ namespace NTouchTypeTrainer.Domain
 
         public MechanicalKeyboardLayout(params IList<float?>[] keySizes)
         {
-            _layoutExporter = new MechanicalKeyboardLayoutExporter();
             _keySizesDict = new Dictionary<KeyPosition, float?>();
 
             BuildKeySizesDict(keySizes);
@@ -32,7 +28,6 @@ namespace NTouchTypeTrainer.Domain
 
         public MechanicalKeyboardLayout(IReadOnlyDictionary<KeyPosition, float?> keySizesDict)
         {
-            _layoutExporter = new MechanicalKeyboardLayoutExporter();
             _keySizesDict = new Dictionary<KeyPosition, float?>();
 
             CopyKeySizesDict(keySizesDict);
@@ -46,8 +41,6 @@ namespace NTouchTypeTrainer.Domain
             var keyPosition = _keySizesDict.Keys.First(keyPos => keyPos.Equals(position));
             return _keySizesDict[keyPosition];
         }
-
-        public string Export() => _layoutExporter.Export(this);
 
         private void CopyKeySizesDict(IReadOnlyDictionary<KeyPosition, float?> keySizesDict)
         {

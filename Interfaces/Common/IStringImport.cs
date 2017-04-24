@@ -1,4 +1,4 @@
-﻿namespace NTouchTypeTrainer.Contracts.Common
+﻿namespace NTouchTypeTrainer.Interfaces.Common
 {
     public interface IStringImport<T>
     {

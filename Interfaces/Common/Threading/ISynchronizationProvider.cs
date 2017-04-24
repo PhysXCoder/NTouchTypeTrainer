@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NTouchTypeTrainer.Contracts.Common.Threading
+namespace NTouchTypeTrainer.Interfaces.Common.Threading
 {
     public interface ISynchronizationProvider
     {

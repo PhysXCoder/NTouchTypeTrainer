@@ -1,6 +1,6 @@
 ﻿using Eto.Drawing;
 
-namespace NTouchTypeTrainer.Contracts.Views
+namespace NTouchTypeTrainer.Interfaces.Views
 {
     public interface ISizeGroup
     {

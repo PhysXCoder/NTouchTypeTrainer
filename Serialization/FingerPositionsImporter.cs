@@ -1,13 +1,15 @@
-﻿using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Domain;
+﻿using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Interfaces.Common;
 using System;
 using System.Collections.Generic;
 
 namespace NTouchTypeTrainer.Serialization
 {
-    public class FingerPositionsImporter : FingerPositionsBasePorter, IStringImport<FingerPositions>
+    public class FingerPositionsImporter : BaseImporter, IStringImport<FingerPositions>
     {
+        protected const string RowKeySeparator = "/";
+
         FingerPositions IStringImport<FingerPositions>.Import(string exportedString)
             => Import(exportedString);
 

@@ -1,13 +1,17 @@
-﻿using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Domain;
+﻿using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Interfaces.Common;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 
 namespace NTouchTypeTrainer.Serialization
 {
-    public class MechanicalKeyboardLayoutImporter : MechanicalKeyboardLayoutBasePorter, IStringImport<MechanicalKeyboardLayout>
+    public class MechanicalKeyboardLayoutImporter : BaseImporter, IStringImport<MechanicalKeyboardLayout>
     {
+        protected const string RegularKey = "_";
+        protected const string ProportionalKey = "~";
+        protected static readonly NumberFormatInfo FloatFormat = CultureInfo.InvariantCulture.NumberFormat;
+
         bool IStringImport<MechanicalKeyboardLayout>.TryImport(string exportedString, out MechanicalKeyboardLayout outputLayout)
             => TryImport(exportedString, out outputLayout);
 
@@ -72,7 +76,7 @@ namespace NTouchTypeTrainer.Serialization
 
         private static bool GetSize(bool throwExceptions, string sizeString, out float size)
         {
-            if (!float.TryParse(sizeString, NumberStyles.Number, FloatFormat, out size))
+            if (!Single.TryParse(sizeString, NumberStyles.Number, FloatFormat, out size))
             {
                 if (throwExceptions)
                 {
@@ -174,208 +178,7 @@ namespace NTouchTypeTrainer.Serialization
                 controlKeyRow);
 
             return true;
-        }
-
-        private static Modifier GetModifier(string exportString, IEnumerable<Modifier?> allModifiers)
-        {
-            var nextModifier = allModifiers
-                .Where(m => m.HasValue)
-                .FirstOrDefault(m => exportString.StartsWith(GetModifierStartToken(m.Value)));
-
-            if (nextModifier == null)
-            {
-                throw new FormatException(
-                    $"Couldn't parse '{GetShortenedString(exportString)}' to a keyboard modifier (e.g. {Modifier.Shift})");
-            }
-
-            return nextModifier.Value;
-        }
-
-        private static bool TryGetModifier(
-            string exportString,
-            IEnumerable<Modifier?> allModifiers,
-            out Modifier modifier)
-        {
-            var nextModifier = allModifiers
-                .Where(m => m.HasValue)
-                .FirstOrDefault(m => exportString.StartsWith(GetModifierStartToken(m.Value)));
-
-            if (nextModifier != null)
-            {
-                modifier = nextModifier.Value;
-                return true;
-            }
-
-            modifier = Modifier.None;
-            return false;
-        }
-
-        private static string GetShortenedString(string exportString)
-        {
-            return (exportString.Length > 20) ? exportString.Substring(0, 20) + "..." : exportString;
-        }
-
-        private static void ImportRow(
-            ICollection<IKeyMapping> outputRow,
-            Modifier modifier,
-            HardwareKey rowStartKey,
-            ref string exportString)
-        {
-            var mappingTargetsLine = GetMappingTargetsLine(ref exportString);
-
-            var mappingTargets = mappingTargetsLine.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
-
-            var currentKey = rowStartKey;
-            foreach (var mappingTarget in mappingTargets)
-            {
-                if (mappingTarget != Undefined)
-                {
-                    var mappingSuccess = TryImportMapping(mappingTarget, modifier, currentKey, out IKeyMapping mapping);
-
-                    if (mappingSuccess)
-                    {
-                        AddToRow(mapping, outputRow);
-                    }
-                    else
-                    {
-                        throw new FormatException($"Couldn't parse mapping target '{mappingTarget}'!");
-                    }
-                }
-
-                ++currentKey;
-            }
-        }
-
-        private static bool TryImportForRow(
-            ICollection<IKeyMapping> outputRow,
-            Modifier modifier,
-            HardwareKey rowStartKey,
-            ref string exportString)
-        {
-            if (!TryGetMappingTargetLine(ref exportString, out string mappingTargetsLine))
-            {
-                return false;
-            }
-
-            var mappingTargets = mappingTargetsLine.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
-
-            var currentKey = rowStartKey;
-            foreach (var mappingTarget in mappingTargets)
-            {
-                if (mappingTarget != Undefined)
-                {
-                    var mappingSuccess = TryImportMapping(mappingTarget, modifier, currentKey, out IKeyMapping mapping);
-
-                    if (mappingSuccess)
-                    {
-                        AddToRow(mapping, outputRow);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-
-                ++currentKey;
-            }
-
-            return true;
-        }
-
-        private static string GetMappingTargetsLine(ref string exportString)
-        {
-            exportString = exportString.TrimStart();
-
-            var iRowSep = exportString.IndexOf(RowSeparator, StringComparison.Ordinal);
-
-            if (iRowSep < 0)
-            {
-                throw new FormatException(
-                    $"Couldn't parse line '{GetShortenedString(exportString)}'. Row separator not found!");
-            }
-
-            var mappingTargetLine = exportString.Substring(0, iRowSep);
-            exportString = exportString.Substring(iRowSep + RowSeparator.Length);
-
-            return mappingTargetLine;
-        }
-
-        private static bool TryGetMappingTargetLine(ref string exportString, out string mappingTargetLine)
-        {
-            exportString = exportString.TrimStart();
-
-            var iRowSep = exportString.IndexOf(RowSeparator, StringComparison.Ordinal);
-
-            if (iRowSep < 0)
-            {
-                mappingTargetLine = null;
-                return false;
-            }
-
-            mappingTargetLine = exportString.Substring(0, iRowSep);
-            exportString = exportString.Substring(iRowSep + RowSeparator.Length);
-
-            return true;
-        }
-
-        private static bool TryImportMapping(string mappingTarget,
-            Modifier modifier,
-            HardwareKey currentKey,
-            out IKeyMapping keyMapping)
-        {
-            var mappingSuccess = TryImportPrintableMapping(mappingTarget, modifier, currentKey, out keyMapping);
-
-            if (!mappingSuccess)
-            {
-                mappingSuccess = TryImportUnprintableMapping(mappingTarget, modifier, currentKey, out keyMapping);
-            }
-
-            return mappingSuccess;
-        }
-
-        private static bool TryImportUnprintableMapping(
-            string mappingTarget,
-            Modifier modifier,
-            HardwareKey currentKey,
-            out IKeyMapping keyMapping)
-        {
-            var parseSuccess = MappedUnprintable.TryImport(mappingTarget, out MappedUnprintable unprintable);
-
-            keyMapping = parseSuccess
-                ? new KeyMapping(currentKey, new Tuple<Modifier, IMappedKey>(modifier, unprintable))
-                : null;
-            return parseSuccess;
-        }
-
-        private static bool TryImportPrintableMapping(string mappingTarget, Modifier modifier,
-            HardwareKey currentKey, out IKeyMapping keyMapping)
-        {
-            var parseSuccess = MappedCharacter.TryImport(mappingTarget, out MappedCharacter character);
-
-            keyMapping = parseSuccess
-                ? new KeyMapping(currentKey, new Tuple<Modifier, IMappedKey>(modifier, character))
-                : null;
-            return parseSuccess;
-        }
-
-        private static void AddToRow(IKeyMapping mapping, ICollection<IKeyMapping> outputRow)
-        {
-            var oldKeyMapping = outputRow.FirstOrDefault(m => m.PressedKey == mapping.PressedKey);
-
-            if (oldKeyMapping != null)
-            {
-                outputRow.Remove(oldKeyMapping);
-            }
-
-            var newMappings = oldKeyMapping?.Mappings?.Concat(mapping.Mappings) ?? mapping.Mappings;
-
-            outputRow.Add(new KeyMapping(mapping.PressedKey, newMappings));
-        }
-
-        private static IEnumerable<IKeyMapping> SortRow(IEnumerable<IKeyMapping> keyMappingRow)
-        {
-            return keyMappingRow.OrderBy(mapping => mapping.PressedKey).ToList();
-        }
+        }                
     }
 #endif
 }

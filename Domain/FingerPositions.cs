@@ -1,12 +1,12 @@
-﻿using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Contracts.Domain;
-using NTouchTypeTrainer.Domain.Enums;
+﻿using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Interfaces.Common;
+using NTouchTypeTrainer.Interfaces.Domain;
 using NTouchTypeTrainer.Serialization;
 using System.Collections.Generic;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class FingerPositions : IFingerPositions, IStringExport, IStringImport<FingerPositions>, IImmutable
+    public class FingerPositions : IFingerPositions, IImmutable
     {
         private readonly Dictionary<KeyPosition, Finger> _positionsDictionary;
 
@@ -39,8 +39,5 @@ namespace NTouchTypeTrainer.Domain
 
         public FingerPositions Import(string exportedString)
             => FingerPositionsImporter.Import(exportedString);
-
-        public string Export()
-            => FingerPositionsExporter.Export(this);
     }
 }

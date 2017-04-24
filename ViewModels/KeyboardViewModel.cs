@@ -1,4 +1,4 @@
-﻿using NTouchTypeTrainer.Contracts.Domain;
+﻿using NTouchTypeTrainer.Interfaces.Domain;
 
 namespace NTouchTypeTrainer.ViewModels
 {

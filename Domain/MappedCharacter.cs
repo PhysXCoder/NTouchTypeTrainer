@@ -1,5 +1,5 @@
-﻿using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Contracts.Domain;
+﻿using NTouchTypeTrainer.Interfaces.Common;
+using NTouchTypeTrainer.Interfaces.Domain;
 
 namespace NTouchTypeTrainer.Domain
 {
@@ -13,8 +13,6 @@ namespace NTouchTypeTrainer.Domain
         {
             Character = character;
         }
-
-        public string Export() => Name;
 
         public static bool TryImport(string exportedString, out MappedCharacter outputMappedCharacter)
         {

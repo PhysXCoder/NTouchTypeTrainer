@@ -3,9 +3,9 @@ using Eto.Drawing;
 using Eto.Forms;
 using NTouchTypeTrainer.Common.Files;
 using NTouchTypeTrainer.Common.Graphics;
-using NTouchTypeTrainer.Contracts.Common.Files;
-using NTouchTypeTrainer.Contracts.Views;
 using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Interfaces.Common.Files;
+using NTouchTypeTrainer.Interfaces.Views;
 using NTouchTypeTrainer.Serialization;
 using NTouchTypeTrainer.ViewModels;
 
@@ -39,6 +39,7 @@ namespace NTouchTypeTrainer.Views
                 var fingerColors = LoadFingerColors();
                 var fingerPos = LoadFingerPositions();
                 var mechanicalLayout = LoadMechanicalLayout();
+                var visualLayout = LoadVisualLayout();
 
                 var keyboardViewModel = new KeyboardViewModel();
                 keyboardViewModel.LoadFingerPositions(fingerPos);
@@ -90,6 +91,18 @@ namespace NTouchTypeTrainer.Views
             {
                 var exportedString = _stringFileReaderWriter.Read(fileToOpen);
                 return MechanicalKeyboardLayoutImporter.Import(exportedString);
+            }
+
+            return null;
+        }
+
+        private VisualKeyboardLayout LoadVisualLayout()
+        {
+            var fileToOpen = _dialogProvider.OpenFile("Select visual layout file", "Visual layout file", "*.t3v", this);
+            if (fileToOpen != null)
+            {
+                var exportedString = _stringFileReaderWriter.Read(fileToOpen);
+                return VisualKeyboardLayoutImporter.Import(exportedString);
             }
 
             return null;

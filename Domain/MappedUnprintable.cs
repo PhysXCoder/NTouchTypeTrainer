@@ -1,7 +1,7 @@
-﻿using System;
-using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Contracts.Domain;
-using NTouchTypeTrainer.Domain.Enums;
+﻿using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Interfaces.Common;
+using NTouchTypeTrainer.Interfaces.Domain;
+using System;
 
 namespace NTouchTypeTrainer.Domain
 {
@@ -16,8 +16,6 @@ namespace NTouchTypeTrainer.Domain
             Key = key;
             Name = Enum.GetName(typeof(HardwareKey), key)?.ToUpper();
         }
-
-        public string Export() => Name;
 
         public static bool TryImport(string exportedString, out MappedUnprintable outputMappedUnprintable)
         {

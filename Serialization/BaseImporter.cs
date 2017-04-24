@@ -1,6 +1,6 @@
 ﻿namespace NTouchTypeTrainer.Serialization
 {
-    public abstract class BasePorter
+    public abstract class BaseImporter
     {
         protected const string NewLine = "\r\n";
         protected const string KeySeparator = " ";

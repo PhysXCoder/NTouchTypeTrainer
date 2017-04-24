@@ -1,7 +1,7 @@
 ﻿using System;
 using Caliburn.Micro;
 using Eto.Drawing;
-using NTouchTypeTrainer.Contracts.Views;
+using NTouchTypeTrainer.Interfaces.Views;
 using NTouchTypeTrainer.Messages;
 
 namespace NTouchTypeTrainer.Views.Common

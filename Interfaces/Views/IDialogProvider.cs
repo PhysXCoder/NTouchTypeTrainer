@@ -1,7 +1,7 @@
 using System.IO;
 using Eto.Forms;
 
-namespace NTouchTypeTrainer.Contracts.Views
+namespace NTouchTypeTrainer.Interfaces.Views
 {
     public interface IDialogProvider
     {

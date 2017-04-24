@@ -1,5 +1,5 @@
 ﻿using Eto.Drawing;
-using NTouchTypeTrainer.Contracts.Common.Graphics;
+using NTouchTypeTrainer.Interfaces.Common.Graphics;
 
 namespace NTouchTypeTrainer.Common.Graphics
 {

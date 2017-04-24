@@ -1,8 +1,8 @@
 ﻿using Eto.Drawing;
 using NTouchTypeTrainer.Common.DataBinding;
-using NTouchTypeTrainer.Contracts.Domain;
 using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Interfaces.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿namespace NTouchTypeTrainer.Contracts.Views
+﻿namespace NTouchTypeTrainer.Interfaces.Views
 {
     public interface IDependentSizeGroup : ISizeGroup
     { }

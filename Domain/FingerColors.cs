@@ -1,13 +1,13 @@
 ﻿using Eto.Drawing;
 using Eto.Forms;
-using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Contracts.Domain;
 using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Interfaces.Common;
+using NTouchTypeTrainer.Interfaces.Domain;
 using NTouchTypeTrainer.Serialization;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class FingerColors : IFingerColors, IStringExport, IStringImport<FingerColors>
+    public class FingerColors : IFingerColors, IStringImport<FingerColors>
     {
         public Color DefaultColor { get; private set; }
 
@@ -44,8 +44,6 @@ namespace NTouchTypeTrainer.Domain
             RingRightFingerColor = Colors.Red;
             SmallRightFingerColor = Color.FromArgb(0xb0, 0x70, 0xff);
         }
-
-        public string Export() => FingerColorsExporter.Export(this);
 
         public bool TryImport(string exportedString, out FingerColors outputInstance) =>
             FingerColorsImporter.TryImport(exportedString, out outputInstance);

@@ -1,10 +1,10 @@
 ﻿using Caliburn.Micro;
 using Eto.Drawing;
-using NTouchTypeTrainer.Contracts.Views;
 using NTouchTypeTrainer.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NTouchTypeTrainer.Interfaces.Views;
 
 namespace NTouchTypeTrainer.Views.Common
 {

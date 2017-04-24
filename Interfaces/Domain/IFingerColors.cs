@@ -1,7 +1,7 @@
 ﻿using Eto.Drawing;
 using NTouchTypeTrainer.Domain.Enums;
 
-namespace NTouchTypeTrainer.Contracts.Domain
+namespace NTouchTypeTrainer.Interfaces.Domain
 {
     public interface IFingerColors
     {

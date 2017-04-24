@@ -1,6 +1,6 @@
-﻿using System.IO;
-using Eto.Forms;
-using NTouchTypeTrainer.Contracts.Views;
+﻿using Eto.Forms;
+using NTouchTypeTrainer.Interfaces.Views;
+using System.IO;
 
 namespace NTouchTypeTrainer.Views
 {
@@ -45,5 +45,5 @@ namespace NTouchTypeTrainer.Views
 
             return null;
         }
-    }   
+    }
 }

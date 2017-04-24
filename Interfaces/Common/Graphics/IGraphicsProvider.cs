@@ -1,4 +1,4 @@
-﻿namespace NTouchTypeTrainer.Contracts.Common.Graphics
+﻿namespace NTouchTypeTrainer.Interfaces.Common.Graphics
 {
     public interface IGraphicsProvider
     {

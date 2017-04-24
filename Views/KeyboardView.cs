@@ -1,9 +1,9 @@
 ﻿using Caliburn.Micro;
 using Eto.Forms;
 using NTouchTypeTrainer.Common.DataBinding;
-using NTouchTypeTrainer.Contracts.Common.Graphics;
-using NTouchTypeTrainer.Contracts.Views;
 using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Interfaces.Common.Graphics;
+using NTouchTypeTrainer.Interfaces.Views;
 using NTouchTypeTrainer.ViewModels;
 using NTouchTypeTrainer.Views.Common;
 using NTouchTypeTrainer.Views.Controls;

@@ -1,8 +1,8 @@
 ﻿using Caliburn.Micro;
 using Eto.Drawing;
-using NTouchTypeTrainer.Contracts.Common.Graphics;
-using NTouchTypeTrainer.Contracts.Views;
 using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Interfaces.Common.Graphics;
+using NTouchTypeTrainer.Interfaces.Views;
 using NTouchTypeTrainer.Views.Common;
 using System;
 

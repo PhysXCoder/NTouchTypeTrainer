@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace NTouchTypeTrainer.Contracts.Common.Files
+namespace NTouchTypeTrainer.Interfaces.Common.Files
 {
     public interface IFileStreamProvider
     {

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using NTouchTypeTrainer.Interfaces.Common.Threading;
+using System;
 using System.Windows.Threading;
-using NTouchTypeTrainer.Contracts.Common.Threading;
 
 namespace NTouchTypeTrainer.Common.Threading
-{    
+{
     public class GuiDispatcher : IGuiDispatcher
     {
         // ToDo: This is a windows specific implementation. Should be changed. (Eto.Forms must be extended?)

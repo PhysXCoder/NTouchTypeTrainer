@@ -2,7 +2,7 @@
 using NTouchTypeTrainer.Domain.Enums;
 using System.Collections.Generic;
 
-namespace NTouchTypeTrainer.Contracts.Domain
+namespace NTouchTypeTrainer.Interfaces.Domain
 {
     public interface IFingerPositions
     {

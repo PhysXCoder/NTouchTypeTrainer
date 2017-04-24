@@ -1,6 +1,6 @@
 ﻿using NTouchTypeTrainer.Common.DataBinding;
-using NTouchTypeTrainer.Contracts.Domain;
 using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Interfaces.Domain;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

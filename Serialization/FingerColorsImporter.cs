@@ -1,13 +1,16 @@
+using Eto.Drawing;
+using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Interfaces.Common;
 using System;
 using System.Linq;
-using Eto.Drawing;
-using NTouchTypeTrainer.Contracts.Common;
-using NTouchTypeTrainer.Domain;
+using System.Reflection;
 
 namespace NTouchTypeTrainer.Serialization
 {
-    public class FingerColorsImporter : FingerColorsBasePorter, IStringImport<FingerColors>
+    public class FingerColorsImporter : BaseImporter, IStringImport<FingerColors>
     {
+        protected const string NameColorSeparator = Separator + " ";
+
         bool IStringImport<FingerColors>.TryImport(string exportedString, out FingerColors outputInstance)
             => TryImport(exportedString, out outputInstance);
 
@@ -24,6 +27,11 @@ namespace NTouchTypeTrainer.Serialization
         {
             return Import(exportedString, false, out outputInstance);
         }
+
+        protected static PropertyInfo[] GetColorProperties() =>
+            typeof(FingerColors).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(p => p.PropertyType == typeof(Color))
+                .ToArray();
 
         private static bool Import(string exportedString, bool throwExceptions, out FingerColors outputInstance)
         {
