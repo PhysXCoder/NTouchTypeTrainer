@@ -5,7 +5,7 @@ using System;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class MappedUnprintable : IMappedKey, IStringImport<MappedUnprintable>, IStringImport<IMappedKey>, IImmutable
+    public class MappedUnprintable : IMappedKey, IStringImport<MappedUnprintable>, IStringImport<IMappedKey>, IEquatable<MappedUnprintable>, IImmutable
     {
         public HardwareKey Key { get; }
 
@@ -30,7 +30,24 @@ namespace NTouchTypeTrainer.Domain
             return (MappedUnprintable)Enum.Parse(typeof(HardwareKey), exportedString, true);
         }
 
-        #region Interface implementations 
+        public bool Equals(MappedUnprintable other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return (Key == other.Key);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((MappedUnprintable)obj);
+        }
+
+        public override int GetHashCode()
+            => (int)Key;
 
         MappedUnprintable IStringImport<MappedUnprintable>.Import(string exportedString) =>
             Import(exportedString);
@@ -48,7 +65,5 @@ namespace NTouchTypeTrainer.Domain
             outputMappedKey = parseSuccess ? result : null;
             return parseSuccess;
         }
-
-        #endregion
     }
 }

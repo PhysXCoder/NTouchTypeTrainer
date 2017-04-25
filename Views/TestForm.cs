@@ -47,9 +47,17 @@ namespace NTouchTypeTrainer.Views
                 keyboardViewModel.LoadMechanicalLayout(mechanicalLayout);
                 keyboardViewModel.LoadVisualKeyboardLayout(visualLayout);
 
-                keyboardViewModel.AllKeysViewModel.Keys[new KeyPosition(3, 6)].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel.Keys[new KeyPosition(4, 3)].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel.Keys[new KeyPosition(1, 12)].IsHighlighted = true;
+                /*
+                foreach (var key in keyboardViewModel.AllKeysViewModel.Keys.Values)
+                {
+                    key.IsHighlighted = true;
+                }
+                */
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('y')].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('<')].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('#')].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('\\')].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('E')].IsHighlighted = true;
 
                 var keyboardView = new KeyboardView(_eventAggregator, _graphicsProvider)
                 {

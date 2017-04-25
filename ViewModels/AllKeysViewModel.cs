@@ -29,10 +29,15 @@ namespace NTouchTypeTrainer.ViewModels
             }
         }
 
+        public KeyViewModel this[IMappedKey key]
+            => Keys[_visualKeyboardLayout.ReverseKeyMappings[key].KeyPosition];
+
+
         public AllKeysViewModel()
         {
             _fingerColors = new FingerColors();
             _keys = new ObservableDictionary<KeyPosition, KeyViewModel>();
+            _visualKeyboardLayout = new VisualKeyboardLayout(new List<IPressedKeyMapping>());
         }
 
         public void LoadFingerColors(IFingerColors fingerColors)

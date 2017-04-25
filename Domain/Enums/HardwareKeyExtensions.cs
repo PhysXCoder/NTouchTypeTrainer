@@ -61,6 +61,7 @@ namespace NTouchTypeTrainer.Domain.Enums
 
                 {HardwareKey.ControlLeft, "Ctrl"},
                 {HardwareKey.SuperLeft, "❐"},
+                {HardwareKey.Function, "Fn"},
                 {HardwareKey.Alt, "Alt"},
                 {HardwareKey.Space, " "},
                 {HardwareKey.AltGr, "AltGr"},

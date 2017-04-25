@@ -66,6 +66,7 @@
         ShiftRight,
 
         ControlLeft,
+        Function,
         SuperLeft,
         Alt,
         Space,

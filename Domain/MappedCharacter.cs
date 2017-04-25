@@ -1,9 +1,10 @@
-﻿using NTouchTypeTrainer.Interfaces.Common;
+﻿using System;
+using NTouchTypeTrainer.Interfaces.Common;
 using NTouchTypeTrainer.Interfaces.Domain;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class MappedCharacter : IMappedKey, IStringImport<MappedCharacter>, IStringImport<IMappedKey>, IImmutable
+    public class MappedCharacter : IMappedKey, IStringImport<MappedCharacter>, IStringImport<IMappedKey>, IEquatable<MappedCharacter>, IImmutable
     {
         public char Character { get; }
 
@@ -22,10 +23,27 @@ namespace NTouchTypeTrainer.Domain
             return parsingSuccess;
         }
 
+        public bool Equals(MappedCharacter other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return (Character == other.Character);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((MappedCharacter)obj);
+        }
+
+        public override int GetHashCode()
+            => Character.GetHashCode();
+
         public static MappedCharacter Import(string exportedString) =>
             new MappedCharacter(char.Parse(exportedString.Trim()));
-
-        #region Interface implementations
 
         MappedCharacter IStringImport<MappedCharacter>.Import(string exportedString) =>
             Import(exportedString);
@@ -43,7 +61,5 @@ namespace NTouchTypeTrainer.Domain
             outputMappedCharacter = parseSuccess ? result : null;
             return parseSuccess;
         }
-
-        #endregion
     }
 }

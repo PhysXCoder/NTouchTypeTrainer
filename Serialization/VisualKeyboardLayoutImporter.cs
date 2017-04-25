@@ -159,6 +159,10 @@ namespace NTouchTypeTrainer.Serialization
                     }
                     else
                     {
+                        if (throwExceptions)
+                        {
+                            throw new FormatException($"Couldn't parse visual keyboard layout's '{mappingTargetString}' to a key!");
+                        }
                         return;
                     }
                 }
