@@ -45,6 +45,7 @@ namespace NTouchTypeTrainer.Views
                 keyboardViewModel.LoadFingerPositions(fingerPos);
                 keyboardViewModel.LoadFingerColors(fingerColors);
                 keyboardViewModel.LoadMechanicalLayout(mechanicalLayout);
+                keyboardViewModel.LoadVisualKeyboardLayout(visualLayout);
 
                 keyboardViewModel.AllKeysViewModel.Keys[new KeyPosition(3, 6)].IsHighlighted = true;
                 keyboardViewModel.AllKeysViewModel.Keys[new KeyPosition(4, 3)].IsHighlighted = true;

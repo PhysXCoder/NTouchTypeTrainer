@@ -17,6 +17,7 @@ namespace NTouchTypeTrainer.ViewModels
 
         private IFingerPositions _fingerPositions;
         private IFingerColors _fingerColors;
+        private IVisualKeyboardLayout _visualKeyboardLayout;
 
         public ObservableDictionary<KeyPosition, KeyViewModel> Keys
         {
@@ -43,6 +44,12 @@ namespace NTouchTypeTrainer.ViewModels
         public void LoadFingerPositions(IFingerPositions fingerPositions)
         {
             _fingerPositions = fingerPositions;
+            UpdateAllKeys();
+        }
+
+        public void LoadVisualKeyboardLayout(IVisualKeyboardLayout layout)
+        {
+            _visualKeyboardLayout = layout;
             UpdateAllKeys();
         }
 
@@ -100,17 +107,27 @@ namespace NTouchTypeTrainer.ViewModels
 
         private void UpdateAllKeys()
         {
-            foreach (var hardwareKey in Keys.Keys)
+            foreach (var keyPosition in Keys.Keys)
             {
-                UpdateKey(hardwareKey, Keys[hardwareKey]);
+                UpdateKey(keyPosition, Keys[keyPosition]);
             }
         }
         private void UpdateKey(KeyPosition keyPosition, KeyViewModel keyViewModel)
         {
             var finger = GetFingerForKeyPosition(keyPosition);
 
-            // ToDo: use visual layout here
-            keyViewModel.Name = "UD";//keyPosition.GetDefaultText();
+            var mappedKey = _visualKeyboardLayout?.KeyMappings
+                ?.Where(mapping => mapping.Key.KeyPosition.Equals(keyPosition))
+                .OrderBy(mapping => (int)mapping.Key.Modifiers)
+                .Select(mapping => mapping.Value)
+                .FirstOrDefault();
+
+            var mappedUnprintable = mappedKey as MappedUnprintable;
+            var mappingTargetName = (mappedUnprintable != null) ?
+                mappedUnprintable.Key.GetDefaultText()
+                : mappedKey?.Name;
+
+            keyViewModel.Name = mappingTargetName ?? "";
             keyViewModel.HighlightedColor = GetColor(finger);
         }
 

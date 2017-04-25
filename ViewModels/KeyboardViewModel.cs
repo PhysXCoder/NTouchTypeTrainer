@@ -35,6 +35,9 @@ namespace NTouchTypeTrainer.ViewModels
         public void LoadFingerPositions(IFingerPositions fingerPositions)
             => AllKeysViewModel.LoadFingerPositions(fingerPositions);
 
+        public void LoadVisualKeyboardLayout(IVisualKeyboardLayout visualLayout)
+            => AllKeysViewModel.LoadVisualKeyboardLayout(visualLayout);
+
         public void LoadMechanicalLayout(IMechanicalKeyboardLayout mechanicalLayout)
         {
             MechanicalKeyboardLayoutViewModel.LoadMechanicalLayout(mechanicalLayout);
