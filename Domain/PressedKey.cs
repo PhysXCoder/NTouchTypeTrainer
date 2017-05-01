@@ -38,5 +38,8 @@ namespace NTouchTypeTrainer.Domain
                 return (KeyPosition.GetHashCode() * 397) ^ (int)Modifiers;
             }
         }
+
+        public override string ToString()
+            => $"PressedKey {{Pos: {KeyPosition}, Modifiers: {Modifiers}}}";
     }
 }

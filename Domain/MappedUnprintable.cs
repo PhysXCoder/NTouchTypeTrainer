@@ -49,6 +49,9 @@ namespace NTouchTypeTrainer.Domain
         public override int GetHashCode()
             => (int)Key;
 
+        public override string ToString()
+            => Name;
+
         MappedUnprintable IStringImport<MappedUnprintable>.Import(string exportedString) =>
             Import(exportedString);
 

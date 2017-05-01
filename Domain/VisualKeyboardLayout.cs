@@ -1,5 +1,6 @@
 ﻿using NTouchTypeTrainer.Interfaces.Common;
 using NTouchTypeTrainer.Interfaces.Domain;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -28,7 +29,17 @@ namespace NTouchTypeTrainer.Domain
 
             foreach (var pressedKey in _keyMappings.Keys)
             {
-                _reverseKeyMappings.Add(_keyMappings[pressedKey], pressedKey);
+                try
+                {
+                    _reverseKeyMappings.Add(_keyMappings[pressedKey], pressedKey);
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new ArgumentException(
+                        $"Error adding reverse mapping {pressedKey} to '{_keyMappings[pressedKey]}'. "
+                            + "Perhaps it is defined multiple times?",
+                        ex);
+                }
             }
         }
     }

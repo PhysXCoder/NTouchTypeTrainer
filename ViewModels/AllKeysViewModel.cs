@@ -32,7 +32,6 @@ namespace NTouchTypeTrainer.ViewModels
         public KeyViewModel this[IMappedKey key]
             => Keys[_visualKeyboardLayout.ReverseKeyMappings[key].KeyPosition];
 
-
         public AllKeysViewModel()
         {
             _fingerColors = new FingerColors();

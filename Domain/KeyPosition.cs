@@ -50,5 +50,8 @@ namespace NTouchTypeTrainer.Domain
                 return (Row * 397) ^ Key;
             }
         }
+
+        public override string ToString()
+            => $"{nameof(KeyPosition)} {{#Row: {Row}, #Key: {Key}}}";
     }
 }

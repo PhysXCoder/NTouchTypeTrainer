@@ -1,6 +1,6 @@
-﻿using System;
-using NTouchTypeTrainer.Interfaces.Common;
+﻿using NTouchTypeTrainer.Interfaces.Common;
 using NTouchTypeTrainer.Interfaces.Domain;
+using System;
 
 namespace NTouchTypeTrainer.Domain
 {
@@ -41,6 +41,9 @@ namespace NTouchTypeTrainer.Domain
 
         public override int GetHashCode()
             => Character.GetHashCode();
+
+        public override string ToString()
+            => Name;
 
         public static MappedCharacter Import(string exportedString) =>
             new MappedCharacter(char.Parse(exportedString.Trim()));
