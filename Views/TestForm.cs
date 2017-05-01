@@ -47,17 +47,23 @@ namespace NTouchTypeTrainer.Views
                 keyboardViewModel.LoadMechanicalLayout(mechanicalLayout);
                 keyboardViewModel.LoadVisualKeyboardLayout(visualLayout);
 
-                /*
-                foreach (var key in keyboardViewModel.AllKeysViewModel.Keys.Values)
+                const bool highlightAll = true;
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if (highlightAll)
                 {
-                    key.IsHighlighted = true;
+                    foreach (var key in keyboardViewModel.AllKeysViewModel.Keys.Values)
+                    {
+                        key.IsHighlighted = true;
+                    }
                 }
-                */
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('y')].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('<')].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('#')].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('\\')].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('E')].IsHighlighted = true;
+                else
+                {
+                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('y')].IsHighlighted = true;
+                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('<')].IsHighlighted = true;
+                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('#')].IsHighlighted = true;
+                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('\\')].IsHighlighted = true;
+                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('E')].IsHighlighted = true;
+                }
 
                 var keyboardView = new KeyboardView(_eventAggregator, _graphicsProvider)
                 {

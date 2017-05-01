@@ -8,8 +8,6 @@ namespace NTouchTypeTrainer.Serialization
 {
     public class FingerPositionsImporter : BaseImporter, IStringImport<FingerPositions>
     {
-        protected const string RowKeySeparator = "/";
-
         FingerPositions IStringImport<FingerPositions>.Import(string exportedString)
             => Import(exportedString);
 
@@ -38,110 +36,52 @@ namespace NTouchTypeTrainer.Serialization
             outputInstance = null;
             var positionsDict = new Dictionary<KeyPosition, Finger>();
 
+            int iRow = 0;
             var lines = exportedString.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in lines)
             {
-                var contents = line.Split(new[] { Separator + KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
-                if (contents.Length < 2)
-                {
-                    continue;
-                }
+                ++iRow;
 
-                if (!GetFinger(throwExceptions, contents[0], out Finger? finger))
+                int iKey = 0;
+                var fingerStrings = line.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var fingerString in fingerStrings)
                 {
-                    return false;
-                }
+                    iKey++;
 
-                if (!GetTokensFromLine(throwExceptions, contents[1], out string[] tokens))
-                {
-                    return false;
-                }
-
-                if (finger != null)
-                {
-                    foreach (var token in tokens)
+                    if (!GetFinger(throwExceptions, fingerString, out Finger finger))
                     {
-                        if (!GetKeyPosition(throwExceptions, token, out KeyPosition keyPosition))
-                        {
-                            return false;
-                        }
-
-                        // ReSharper disable once PossibleInvalidOperationException
-                        positionsDict.Add(keyPosition, finger.Value);
+                        return false;
                     }
+
+                    var pos = new KeyPosition(iRow, iKey);
+                    positionsDict.Add(pos, finger);
                 }
             }
+
 
             outputInstance = new FingerPositions(positionsDict);
             return true;
         }
 
-        private static bool GetTokensFromLine(bool throwExceptions, string line, out string[] tokens)
-        {
-            tokens = line.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (tokens.Length >= 1)
-            {
-                return true;
-            }
-            else
-            {
-                if (throwExceptions)
-                {
-                    throw new FormatException($"Couldn't parse finger positions line '{line}'!");
-                }
-                return false;
-            }
-        }
-
-        private static bool GetKeyPosition(bool throwExceptions, string token, out KeyPosition keyPosition)
-        {
-            keyPosition = default(KeyPosition);
-
-            var indexes = token.Split(new[] { RowKeySeparator }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (indexes.Length == 2)
-            {
-                var rowIndexString = indexes[0];
-                if (!int.TryParse(rowIndexString, out int iRow))
-                {
-                    return throwExceptions
-                        ? false
-                        : throw new FormatException(
-                            $"Couldn't parse '{rowIndexString}' to a row index e.g. '2'");
-                }
-
-                var keyIndexString = indexes[1];
-                if (!int.TryParse(keyIndexString, out int iKey))
-                {
-                    return throwExceptions
-                        ? false
-                        : throw new FormatException(
-                            $"Couldn't parse '{keyIndexString}' to a key index e.g. '10'");
-                }
-
-                keyPosition = new KeyPosition(iRow, iKey);
-                return true;
-            }
-            else
-            {
-                return throwExceptions
-                    ? false
-                    : throw new FormatException(
-                        $"Couldn't parse '{token}' to a row/key index pair e.g. '2{RowKeySeparator}10'");
-            }
-        }
-
-        private static bool GetFinger(bool throwExceptions, string fingerToken, out Finger? finger)
+        private static bool GetFinger(bool throwExceptions, string fingerToken, out Finger finger)
         {
             if (!throwExceptions)
             {
-                return FingerExtensions.TryImport(fingerToken, out finger) && (finger != null);
+                var parseSuccess = FingerExtensions.TryImport(fingerToken, out Finger? parsedFinger);
+                if (parseSuccess && (parsedFinger != null))
+                {
+                    finger = parsedFinger.Value;
+                    return true;
+                }
+
+                finger = Finger.MiddleRight;    // Must return something
+                return false;
             }
             else
             {
                 finger = FingerExtensions.Import(fingerToken)
                     ?? throw new FormatException($"Undefined finger ('{fingerToken}') not allowed for finger position definition!");
+
                 return true;
             }
         }
