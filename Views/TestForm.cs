@@ -8,6 +8,7 @@ using NTouchTypeTrainer.Interfaces.Common.Files;
 using NTouchTypeTrainer.Interfaces.Views;
 using NTouchTypeTrainer.Serialization;
 using NTouchTypeTrainer.ViewModels;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NTouchTypeTrainer.Views
 {
@@ -32,6 +33,8 @@ namespace NTouchTypeTrainer.Views
             Shown += TestForm_Shown;
         }
 
+        [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
+        [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
         private void TestForm_Shown(object sender, System.EventArgs e)
         {
             if (!_firstShown)
@@ -47,9 +50,9 @@ namespace NTouchTypeTrainer.Views
                 keyboardViewModel.LoadMechanicalLayout(mechanicalLayout);
                 keyboardViewModel.LoadVisualKeyboardLayout(visualLayout);
 
-                const bool highlightAll = true;
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                const bool highlightAll = false;
                 if (highlightAll)
+#pragma warning disable 162
                 {
                     foreach (var key in keyboardViewModel.AllKeysViewModel.Keys.Values)
                     {
@@ -64,6 +67,7 @@ namespace NTouchTypeTrainer.Views
                     keyboardViewModel.AllKeysViewModel[new MappedCharacter('\\')].IsHighlighted = true;
                     keyboardViewModel.AllKeysViewModel[new MappedCharacter('E')].IsHighlighted = true;
                 }
+#pragma warning restore 162
 
                 var keyboardView = new KeyboardView(_eventAggregator, _graphicsProvider)
                 {
