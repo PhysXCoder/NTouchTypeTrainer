@@ -10,7 +10,11 @@ namespace NTouchTypeTrainer.ViewModels
         public AllKeysViewModel AllKeysViewModel
         {
             get => _allKeysViewModel;
-            set => SetProperty(ref _allKeysViewModel, value);
+            set
+            {
+                _allKeysViewModel = value;
+                OnPropertyChanged();
+            }
         }
 
         public MechanicalKeyboardLayoutViewModel MechanicalKeyboardLayoutViewModel

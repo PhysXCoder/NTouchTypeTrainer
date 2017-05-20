@@ -4,15 +4,15 @@ using NTouchTypeTrainer.Serialization;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class KeyMapping : BaseImporter, IPressedKeyMapping, IImmutable
+    public class KeyMapping : BaseImporter, IKeyboardKeyMapping, IImmutable
     {
-        public PressedKey PressedKey { get; }
+        public IKeyboardKey KeyboardKey { get; }
 
-        public IMappedKey MappedKey { get; }
+        public IMappingTarget MappedKey { get; }
 
-        public KeyMapping(PressedKey pressedKey, IMappedKey mappedTarget)
+        public KeyMapping(IKeyboardKey keyboardKey, IMappingTarget mappedTarget)
         {
-            PressedKey = pressedKey;
+            KeyboardKey = keyboardKey;
             MappedKey = mappedTarget;
         }
     }

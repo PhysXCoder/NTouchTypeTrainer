@@ -1,11 +1,9 @@
-﻿using System;
-using Eto.Drawing;
+﻿using Eto.Drawing;
 using Eto.Forms;
 
 namespace NTouchTypeTrainer.ViewModels
 {
-#pragma warning disable CS0659
-    public class KeyViewModel : BaseViewModel, IEquatable<KeyViewModel>
+    public class KeyViewModel : BaseViewModel
     {
         private string _name;
         private Color _color;
@@ -46,25 +44,9 @@ namespace NTouchTypeTrainer.ViewModels
             }
         }
 
-        public bool Equals(KeyViewModel other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return string.Equals(_name, other._name) && _highlightedColor.Equals(other._highlightedColor) && _isHighlighted == other._isHighlighted;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((KeyViewModel)obj);
-        }
-
         private void UpdateColor()
         {
             Color = IsHighlighted ? HighlightedColor : DefaultColor;
         }
     }
-#pragma warning restore CS0659
 }

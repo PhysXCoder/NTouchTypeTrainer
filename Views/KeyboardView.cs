@@ -87,7 +87,7 @@ namespace NTouchTypeTrainer.Views
                             ? (HardwareKeyControl)CreateRegularSharedSizeKeyControl(keyPos)
                             : CreateProportionalSizeKeyControl(keyPos, keySize.Value);
 
-                        keyView.DataContext = keyboardViewModel.AllKeysViewModel.Keys[keyPos];
+                        keyView.DataContext = keyboardViewModel.AllKeysViewModel.KeysByPosition[keyPos];
 
                         row.Items.Add(keyView);
                     }

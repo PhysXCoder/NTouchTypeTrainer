@@ -3,40 +3,37 @@ using NTouchTypeTrainer.Common.DataBinding;
 using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Interfaces.Domain;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
-#pragma warning disable 659
 namespace NTouchTypeTrainer.ViewModels
 {
-    public class AllKeysViewModel : BaseViewModel, IEquatable<AllKeysViewModel>
+    public class AllKeysViewModel : BaseViewModel
     {
-        private ObservableDictionary<KeyPosition, KeyViewModel> _keys;
+        private ObservableDictionary<KeyPosition, KeyViewModel> _keysByPosition;
 
         private IFingerPositions _fingerPositions;
         private IFingerColors _fingerColors;
         private IVisualKeyboardLayout _visualKeyboardLayout;
 
-        public ObservableDictionary<KeyPosition, KeyViewModel> Keys
+        public ObservableDictionary<KeyPosition, KeyViewModel> KeysByPosition
         {
-            get => _keys;
+            get => _keysByPosition;
             set
             {
-                _keys = value;
+                _keysByPosition = value;
                 OnPropertyChanged();
             }
         }
 
-        public KeyViewModel this[IMappedKey key]
-            => Keys[_visualKeyboardLayout.ReverseKeyMappings[key].KeyPosition];
+        public KeyViewModel this[IMappingTarget target]
+            => KeysByPosition[_visualKeyboardLayout.ReverseKeyMappings[target].KeyPosition];
 
         public AllKeysViewModel()
         {
             _fingerColors = new FingerColors();
-            _keys = new ObservableDictionary<KeyPosition, KeyViewModel>();
-            _visualKeyboardLayout = new VisualKeyboardLayout(new List<IPressedKeyMapping>());
+            _keysByPosition = new ObservableDictionary<KeyPosition, KeyViewModel>();
+            _visualKeyboardLayout = new VisualKeyboardLayout(new List<IKeyboardKeyMapping>());
         }
 
         public void LoadFingerColors(IFingerColors fingerColors)
@@ -59,20 +56,20 @@ namespace NTouchTypeTrainer.ViewModels
 
         public void LoadMechanicalKeyboardLayout(IMechanicalKeyboardLayout keyboardLayout)
         {
-            var toRemove = new List<KeyPosition>(Keys.Keys);
+            var toRemove = new List<KeyPosition>(KeysByPosition.Keys);
 
             for (int iRow = keyboardLayout.IndexMinRow; iRow <= keyboardLayout.IndexMaxRow; iRow++)
             {
                 foreach (var keyPosition in keyboardLayout.KeySizes.Keys.Where(keyPos => (keyPos.Row == iRow)))
                 {
-                    if (Keys.Keys.Contains(keyPosition))
+                    if (KeysByPosition.Keys.Contains(keyPosition))
                     {
                         toRemove.Remove(keyPosition);
                     }
                     else
                     {
                         var viewModel = new KeyViewModel();
-                        Keys.Add(keyPosition, viewModel);
+                        KeysByPosition.Add(keyPosition, viewModel);
 
                         UpdateKey(keyPosition, viewModel);
                     }
@@ -81,39 +78,15 @@ namespace NTouchTypeTrainer.ViewModels
 
             foreach (var hardwareKey in toRemove)
             {
-                Keys.Remove(hardwareKey);
+                KeysByPosition.Remove(hardwareKey);
             }
-        }
-
-        public bool Equals(AllKeysViewModel other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-
-            return GetAllKeyViewModels().All(prop =>
-                prop.GetValue(this).Equals(prop.GetValue(other)));
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((AllKeysViewModel)obj);
-        }
-
-        private IEnumerable<PropertyInfo> GetAllKeyViewModels()
-        {
-            return typeof(AllKeysViewModel)
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(p => p.CanRead && p.PropertyType == typeof(KeyViewModel));
         }
 
         private void UpdateAllKeys()
         {
-            foreach (var keyPosition in Keys.Keys)
+            foreach (var keyPosition in KeysByPosition.Keys)
             {
-                UpdateKey(keyPosition, Keys[keyPosition]);
+                UpdateKey(keyPosition, KeysByPosition[keyPosition]);
             }
         }
         private void UpdateKey(KeyPosition keyPosition, KeyViewModel keyViewModel)
@@ -126,9 +99,9 @@ namespace NTouchTypeTrainer.ViewModels
                 .Select(mapping => mapping.Value)
                 .FirstOrDefault();
 
-            var mappedUnprintable = mappedKey as MappedUnprintable;
+            var mappedUnprintable = mappedKey as MappedHardwareKey;
             var mappingTargetName = (mappedUnprintable != null) ?
-                mappedUnprintable.Key.GetDefaultText()
+                mappedUnprintable.HardwareKey.GetDefaultText()
                 : mappedKey?.Name;
 
             keyViewModel.Name = mappingTargetName ?? "";

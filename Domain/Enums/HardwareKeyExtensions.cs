@@ -6,21 +6,6 @@ namespace NTouchTypeTrainer.Domain.Enums
 {
     public static class HardwareKeyExtensions
     {
-        public static bool TryParse(string exportedString, out HardwareKey hardwareKey, bool ignoreCase = true)
-        {
-            return Enum.TryParse(exportedString, ignoreCase, out hardwareKey);
-        }
-
-        public static HardwareKey Parse(string exportedString, bool ignoreCase = true)
-        {
-            if (!TryParse(exportedString, out HardwareKey hardwareKey, ignoreCase))
-            {
-                throw new FormatException($"Couldn't parse hardware key '{exportedString}'!");
-            }
-
-            return hardwareKey;
-        }
-
         public static IEnumerable<HardwareKey> GetAllKeys()
             => Enum.GetValues(typeof(HardwareKey)).Cast<HardwareKey>();
 

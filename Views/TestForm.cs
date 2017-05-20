@@ -5,10 +5,13 @@ using NTouchTypeTrainer.Common.Files;
 using NTouchTypeTrainer.Common.Graphics;
 using NTouchTypeTrainer.Domain;
 using NTouchTypeTrainer.Interfaces.Common.Files;
+using NTouchTypeTrainer.Interfaces.Domain;
 using NTouchTypeTrainer.Interfaces.Views;
 using NTouchTypeTrainer.Serialization;
 using NTouchTypeTrainer.ViewModels;
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace NTouchTypeTrainer.Views
 {
@@ -35,53 +38,81 @@ namespace NTouchTypeTrainer.Views
 
         [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
-        private void TestForm_Shown(object sender, System.EventArgs e)
+        private void TestForm_Shown(object sender, EventArgs e)
         {
             if (!_firstShown)
             {
-                var fingerColors = LoadFingerColors();
-                var fingerPos = LoadFingerPositions();
-                var mechanicalLayout = LoadMechanicalLayout();
-                var visualLayout = LoadVisualLayout();
-
-                var keyboardViewModel = new KeyboardViewModel();
-                keyboardViewModel.LoadFingerPositions(fingerPos);
-                keyboardViewModel.LoadFingerColors(fingerColors);
-                keyboardViewModel.LoadMechanicalLayout(mechanicalLayout);
-                keyboardViewModel.LoadVisualKeyboardLayout(visualLayout);
-
+                const bool showDialogs = false;
                 const bool highlightAll = false;
-                if (highlightAll)
-#pragma warning disable 162
-                {
-                    foreach (var key in keyboardViewModel.AllKeysViewModel.Keys.Values)
-                    {
-                        key.IsHighlighted = true;
-                    }
-                }
-                else
-                {
-                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('y')].IsHighlighted = true;
-                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('<')].IsHighlighted = true;
-                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('#')].IsHighlighted = true;
-                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('\\')].IsHighlighted = true;
-                    keyboardViewModel.AllKeysViewModel[new MappedCharacter('E')].IsHighlighted = true;
-                }
-#pragma warning restore 162
 
-                var keyboardView = new KeyboardView(_eventAggregator, _graphicsProvider)
-                {
-                    DataContext = keyboardViewModel
-                };
-                Content = keyboardView;
+                var keyboardViewModel = LoadKeyboardViewModel(showDialogs);
+                SetDataContext(keyboardViewModel);
+
+                HighlightKeys(highlightAll, keyboardViewModel);
+
+                var exercise = LoadExercise(showDialogs);
+                var sequence = exercise.Sequence;
+
+                _firstShown = true;
             }
-
-            _firstShown = true;
         }
 
-        private FingerColors LoadFingerColors()
+        private void SetDataContext(KeyboardViewModel keyboardViewModel)
         {
-            var fileToOpen = _dialogProvider.OpenFile("Select FingerColors file", "FingerColors file", "*.t3c", this);
+            var keyboardView = new KeyboardView(_eventAggregator, _graphicsProvider)
+            {
+                DataContext = keyboardViewModel
+            };
+            Content = keyboardView;
+        }
+
+        private static void HighlightKeys(bool highlightAll, KeyboardViewModel keyboardViewModel)
+        {
+            if (highlightAll)
+#pragma warning disable 162
+            {
+                foreach (var key in keyboardViewModel.AllKeysViewModel.KeysByPosition.Values)
+                {
+                    key.IsHighlighted = true;
+                }
+            }
+            else
+            {
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('y')].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('<')].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('#')].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('\\')].IsHighlighted = true;
+                keyboardViewModel.AllKeysViewModel[new MappedCharacter('E')].IsHighlighted = true;
+            }
+#pragma warning restore 162
+        }
+
+        private KeyboardViewModel LoadKeyboardViewModel(bool showDialogs)
+        {
+            var fingerColors = LoadFingerColors(showDialogs);
+            var fingerPos = LoadFingerPositions(showDialogs);
+            var mechanicalLayout = LoadMechanicalLayout(showDialogs);
+            var visualLayout = LoadVisualLayout(showDialogs);
+
+            var keyboardViewModel = new KeyboardViewModel();
+            keyboardViewModel.LoadFingerPositions(fingerPos);
+            keyboardViewModel.LoadFingerColors(fingerColors);
+            keyboardViewModel.LoadMechanicalLayout(mechanicalLayout);
+            keyboardViewModel.LoadVisualKeyboardLayout(visualLayout);
+            return keyboardViewModel;
+        }
+
+        private static DirectoryInfo DocumentsDirectory
+            => new DirectoryInfo(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                    + Path.DirectorySeparatorChar);
+
+        private IFingerColors LoadFingerColors(bool showDialog = true)
+        {
+            var fileToOpen = showDialog
+                ? _dialogProvider.OpenFile("Select FingerColors file", "FingerColors file", "*.t3c", this)
+                : new FileInfo(DocumentsDirectory + "DefaultFingerColors.t3c");
+
             if (fileToOpen != null)
             {
                 var exportedString = _stringFileReaderWriter.Read(fileToOpen);
@@ -91,9 +122,12 @@ namespace NTouchTypeTrainer.Views
             return null;
         }
 
-        private FingerPositions LoadFingerPositions()
+        private FingerPositions LoadFingerPositions(bool showDialog = true)
         {
-            var fileToOpen = _dialogProvider.OpenFile("Select FingerPositions file", "FingerPositions file", "*.t3p", this);
+            var fileToOpen = showDialog
+                ? _dialogProvider.OpenFile("Select FingerPositions file", "FingerPositions file", "*.t3p", this)
+                : new FileInfo(DocumentsDirectory + "DefaultFingerPositions.t3p");
+
             if (fileToOpen != null)
             {
                 var exportedString = _stringFileReaderWriter.Read(fileToOpen);
@@ -103,9 +137,12 @@ namespace NTouchTypeTrainer.Views
             return null;
         }
 
-        private MechanicalKeyboardLayout LoadMechanicalLayout()
+        private MechanicalKeyboardLayout LoadMechanicalLayout(bool showDialog = true)
         {
-            var fileToOpen = _dialogProvider.OpenFile("Select mechanical layout file", "Mechanical layout file", "*.t3m", this);
+            var fileToOpen = showDialog
+                ? _dialogProvider.OpenFile("Select mechanical layout file", "Mechanical layout file", "*.t3m", this)
+                : new FileInfo(DocumentsDirectory + "DefaultMechanicalLayout.t3m");
+
             if (fileToOpen != null)
             {
                 var exportedString = _stringFileReaderWriter.Read(fileToOpen);
@@ -115,13 +152,31 @@ namespace NTouchTypeTrainer.Views
             return null;
         }
 
-        private VisualKeyboardLayout LoadVisualLayout()
+        private VisualKeyboardLayout LoadVisualLayout(bool showDialog = true)
         {
-            var fileToOpen = _dialogProvider.OpenFile("Select visual layout file", "Visual layout file", "*.t3v", this);
+            var fileToOpen = showDialog
+                ? _dialogProvider.OpenFile("Select visual layout file", "Visual layout file", "*.t3v", this)
+                : new FileInfo(DocumentsDirectory + "GermanVisualLayout.t3v");
+
             if (fileToOpen != null)
             {
                 var exportedString = _stringFileReaderWriter.Read(fileToOpen);
                 return VisualKeyboardLayoutImporter.Import(exportedString);
+            }
+
+            return null;
+        }
+
+        private IExercise LoadExercise(bool showDialog = true)
+        {
+            var fileToOpen = showDialog
+                ? _dialogProvider.OpenFile("Select exercise file", "Exercise file", "*.txt", this)
+                : new FileInfo(DocumentsDirectory + ((new Random().Next(2) == 1) ? "FixedExercise.txt" : "RandomizedExercise.txt"));
+
+            if (fileToOpen != null)
+            {
+                var exportedString = _stringFileReaderWriter.Read(fileToOpen);
+                return ExerciseImporter.Import(exportedString);
             }
 
             return null;

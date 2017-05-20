@@ -1,12 +1,11 @@
-﻿using NTouchTypeTrainer.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace NTouchTypeTrainer.Interfaces.Domain
 {
     public interface IVisualKeyboardLayout
     {
-        IReadOnlyDictionary<PressedKey, IMappedKey> KeyMappings { get; }
+        IReadOnlyDictionary<IKeyboardKey, IMappingTarget> KeyMappings { get; }
 
-        IReadOnlyDictionary<IMappedKey, PressedKey> ReverseKeyMappings { get; }
+        IReadOnlyDictionary<IMappingTarget, IKeyboardKey> ReverseKeyMappings { get; }
     }
 }

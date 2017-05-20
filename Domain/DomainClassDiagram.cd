@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="NTouchTypeTrainer.Domain.KeyMapping">
+    <Position X="26.5" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\KeyMapping.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NTouchTypeTrainer.Domain.KeyboardKey">
+    <Position X="21" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAEgAAAAAAAAAAAAIAAAgAAAAAAAAA=</HashCode>
+      <FileName>Domain\KeyboardKey.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NTouchTypeTrainer.Domain.MappedCharacter">
+    <Position X="34" Y="5.75" Width="3" />
+    <Members>
+      <Method Name="IStringImport&lt;IMappingTarget&gt;.Import" Hidden="true" />
+      <Method Name="IStringImport&lt;IMappingTarget&gt;.TryImport" Hidden="true" />
+      <Method Name="IStringImport&lt;MappedCharacter&gt;.Import" Hidden="true" />
+      <Method Name="IStringImport&lt;MappedCharacter&gt;.TryImport" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAIAAAAAEoAAAAAQQAAAAAIBAAAAAQAAACAA=</HashCode>
+      <FileName>Domain\MappedCharacter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NTouchTypeTrainer.Domain.MappedHardwareKey">
+    <Position X="31" Y="5.75" Width="2.5" />
+    <Members>
+      <Method Name="IStringImport&lt;IMappingTarget&gt;.Import" Hidden="true" />
+      <Method Name="IStringImport&lt;MappedHardwareKey&gt;.Import" Hidden="true" />
+      <Method Name="IStringImport&lt;MappedHardwareKey&gt;.TryImport" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAIAAAAAEoAIAAAQAAAAIAIBgAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\MappedHardwareKey.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NTouchTypeTrainer.Domain.VisualKeyboardLayout">
+    <Position X="25.25" Y="10.5" Width="5" />
+    <Members>
+      <Field Name="_keyMappings" Hidden="true" />
+      <Field Name="_reverseKeyMappings" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAIAAAAAAAAAAAAgACAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\VisualKeyboardLayout.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NTouchTypeTrainer.Domain.MechanicalKeyboardLayout">
+    <Position X="20" Y="10.5" Width="3.75" />
+    <Members>
+      <Field Name="_keySizesDict" Hidden="true" />
+      <Method Name="BuildKeySizesDict" Hidden="true" />
+      <Method Name="CopyKeySizesDict" Hidden="true" />
+      <Method Name="SetNumbers" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAACECAABAAAgAAIEAAAAAAAAhAAAAAA=</HashCode>
+      <FileName>Domain\MechanicalKeyboardLayout.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NTouchTypeTrainer.Domain.FingerColors">
+    <Position X="31.25" Y="10.5" Width="2.75" />
+    <Members>
+      <Method Name="SetDefaultColors" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAkAAAiAAIAAAAAAKAAAgBAYAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Domain\FingerColors.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NTouchTypeTrainer.Domain.FingerPositions">
+    <Position X="35.25" Y="10.5" Width="5" />
+    <Members>
+      <Field Name="_positionsDictionary" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAEAAAALAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Domain\FingerPositions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="NTouchTypeTrainer.Domain.KeyPosition">
+    <Position X="4" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQEgAAAAAAAAAAAAoAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\KeyPosition.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+  <Interface Name="NTouchTypeTrainer.Interfaces.Domain.IKeyboardKeyMapping">
+    <Position X="9.5" Y="5.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\Domain\IKeyboardKeyMapping.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="KeyboardKey" />
+      <Property Name="MappedKey" />
+    </ShowAsAssociation>
+  </Interface>
+  <Interface Name="NTouchTypeTrainer.Interfaces.Domain.IKeyboardKey">
+    <Position X="5" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\Domain\IKeyboardKey.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="NTouchTypeTrainer.Interfaces.Domain.IMappingTarget">
+    <Position X="14.25" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\Domain\IMappingTarget.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="NTouchTypeTrainer.Interfaces.Domain.IMechanicalKeyboardLayout">
+    <Position X="5" Y="10.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACECAABAAAgAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Interfaces\Domain\IMechanicalKeyboardLayout.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="NTouchTypeTrainer.Interfaces.Domain.IVisualKeyboardLayout">
+    <Position X="9.5" Y="10.25" Width="2.75" />
+    <AssociationLine Name="ReverseKeyMappings" Type="NTouchTypeTrainer.Interfaces.Domain.IKeyboardKey" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.562" Y="10.25" />
+        <Point X="10.562" Y="6.931" />
+        <Point X="7.25" Y="6.931" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="KeyMappings" Type="NTouchTypeTrainer.Interfaces.Domain.IMappingTarget" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11.812" Y="10.25" />
+        <Point X="11.812" Y="6.767" />
+        <Point X="14.25" Y="6.767" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.536" Y="-0.424" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\Domain\IVisualKeyboardLayout.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="ReverseKeyMappings" />
+      <Property Name="KeyMappings" />
+    </ShowAsCollectionAssociation>
+  </Interface>
+  <Enum Name="NTouchTypeTrainer.Domain.Enums.HardwareKey">
+    <Position X="0.5" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AMAAASBAAKAgBGAEgIQAACIRCAAMBAIIAIABvv//YUE=</HashCode>
+      <FileName>Domain\Enums\HardwareKey.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="NTouchTypeTrainer.Domain.Enums.Modifier">
+    <Position X="7.75" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAgAAAAAAAAAAAAAAAAAAgAAAAEAAAA=</HashCode>
+      <FileName>Domain\Enums\Modifier.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

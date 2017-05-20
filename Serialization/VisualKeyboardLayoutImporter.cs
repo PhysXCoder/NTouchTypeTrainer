@@ -43,7 +43,7 @@ namespace NTouchTypeTrainer.Serialization
             out VisualKeyboardLayout outputLayout)
         {
             outputLayout = null;
-            var keyMappings = new List<IPressedKeyMapping>();
+            var keyMappings = new List<IKeyboardKeyMapping>();
 
             exportedString = exportedString.TrimStart();
             while (!exportedString.IsEmpty())
@@ -90,7 +90,7 @@ namespace NTouchTypeTrainer.Serialization
         [SuppressMessage("ReSharper", "PossibleInvalidOperationException")]
         private static bool TryParseModifier(string exportString, out Modifier modifier)
         {
-            var nextModifier = AllModifiers
+            var nextModifier = AllModifierCombinations
                 .Cast<Modifier?>()
                 .FirstOrDefault(m => exportString.StartsWith(GetModifierStartToken(m.Value)));
 
@@ -107,7 +107,7 @@ namespace NTouchTypeTrainer.Serialization
         [SuppressMessage("ReSharper", "PossibleInvalidOperationException")]
         private static Modifier ParseModifier(string exportString)
         {
-            var nextModifier = AllModifiers
+            var nextModifier = AllModifierCombinations
                 .Cast<Modifier?>()
                 .FirstOrDefault(m => exportString.StartsWith(GetModifierStartToken(m.Value)));
 
@@ -126,7 +126,7 @@ namespace NTouchTypeTrainer.Serialization
         }
 
         private static void ImportKeyRow(
-            ICollection<IPressedKeyMapping> keyMappings,
+            ICollection<IKeyboardKeyMapping> keyMappings,
             Modifier modifier,
             int iRow,
             bool throwExceptions,
@@ -150,9 +150,9 @@ namespace NTouchTypeTrainer.Serialization
 
                 if (mappingTargetString != Undefined)
                 {
-                    var pressedKey = new PressedKey(new KeyPosition(iRow, iKey), modifier);
+                    var keyboardKey = new KeyboardKey(new KeyPosition(iRow, iKey), modifier);
 
-                    var mappingSuccess = TryImportMapping(mappingTargetString, pressedKey, out IPressedKeyMapping mapping);
+                    var mappingSuccess = TryImportMapping(mappingTargetString, keyboardKey, out IKeyboardKeyMapping mapping);
                     if (mappingSuccess)
                     {
                         SetMapping(mapping, keyMappings);
@@ -193,14 +193,14 @@ namespace NTouchTypeTrainer.Serialization
 
         private static bool TryImportMapping(
             string mappingTarget,
-            PressedKey pressedKey,
-            out IPressedKeyMapping keyMapping)
+            KeyboardKey keyboardKey,
+            out IKeyboardKeyMapping keyMapping)
         {
-            var mappingSuccess = TryImportPrintableMapping(mappingTarget, pressedKey, out keyMapping);
+            var mappingSuccess = TryImportPrintableMapping(mappingTarget, keyboardKey, out keyMapping);
 
             if (!mappingSuccess)
             {
-                mappingSuccess = TryImportUnprintableMapping(mappingTarget, pressedKey, out keyMapping);
+                mappingSuccess = TryImportUnprintableMapping(mappingTarget, keyboardKey, out keyMapping);
             }
 
             return mappingSuccess;
@@ -208,28 +208,28 @@ namespace NTouchTypeTrainer.Serialization
 
         private static bool TryImportUnprintableMapping(
             string mappingTarget,
-            PressedKey pressedKey,
-            out IPressedKeyMapping keyMapping)
+            KeyboardKey keyboardKey,
+            out IKeyboardKeyMapping keyMapping)
         {
-            var parseSuccess = MappedUnprintable.TryImport(mappingTarget, out MappedUnprintable unprintable);
+            var parseSuccess = MappedHardwareKey.TryImport(mappingTarget, out MappedHardwareKey unprintable);
 
-            keyMapping = parseSuccess ? new KeyMapping(pressedKey, unprintable) : null;
+            keyMapping = parseSuccess ? new KeyMapping(keyboardKey, unprintable) : null;
             return parseSuccess;
         }
 
         private static bool TryImportPrintableMapping(
             string mappingTarget,
-            PressedKey pressedKey,
-            out IPressedKeyMapping keyMapping)
+            KeyboardKey keyboardKey,
+            out IKeyboardKeyMapping keyMapping)
         {
             var parseSuccess = MappedCharacter.TryImport(mappingTarget, out MappedCharacter character);
 
-            keyMapping = parseSuccess ? new KeyMapping(pressedKey, character) : null;
+            keyMapping = parseSuccess ? new KeyMapping(keyboardKey, character) : null;
             return parseSuccess;
         }
 
         [SuppressMessage("ReSharper", "PossibleInvalidOperationException")]
-        private static void SetMapping(IPressedKeyMapping mapping, ICollection<IPressedKeyMapping> keyMappings)
+        private static void SetMapping(IKeyboardKeyMapping mapping, ICollection<IKeyboardKeyMapping> keyMappings)
         {
             var oldKeyMapping = keyMappings.FirstOrDefault(m => m.Equals(mapping));
             if (oldKeyMapping != null)

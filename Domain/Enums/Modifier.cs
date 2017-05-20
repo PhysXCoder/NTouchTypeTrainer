@@ -6,10 +6,9 @@ namespace NTouchTypeTrainer.Domain.Enums
     public enum Modifier
     {
         None = 0,
-        Shift = 1,
-        AltGr = 2,
-        Ctrl = 4,
 
-        All = None | Shift | AltGr | Ctrl
+        Ctrl = 1,
+        Shift = 2,
+        AltGr = 4,
     }
 }

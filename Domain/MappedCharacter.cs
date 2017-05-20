@@ -4,15 +4,19 @@ using System;
 
 namespace NTouchTypeTrainer.Domain
 {
-    public class MappedCharacter : IMappedKey, IStringImport<MappedCharacter>, IStringImport<IMappedKey>, IEquatable<MappedCharacter>, IImmutable
+    public class MappedCharacter :
+        IMappingTarget,
+        IStringImport<MappedCharacter>, IStringImport<IMappingTarget>,
+        IEquatable<MappedCharacter>, IImmutable
     {
         public char Character { get; }
 
-        public string Name => Character.ToString();
+        public string Name { get; }
 
         public MappedCharacter(char character)
         {
             Character = character;
+            Name = Character.ToString();
         }
 
         public static bool TryImport(string exportedString, out MappedCharacter outputMappedCharacter)
@@ -54,10 +58,10 @@ namespace NTouchTypeTrainer.Domain
         bool IStringImport<MappedCharacter>.TryImport(string exportedString, out MappedCharacter outputMappedCharacter) =>
             TryImport(exportedString, out outputMappedCharacter);
 
-        IMappedKey IStringImport<IMappedKey>.Import(string exportedString)
+        IMappingTarget IStringImport<IMappingTarget>.Import(string exportedString)
             => Import(exportedString);
 
-        bool IStringImport<IMappedKey>.TryImport(string exportedString, out IMappedKey outputMappedCharacter)
+        bool IStringImport<IMappingTarget>.TryImport(string exportedString, out IMappingTarget outputMappedCharacter)
         {
             var parseSuccess = TryImport(exportedString, out MappedCharacter result);
 

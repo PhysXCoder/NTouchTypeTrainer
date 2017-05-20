@@ -1,6 +1,6 @@
 ﻿namespace NTouchTypeTrainer.Interfaces.Domain
 {
-    public interface IMappedKey
+    public interface IMappingTarget
     {
         string Name { get; }
     }
