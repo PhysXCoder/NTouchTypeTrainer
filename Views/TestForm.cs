@@ -23,6 +23,12 @@ namespace NTouchTypeTrainer.Views
         private readonly IDialogProvider _dialogProvider;
         private readonly IFileReaderWriter<string> _stringFileReaderWriter;
 
+        private KeyboardViewModel _keyboardViewModel;
+        private TextExerciseViewModel _textExerciseViewModel;
+
+        private KeyboardView _keyboardView;
+        private TextExerciseView _textExerciseView;
+
         public TestForm()
         {
             ClientSize = new Size(600, 400);
@@ -34,6 +40,18 @@ namespace NTouchTypeTrainer.Views
             _stringFileReaderWriter = new StringFileReaderWriter(new FileStreamProvider());
 
             Shown += TestForm_Shown;
+            KeyUp += OnKeyUp;
+        }
+
+        private void OnKeyUp(object sender, KeyEventArgs keyEventArgs)
+        {
+            var modifiers = keyEventArgs.Modifiers;
+            var key = keyEventArgs.Key;
+            var x = keyEventArgs.IsChar ? (char?)keyEventArgs.KeyChar : null;   // Don't use this, that's wrong
+
+            // Problem: eto.forms ignores keys like "ö" that aren't accounted for in its key enum...
+
+            keyEventArgs.Handled = true;
         }
 
         [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
@@ -45,44 +63,58 @@ namespace NTouchTypeTrainer.Views
                 const bool showDialogs = false;
                 const bool highlightAll = false;
 
-                var keyboardViewModel = LoadKeyboardViewModel(showDialogs);
-                SetDataContext(keyboardViewModel);
+                _keyboardViewModel = LoadKeyboardViewModel(showDialogs);
+                _textExerciseViewModel = LoadExerciseViewModel(true);
+                SetContent();
 
-                HighlightKeys(highlightAll, keyboardViewModel);
-
-                var exercise = LoadExercise(showDialogs);
-                var sequence = exercise.Sequence;
+                HighlightKeys(highlightAll);
 
                 _firstShown = true;
             }
         }
 
-        private void SetDataContext(KeyboardViewModel keyboardViewModel)
+        private void SetContent()
         {
-            var keyboardView = new KeyboardView(_eventAggregator, _graphicsProvider)
+            var verticalStack = new StackLayout
             {
-                DataContext = keyboardViewModel
+                Orientation = Orientation.Vertical,
+                HorizontalContentAlignment = HorizontalAlignment.Center
             };
-            Content = keyboardView;
+
+            _keyboardView = new KeyboardView(_eventAggregator, _graphicsProvider)
+            {
+                DataContext = _keyboardViewModel
+            };
+            verticalStack.Items.Add(_keyboardView);
+
+            _textExerciseView = new TextExerciseView
+            {
+                Width = 900,
+                Height = 400,
+                DataContext = _textExerciseViewModel
+            };
+            verticalStack.Items.Add(_textExerciseView);
+
+            Content = verticalStack;
         }
 
-        private static void HighlightKeys(bool highlightAll, KeyboardViewModel keyboardViewModel)
+        private void HighlightKeys(bool highlightAll)
         {
             if (highlightAll)
 #pragma warning disable 162
             {
-                foreach (var key in keyboardViewModel.AllKeysViewModel.KeysByPosition.Values)
+                foreach (var key in _keyboardViewModel.AllKeysViewModel.KeysByPosition.Values)
                 {
                     key.IsHighlighted = true;
                 }
             }
             else
             {
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('y')].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('<')].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('#')].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('\\')].IsHighlighted = true;
-                keyboardViewModel.AllKeysViewModel[new MappedCharacter('E')].IsHighlighted = true;
+                _keyboardViewModel.AllKeysViewModel[new MappedCharacter('y')].IsHighlighted = true;
+                _keyboardViewModel.AllKeysViewModel[new MappedCharacter('<')].IsHighlighted = true;
+                _keyboardViewModel.AllKeysViewModel[new MappedCharacter('#')].IsHighlighted = true;
+                _keyboardViewModel.AllKeysViewModel[new MappedCharacter('\\')].IsHighlighted = true;
+                _keyboardViewModel.AllKeysViewModel[new MappedCharacter('E')].IsHighlighted = true;
             }
 #pragma warning restore 162
         }
@@ -100,6 +132,16 @@ namespace NTouchTypeTrainer.Views
             keyboardViewModel.LoadMechanicalLayout(mechanicalLayout);
             keyboardViewModel.LoadVisualKeyboardLayout(visualLayout);
             return keyboardViewModel;
+        }
+
+        private TextExerciseViewModel LoadExerciseViewModel(bool showDialogs)
+        {
+            var exercise = LoadExercise(showDialogs);
+
+            var viewModel = new TextExerciseViewModel();
+            viewModel.SetExercise(exercise);
+
+            return viewModel;
         }
 
         private static DirectoryInfo DocumentsDirectory

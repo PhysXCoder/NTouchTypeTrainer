@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -7,7 +7,8 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>NTouchTypeTrainer</RootNamespace>
     <AssemblyName>NTouchTypeTrainer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -67,8 +68,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Serialization" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +149,7 @@
     <Compile Include="ViewModels\KeyViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\MechanicalKeyboardLayoutViewModel.cs" />
+    <Compile Include="ViewModels\TextExerciseViewModel.cs" />
     <Compile Include="Views\Common\DependentSizeGroup.cs" />
     <Compile Include="Views\Common\SharedSizeGroup.cs" />
     <Compile Include="Views\Controls\HardwareKeyControl.cs" />
@@ -156,6 +159,7 @@
     <Compile Include="Interfaces\Views\IDialogProvider.cs" />
     <Compile Include="Views\KeyboardView.cs" />
     <Compile Include="Views\TestForm.cs" />
+    <Compile Include="Views\TextExerciseView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -164,6 +168,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <None Include="app.config" />
     <None Include="Domain\DomainClassDiagram.cd" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>

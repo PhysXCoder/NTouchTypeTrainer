@@ -133,13 +133,6 @@
   </Interface>
   <Interface Name="NTouchTypeTrainer.Interfaces.Domain.IVisualKeyboardLayout">
     <Position X="9.5" Y="10.25" Width="2.75" />
-    <AssociationLine Name="ReverseKeyMappings" Type="NTouchTypeTrainer.Interfaces.Domain.IKeyboardKey" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="10.562" Y="10.25" />
-        <Point X="10.562" Y="6.931" />
-        <Point X="7.25" Y="6.931" />
-      </Path>
-    </AssociationLine>
     <AssociationLine Name="KeyMappings" Type="NTouchTypeTrainer.Interfaces.Domain.IMappingTarget" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="11.812" Y="10.25" />
@@ -150,13 +143,20 @@
         <Position X="-1.536" Y="-0.424" />
       </MemberNameLabel>
     </AssociationLine>
+    <AssociationLine Name="ReverseKeyMappings" Type="NTouchTypeTrainer.Interfaces.Domain.IKeyboardKey" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.562" Y="10.25" />
+        <Point X="10.562" Y="6.931" />
+        <Point X="7.25" Y="6.931" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\Domain\IVisualKeyboardLayout.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="ReverseKeyMappings" />
       <Property Name="KeyMappings" />
+      <Property Name="ReverseKeyMappings" />
     </ShowAsCollectionAssociation>
   </Interface>
   <Enum Name="NTouchTypeTrainer.Domain.Enums.HardwareKey">
@@ -169,7 +169,7 @@
   <Enum Name="NTouchTypeTrainer.Domain.Enums.Modifier">
     <Position X="7.75" Y="1" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABAgAAAAAAAAAAAAAAAAAAgAAAAEAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAABAgAAAAAAAAAAAAAAAAAAoAAAAEAAAA=</HashCode>
       <FileName>Domain\Enums\Modifier.cs</FileName>
     </TypeIdentifier>
   </Enum>

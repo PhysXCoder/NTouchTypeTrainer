@@ -283,7 +283,7 @@ namespace NTouchTypeTrainer.Serialization
             if (keyFound)
             {
                 var isPrintableKey = (key.ToString().Length == 1);
-                mappingTarget = isPrintableKey
+                mappingTarget = isPrintableKey && modifiers == Modifier.None
                     ? (IMappingTarget)new MappedCharacter(key.ToString()[0])
                     : new MappedHardwareKey(key, modifiers);
 

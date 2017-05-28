@@ -62,8 +62,7 @@ namespace NTouchTypeTrainer.Views
         {
             _verticalStackLayout.Items.Clear();
 
-            var keyboardViewModel = DataContext as KeyboardViewModel;
-            if (keyboardViewModel != null)
+            if (DataContext is KeyboardViewModel keyboardViewModel)
             {
                 var mechLayoutVm = keyboardViewModel.MechanicalKeyboardLayoutViewModel;
 
