@@ -414,12 +414,12 @@ namespace NTouchTypeTrainer.Serialization
             }
 
             var rowCountString = line.Substring(0, iBlockCountSeparator);
-            var groupCountString = line.Substring(
-                iBlockCountSeparator + 1,
-                iBlockCountSeparator - iBlockCountSeparator + 1);
-
             var rowCount = int.Parse(rowCountString);
+
+            var iGroupCount = iBlockCountSeparator + BlockCountSeparator.Length;
+            var groupCountString = line.Substring(iGroupCount, iBlockContentSeparator - iGroupCount);
             var groupCount = int.Parse(groupCountString);
+
             var groups = ParseBlockGroups(line.Substring(iBlockContentSeparator + 1));
 
             exerciseBlock = new ExerciseBlock(rowCount, groupCount, groups);
