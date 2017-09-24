@@ -78,9 +78,9 @@ namespace NTouchTypeTrainer.ViewModels
         {
             if (_textExerciseViewModel.Equals(message.Sender))
             {
-                _keyboardViewModel.UnhighlightAllKeys();
-                // _keyboardViewModel[message.NewExpectedMappingTarget].IsHighlighted = true;
-                // ToDo: code above will fail if key modifiers (e.g. Ctrl+Shift+Alt) are in the target. 
+                var expectedMappingTarget = message.NewExpectedMappingTarget;
+
+                _keyboardViewModel.HighlightExpectedKeys(expectedMappingTarget);
             }
         }
 

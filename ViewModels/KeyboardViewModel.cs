@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using static NTouchTypeTrainer.Domain.Enums.HardwareKeyExtensions;
 
 namespace NTouchTypeTrainer.ViewModels
 {
@@ -90,6 +91,91 @@ namespace NTouchTypeTrainer.ViewModels
             {
                 row.Keys.ForEach(key => key.IsHighlighted = false);
             });
+        }
+
+        public void HighlightExpectedKeys(IMappingTarget expectedMappingTarget)
+        {
+            UnhighlightAllKeys();
+
+            IList<IMappingTarget> targetsToHighlight;
+            switch (expectedMappingTarget)
+            {
+                case HardwareKeyMappingTarget hwKey:
+                    targetsToHighlight = HighlightExpectedKeys(hwKey);
+                    break;
+                case CharacterMappingTarget charKey:
+                    targetsToHighlight = HighlightExpectedKeys(charKey);
+                    break;
+                default:
+                    targetsToHighlight = new List<IMappingTarget>();
+                    break;
+            }
+
+            targetsToHighlight
+                .Select(target => this[target])
+                .Where(target => target != null)
+                .ForEach(target => target.IsHighlighted = true);
+        }
+
+        private static IList<IMappingTarget> HighlightExpectedKeys(CharacterMappingTarget charKey)
+        {
+            IList<IMappingTarget> targetsToHighlight = new List<IMappingTarget>();
+
+            if (!char.IsControl(charKey.Character) && charKey.Character != ' ')
+            {
+                var lowerChar = charKey.Character.ToString().ToLower()[0];
+                var upperChar = charKey.Character.ToString().ToUpper()[0];
+
+                targetsToHighlight = new List<IMappingTarget>()
+                {
+                    new CharacterMappingTarget(lowerChar),
+                    new CharacterMappingTarget(upperChar),
+                };
+
+                if (charKey.Character == upperChar)
+                {
+                    targetsToHighlight.Add(new HardwareKeyMappingTarget(HardwareKey.ShiftLeft));
+                    targetsToHighlight.Add(new HardwareKeyMappingTarget(HardwareKey.ShiftRight));
+                }
+            }
+            else
+            {
+                // Check for special keys
+                var specialKeyFound = TryGetKeyByCharacter(charKey.ToString(), out var hardwareKey);
+                if (specialKeyFound)
+                {
+                    targetsToHighlight = new List<IMappingTarget>()
+                    {
+                        new HardwareKeyMappingTarget(hardwareKey),
+                    };
+                }
+            }
+
+            return targetsToHighlight;
+        }
+
+        private static IList<IMappingTarget> HighlightExpectedKeys(IHardwareKeyMappingTarget hwKey)
+        {
+            // Get all hardware key targets
+            var targetKey = new HardwareKeyMappingTarget(hwKey.HardwareKey);
+            var modifierKeys = hwKey.Modifiers.ToKeys()
+                .Select(key => new HardwareKeyMappingTarget(key));
+            var targetsToHighlight = modifierKeys.Cast<IMappingTarget>().Concat(new[] {targetKey}).ToList();
+
+            // Also convert to CharacterMappingTargets if possible
+            var toAdd = targetsToHighlight
+                .Where(target =>
+                    target is IHardwareKeyMappingTarget hwKeyTarget &&
+                    hwKeyTarget.HardwareKey.ToString().Length == 1)
+                .SelectMany(target =>
+                {
+                    var lowerChar = ((IHardwareKeyMappingTarget) target).HardwareKey.ToString().ToLower()[0];
+                    var upperChar = ((IHardwareKeyMappingTarget) target).HardwareKey.ToString().ToUpper()[0];
+                    return new[] {new CharacterMappingTarget(lowerChar), new CharacterMappingTarget(upperChar)};
+                });
+            targetsToHighlight = targetsToHighlight.Concat(toAdd).ToList();
+
+            return targetsToHighlight;
         }
 
         public void LoadMechanicalLayout(IMechanicalKeyboardLayout mechanicalLayout)

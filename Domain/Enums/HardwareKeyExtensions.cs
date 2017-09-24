@@ -58,10 +58,25 @@ namespace NTouchTypeTrainer.Domain.Enums
         public static string GetDefaultText(this HardwareKey key) =>
             SpecialDefaultTexts.ContainsKey(key) ? SpecialDefaultTexts[key] : key.ToString();
 
+        public static bool TryGetKeyByCharacter(string text, out HardwareKey key)
+        {
+            key = HardwareKey.None;
+
+            if (string.IsNullOrEmpty(text)) return false;
+            if (text.Length != 1) return false;
+
+            var mappingExists = SpecialDefaultTexts.Any(p => p.Value == text);
+            if (!mappingExists) return false;
+
+            var mapping = SpecialDefaultTexts.First(p => p.Value == text);
+            key = mapping.Key;
+            return true;
+        }
+
         public static bool IsModifier(this HardwareKey key)
             => ModifierMapping.ContainsKey(key);
 
-        private static readonly Dictionary<HardwareKey, Modifier> ModifierMapping =
+        internal static readonly Dictionary<HardwareKey, Modifier> ModifierMapping =
             new Dictionary<HardwareKey, Modifier>()
             {
                 {HardwareKey.Alt, Modifier.Alt },

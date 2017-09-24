@@ -79,7 +79,7 @@ namespace NTouchTypeTrainer.ViewModels
             }
             else
             {
-                changed = CurrentMappingTarget.Equals(_lastCurrentMappingTarget);
+                changed = !CurrentMappingTarget.Equals(_lastCurrentMappingTarget);
             }
 
             _lastCurrentMappingTarget = CurrentMappingTarget;

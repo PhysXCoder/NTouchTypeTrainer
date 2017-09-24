@@ -51,5 +51,17 @@ namespace NTouchTypeTrainer.Domain.Enums
 
             return range;
         }
+
+        public static IEnumerable<HardwareKey> ToKeys(this Modifier modifier)
+        {
+            var hardwareKeys = AllModifiers
+                .Where(mod => (mod & modifier) != 0)
+                .Where(HardwareKeyExtensions.ModifierMapping.ContainsValue)
+                .Select(mod => HardwareKeyExtensions.ModifierMapping.First(pair => pair.Value == mod).Key);
+
+            return hardwareKeys;
+        }
+
+
     }
 }
