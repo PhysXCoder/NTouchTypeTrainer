@@ -1,5 +1,5 @@
 # NTouchTypeTrainer
-FOSS touch typing trainer developed for the .NET framework. Will be using Eto.Forms as GUI abstraction framework.
+FOSS touch typing trainer developed for the .NET framework. Uses WPF as GUI framework.
 
 Currently in development.
 
