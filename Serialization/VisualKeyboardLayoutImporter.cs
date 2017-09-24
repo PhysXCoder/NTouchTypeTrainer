@@ -1,8 +1,11 @@
-﻿using NTouchTypeTrainer.Domain;
+﻿using NTouchTypeTrainer.Common.Serialization;
+using NTouchTypeTrainer.Common.Strings;
 using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Domain.Keyboard;
+using NTouchTypeTrainer.Domain.Keyboard.Keys;
+using NTouchTypeTrainer.Domain.Keyboard.Keys.MappingTargets;
 using NTouchTypeTrainer.Interfaces.Common;
-using NTouchTypeTrainer.Interfaces.Domain;
-using ServiceStack;
+using NTouchTypeTrainer.Interfaces.Domain.Keyboard.Keys;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -53,10 +56,11 @@ namespace NTouchTypeTrainer.Serialization
                     return false;
                 }
 
-                var iRow = 0;
+                var iRow = -1;
                 while (!StartsWithModifier(exportedString) && !exportedString.IsEmpty())
                 {
-                    ImportKeyRow(keyMappings, modifier, ++iRow, throwExceptions, ref exportedString);
+                    iRow++;
+                    ImportKeyRow(keyMappings, modifier, iRow, throwExceptions, ref exportedString);
                     exportedString = exportedString.TrimStart();
                 }
             }
@@ -143,7 +147,7 @@ namespace NTouchTypeTrainer.Serialization
                 return;
             }
 
-            var iKey = 0;
+            var iKey = -1;
             foreach (var mappingTargetString in mappingTargetStrings)
             {
                 iKey++;
@@ -211,7 +215,7 @@ namespace NTouchTypeTrainer.Serialization
             KeyboardKey keyboardKey,
             out IKeyboardKeyMapping keyMapping)
         {
-            var parseSuccess = MappedHardwareKey.TryImport(mappingTarget, out MappedHardwareKey unprintable);
+            var parseSuccess = HardwareKeyMappingTarget.TryImport(mappingTarget, out HardwareKeyMappingTarget unprintable);
 
             keyMapping = parseSuccess ? new KeyMapping(keyboardKey, unprintable) : null;
             return parseSuccess;
@@ -222,7 +226,7 @@ namespace NTouchTypeTrainer.Serialization
             KeyboardKey keyboardKey,
             out IKeyboardKeyMapping keyMapping)
         {
-            var parseSuccess = MappedCharacter.TryImport(mappingTarget, out MappedCharacter character);
+            var parseSuccess = CharacterMappingTarget.TryImport(mappingTarget, out CharacterMappingTarget character);
 
             keyMapping = parseSuccess ? new KeyMapping(keyboardKey, character) : null;
             return parseSuccess;

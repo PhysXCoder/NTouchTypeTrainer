@@ -7,8 +7,8 @@ namespace NTouchTypeTrainer.Domain.Enums
     {
         None = 0,
 
-        Ctrl = 1,
-        Shift = 2,
+        Shift = 1,
+        Ctrl = 2,
         Alt = 4,
         AltGr = 8,
     }

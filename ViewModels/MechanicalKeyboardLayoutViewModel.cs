@@ -1,6 +1,6 @@
 ﻿using NTouchTypeTrainer.Common.DataBinding;
-using NTouchTypeTrainer.Domain;
-using NTouchTypeTrainer.Interfaces.Domain;
+using NTouchTypeTrainer.Domain.Keyboard.Keys;
+using NTouchTypeTrainer.Interfaces.Domain.Keyboard;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace NTouchTypeTrainer.ViewModels
             set
             {
                 _keyIndexesInRow = value;
-                OnPropertyChanged();
+                NotifyOfPropertyChange();
             }
         }
 
@@ -28,7 +28,7 @@ namespace NTouchTypeTrainer.ViewModels
             set
             {
                 _keySizes = value;
-                OnPropertyChanged();
+                NotifyOfPropertyChange();
             }
         }
 
@@ -47,9 +47,9 @@ namespace NTouchTypeTrainer.ViewModels
             {
                 var keyIndexes = new List<int>();
                 keyIndexes.AddRange(
-                    layout.KeySizes.Keys
+                    layout.KeySizefactors.Keys
                         .Where(keyPos => keyPos.Row == iRow)
-                        .Select(keyPos => keyPos.Key));
+                        .Select(keyPos => keyPos.Index));
 
                 var keyIndexesObservable = new ObservableCollection<int>();
                 foreach (var iKey in keyIndexes)
@@ -57,7 +57,7 @@ namespace NTouchTypeTrainer.ViewModels
                     keyIndexesObservable.Add(iKey);
 
                     var keyPosition = new KeyPosition(iRow, iKey);
-                    newSizes[keyPosition] = layout.GetSize(keyPosition);
+                    newSizes[keyPosition] = layout.GetSizefactor(keyPosition);
                 }
 
                 newIndexes.Add(iRow, keyIndexesObservable);

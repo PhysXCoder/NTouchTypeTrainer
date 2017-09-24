@@ -1,10 +1,12 @@
 ﻿using NTouchTypeTrainer.Common.LINQ;
-using NTouchTypeTrainer.Common.RegexExtensions;
-using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Common.RegEx;
+using NTouchTypeTrainer.Common.Serialization;
 using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Domain.Exercises;
+using NTouchTypeTrainer.Domain.Keyboard.Keys.MappingTargets;
 using NTouchTypeTrainer.Interfaces.Common;
-using NTouchTypeTrainer.Interfaces.Domain;
+using NTouchTypeTrainer.Interfaces.Domain.Exercises;
+using NTouchTypeTrainer.Interfaces.Domain.Keyboard.Keys.MappingTargets;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -202,7 +204,7 @@ namespace NTouchTypeTrainer.Serialization
                 else
                 {
                     var character = exerciseText[iNext];
-                    target = new MappedCharacter(character);
+                    target = new CharacterMappingTarget(character);
                     iNext++;
                 }
 
@@ -227,13 +229,13 @@ namespace NTouchTypeTrainer.Serialization
             }
             else if (IsNewline(exerciseText, iStart, out int lengthNewline))
             {
-                mappingTarget = new MappedHardwareKey(HardwareKey.Enter);
+                mappingTarget = new HardwareKeyMappingTarget(HardwareKey.Enter);
                 iStart += lengthNewline;
                 return true;
             }
             else if (IsTab(exerciseText, iStart, out int lengthTab))
             {
-                mappingTarget = new MappedHardwareKey(HardwareKey.Tab);
+                mappingTarget = new HardwareKeyMappingTarget(HardwareKey.Tab);
                 iStart += lengthTab;
                 return true;
             }
@@ -284,8 +286,8 @@ namespace NTouchTypeTrainer.Serialization
             {
                 var isPrintableKey = (key.ToString().Length == 1);
                 mappingTarget = isPrintableKey && modifiers == Modifier.None
-                    ? (IMappingTarget)new MappedCharacter(key.ToString()[0])
-                    : new MappedHardwareKey(key, modifiers);
+                    ? (IMappingTarget)new CharacterMappingTarget(key.ToString()[0])
+                    : new HardwareKeyMappingTarget(key, modifiers);
 
                 return true;
             }
@@ -407,7 +409,7 @@ namespace NTouchTypeTrainer.Serialization
             if (iBlockCountSeparator < 0 && iBlockContentSeparator < 0)
             {
                 return throwExceptions
-                    ? throw new FormatException($"Wrong format for ExerciseBlock. Expected: <NumberOfLines>x<NumberOfGroupsPerLine>:<Group1> <Group2> ... Example: '1x6:asdf 1234'")
+                    ? throw new FormatException($"Wrong format for {nameof(ExerciseBlock)}. Expected: <NumberOfLines>x<NumberOfGroupsPerLine>:<Group1> <Group2> ... Example: '1x6:asdf 1234'")
                     : false;
             }
 

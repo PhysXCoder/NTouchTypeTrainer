@@ -1,15 +1,25 @@
-using Eto.Drawing;
-using NTouchTypeTrainer.Domain;
+using NTouchTypeTrainer.Common.Gui;
+using NTouchTypeTrainer.Common.Serialization;
+using NTouchTypeTrainer.Domain.Keyboard;
 using NTouchTypeTrainer.Interfaces.Common;
+using NTouchTypeTrainer.Interfaces.Common.Gui;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Media;
 
 namespace NTouchTypeTrainer.Serialization
 {
     public class FingerColorsImporter : BaseImporter, IStringImport<FingerColors>
     {
         protected const string NameColorSeparator = Separator + " ";
+
+        private static readonly IThemeProvider ThemeProvider;
+
+        static FingerColorsImporter()
+        {
+            ThemeProvider = new DefaultThemeProvider();
+        }
 
         bool IStringImport<FingerColors>.TryImport(string exportedString, out FingerColors outputInstance)
             => TryImport(exportedString, out outputInstance);
@@ -35,7 +45,7 @@ namespace NTouchTypeTrainer.Serialization
 
         private static bool Import(string exportedString, bool throwExceptions, out FingerColors outputInstance)
         {
-            outputInstance = new FingerColors();
+            outputInstance = new FingerColors(ThemeProvider);
 
             var colorProperties = GetColorProperties();
             var lines = exportedString.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -53,7 +63,7 @@ namespace NTouchTypeTrainer.Serialization
                     var colorProp = colorProperties.FirstOrDefault(prop => prop.Name == name);
                     if (colorProp != null)
                     {
-                        if (Color.TryParse(value, out Color col))
+                        if (ColorExtensions.TryParse(value, out Color col))
                         {
                             colorProp.SetValue(outputInstance, col);
                             lineParseSuccess = true;

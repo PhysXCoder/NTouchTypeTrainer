@@ -1,4 +1,6 @@
-﻿using NTouchTypeTrainer.Domain;
+﻿using NTouchTypeTrainer.Common.Serialization;
+using NTouchTypeTrainer.Domain.Keyboard;
+using NTouchTypeTrainer.Domain.Keyboard.Keys;
 using NTouchTypeTrainer.Interfaces.Common;
 using System;
 using System.Collections.Generic;
@@ -30,18 +32,18 @@ namespace NTouchTypeTrainer.Serialization
         private static bool Import(string exportString, bool throwExceptions, out MechanicalKeyboardLayout outputLayout)
         {
             outputLayout = null;
-            var sizeDict = new Dictionary<KeyPosition, float?>();
+            var sizefactorsDict = new Dictionary<KeyPosition, float?>();
 
             exportString = exportString.Trim();
             var lines = exportString.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
-            var iRow = 0;
+            var iRow = -1;
             foreach (var line in lines)
             {
                 iRow++;
                 var keyStrings = line.Trim().Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
 
-                var iKey = 0;
+                var iKey = -1;
                 foreach (var keyString in keyStrings)
                 {
                     iKey++;
@@ -49,18 +51,18 @@ namespace NTouchTypeTrainer.Serialization
 
                     if (keyString == RegularKey)
                     {
-                        sizeDict.Add(position, null);
+                        sizefactorsDict.Add(position, null);
                     }
                     else if (keyString.StartsWith(ProportionalKey))
                     {
-                        var sizeString = keyString.Replace(ProportionalKey, "");
+                        var sizefactorString = keyString.Replace(ProportionalKey, "");
 
-                        if (!GetSize(throwExceptions, sizeString, out float size))
+                        if (!GetSizefactor(throwExceptions, sizefactorString, out float size))
                         {
                             return false;
                         }
 
-                        sizeDict.Add(position, size);
+                        sizefactorsDict.Add(position, size);
                     }
                     else
                     {
@@ -70,17 +72,17 @@ namespace NTouchTypeTrainer.Serialization
                 }
             }
 
-            outputLayout = new MechanicalKeyboardLayout(sizeDict);
+            outputLayout = new MechanicalKeyboardLayout(sizefactorsDict);
             return true;
         }
 
-        private static bool GetSize(bool throwExceptions, string sizeString, out float size)
+        private static bool GetSizefactor(bool throwExceptions, string sizefactorString, out float size)
         {
-            if (!Single.TryParse(sizeString, NumberStyles.Number, FloatFormat, out size))
+            if (!Single.TryParse(sizefactorString, NumberStyles.Number, FloatFormat, out size))
             {
                 if (throwExceptions)
                 {
-                    throw new FormatException($"Couldn't parse '{sizeString}' to a floating point variable!");
+                    throw new FormatException($"Couldn't parse '{sizefactorString}' to a floating point variable!");
                 }
                 return false;
             }

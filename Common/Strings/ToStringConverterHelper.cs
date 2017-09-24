@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Caliburn.Micro;
 
 namespace NTouchTypeTrainer.Common.Strings
 {
@@ -14,7 +14,7 @@ namespace NTouchTypeTrainer.Common.Strings
         private const string ParamsSeparator = ", ";
         private const string ParamsEnd = ")";
 
-        public static string GetObjectId<T>(params object[] idValues)
+        public static string GetObjectIdString<T>(params object[] idValues)
         {
             var builder = new StringBuilder().Append(typeof(T).Name);
 
@@ -23,7 +23,7 @@ namespace NTouchTypeTrainer.Common.Strings
             return builder.ToString();
         }
 
-        public static string GetObjectId<T>(params Expression<Func<dynamic>>[] idValues)
+        public static string GetObjectIdString<T>(params Expression<Func<dynamic>>[] idValues)
         {
             var builder = new StringBuilder().Append(typeof(T).Name);
 

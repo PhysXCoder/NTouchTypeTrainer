@@ -1,4 +1,4 @@
-﻿using NTouchTypeTrainer.Interfaces.Views;
+﻿using NTouchTypeTrainer.Interfaces.View;
 
 namespace NTouchTypeTrainer.Messages
 {
@@ -6,6 +6,7 @@ namespace NTouchTypeTrainer.Messages
     {
         public ISizeGroup Sender { get; set; }
 
-        public override string ToString() => $"{nameof(SizeGroupChangedMsg)}: {nameof(Sender)}={Sender}";
+        public override string ToString()
+            => $"{nameof(SizeGroupChangedMsg)}: {nameof(Sender)}={Sender}";
     }
 }

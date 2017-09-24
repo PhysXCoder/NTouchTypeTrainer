@@ -1,5 +1,6 @@
 ﻿using NTouchTypeTrainer.Domain.Enums;
-using NTouchTypeTrainer.Interfaces.Domain;
+using NTouchTypeTrainer.Interfaces.Domain.Exercises;
+using NTouchTypeTrainer.Interfaces.Domain.Keyboard.Keys.MappingTargets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +14,7 @@ namespace NTouchTypeTrainer.Domain.Exercises
 
         public abstract ExerciseType ExerciseType { get; }
 
-        public abstract IEnumerable<IMappingTarget> Sequence { get; }
+        public abstract IEnumerable<IMappingTarget> ExpectedSequence { get; }
 
         public IReadOnlyDictionary<CultureInfo, string> Descriptions
             => _descriptions;
@@ -25,7 +26,7 @@ namespace NTouchTypeTrainer.Domain.Exercises
 
         public abstract IEnumerator<IMappingTarget> GetEnumerator();
 
-        public abstract void BuildSequence();
+        public abstract void BuildExpectedSequence();
 
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();

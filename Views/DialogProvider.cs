@@ -1,49 +1,74 @@
-﻿using Eto.Forms;
-using NTouchTypeTrainer.Interfaces.Views;
+﻿using Microsoft.Win32;
+using NTouchTypeTrainer.Common.Files;
+using NTouchTypeTrainer.Interfaces.View;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace NTouchTypeTrainer.Views
 {
     public class DialogProvider : IDialogProvider
     {
-        public FileInfo OpenFile(string title, string filetypeName, string filetypeExtension, Control parent = null)
+        public FileInfo OpenFile(
+            string title = null,
+            IEnumerable<FileFilter> filters = null,
+            DirectoryInfo defaultFolder = null)
         {
-            var ofd = new OpenFileDialog()
-            {
-                Title = title,
-                Filters =
-                {
-                    new FileDialogFilter(filetypeName, filetypeExtension),
-                    new FileDialogFilter("All files", "*.*"),
-                }
-            };
+            var openFileDialog = new OpenFileDialog() { Multiselect = false };
+            InitDialog(openFileDialog, title, filters, defaultFolder);
 
-            if (ofd.ShowDialog(parent) == DialogResult.Ok)
-            {
-                return new FileInfo(ofd.FileName);
-            }
-
-            return null;
+            var selectedFile = File(openFileDialog);
+            return selectedFile;
         }
 
-        public FileInfo SaveFile(string title, string filetypeName, string filetypeExtension, Control parent = null)
+        public FileInfo SaveFile(
+            string title = null,
+            IEnumerable<FileFilter> filters = null,
+            DirectoryInfo defaultFolder = null)
         {
-            var sfd = new SaveFileDialog()
-            {
-                Title = title,
-                Filters =
-                {
-                    new FileDialogFilter(filetypeName, filetypeExtension),
-                    new FileDialogFilter("All files", "*.*"),
-                }
-            };
+            var saveFileDialog = new SaveFileDialog();
+            InitDialog(saveFileDialog, title, filters, defaultFolder);
 
-            if (sfd.ShowDialog(parent) == DialogResult.Ok)
+            var selectedFile = File(saveFileDialog);
+            return selectedFile;
+        }
+
+        private static FileInfo File(FileDialog dialog)
+        {
+            var okPressed = dialog.ShowDialog();
+
+            var selectedFile = (okPressed == true) ? new FileInfo(dialog.FileName) : null;
+
+            return selectedFile;
+        }
+
+        private static void InitDialog(
+            FileDialog fileDialog,
+            string title,
+            IEnumerable<FileFilter> filters = null,
+            FileSystemInfo defaultFolder = null)
+        {
+            fileDialog.Title = title;
+            fileDialog.Filter = BuildFilterString(filters);
+            fileDialog.RestoreDirectory = true;
+
+            if (defaultFolder != null)
             {
-                return new FileInfo(sfd.FileName);
+                fileDialog.InitialDirectory = defaultFolder.FullName;
+            }
+        }
+
+        private static string BuildFilterString(IEnumerable<FileFilter> filters)
+        {
+            var filterString = "All files|*.*";
+
+            if (filters != null)
+            {
+                filterString = string.Join("|",
+                    filters.Select(filt => filt.Description + "|*." + filt.FileExtension));
             }
 
-            return null;
+            return filterString;
         }
     }
 }

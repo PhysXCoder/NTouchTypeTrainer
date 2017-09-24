@@ -27,22 +27,22 @@ namespace NTouchTypeTrainer.Domain.Enums
                 {HardwareKey.Equal, "="},
                 {HardwareKey.Backspace, "←"},
 
-                {HardwareKey.Tab, "⭾"},
+                {HardwareKey.Tab, (Environment.OSVersion.Platform == PlatformID.Unix)? "⭾" : "Tab"},
                 {HardwareKey.BracketOpen, "["},
                 {HardwareKey.BracketClose, "]"},
-                {HardwareKey.Enter, "↲"},
+                {HardwareKey.Enter, (Environment.OSVersion.Platform == PlatformID.Unix)? "↲" : "˩"},
 
                 {HardwareKey.CapsLock, "↓"},
                 {HardwareKey.Semicolon, ";"},
                 {HardwareKey.Apostrophe, "'"},
                 {HardwareKey.NumberSign, "#"},
 
-                {HardwareKey.ShiftLeft, "⇫"},
+                {HardwareKey.ShiftLeft, (Environment.OSVersion.Platform == PlatformID.Unix)? "⇫" : "↑"},
                 {HardwareKey.Backslash, "\\"},
                 {HardwareKey.Comma, ","},
                 {HardwareKey.Dot, "."},
                 {HardwareKey.Slash, "/"},
-                {HardwareKey.ShiftRight, "⇫"},
+                {HardwareKey.ShiftRight, (Environment.OSVersion.Platform == PlatformID.Unix)? "⇫" : "↑"},
 
                 {HardwareKey.ControlLeft, "Ctrl"},
                 {HardwareKey.SuperLeft, "❐"},
@@ -57,5 +57,19 @@ namespace NTouchTypeTrainer.Domain.Enums
 
         public static string GetDefaultText(this HardwareKey key) =>
             SpecialDefaultTexts.ContainsKey(key) ? SpecialDefaultTexts[key] : key.ToString();
+
+        public static bool IsModifier(this HardwareKey key)
+            => ModifierMapping.ContainsKey(key);
+
+        private static readonly Dictionary<HardwareKey, Modifier> ModifierMapping =
+            new Dictionary<HardwareKey, Modifier>()
+            {
+                {HardwareKey.Alt, Modifier.Alt },
+                {HardwareKey.AltGr, Modifier.AltGr },
+                {HardwareKey.ShiftLeft, Modifier.Shift },
+                {HardwareKey.ShiftRight, Modifier.Shift },
+                {HardwareKey.ControlLeft, Modifier.Ctrl },
+                {HardwareKey.ControlRight, Modifier.Ctrl },
+            };
     }
 }

@@ -1,5 +1,5 @@
 ﻿using NTouchTypeTrainer.Interfaces.Common;
-using NTouchTypeTrainer.Interfaces.Domain;
+using NTouchTypeTrainer.Interfaces.Domain.Keyboard.Keys.MappingTargets;
 using System.Collections.Generic;
 using System.Linq;
 

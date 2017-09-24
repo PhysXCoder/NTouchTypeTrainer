@@ -1,0 +1,15 @@
+﻿<Application x:Class="NTouchTypeTrainer.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:bootstrapping="clr-namespace:NTouchTypeTrainer.Bootstrapping">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <bootstrapping:Bootstrapper x:Key="Bootstrapper" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+            <FontFamily x:Key="LiberationMono">pack://application:,,,/Resources/Fonts/#Liberation Mono</FontFamily>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

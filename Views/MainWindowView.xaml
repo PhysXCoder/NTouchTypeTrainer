@@ -1,0 +1,81 @@
+﻿<Window x:Class="NTouchTypeTrainer.Views.MainWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cal="http://www.caliburnproject.org"
+        mc:Ignorable="d"
+        Title="MainWindowView" Height="700" Width="700" Closed="Window_Closed"
+        cal:Message.Attach="[Event KeyDown] = [Action KeyDown($executionContext)]">
+    <!--
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel/>
+    </Window.DataContext>-->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/NTouchTypeTrainer;component/Views/ViewResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <StackPanel>
+            <Viewbox>
+                <ItemsControl x:Name="KeyboardView"
+                              ItemsSource="{Binding KeyboardViewModel.Rows}"
+                              HorizontalContentAlignment="Stretch"
+                              VerticalContentAlignment="Stretch"
+                              Focusable="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ItemsControl x:Name="KeyRowView" 
+                                          ItemsSource="{Binding Keys}"
+                                          Focusable="False">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="0"
+                                                Height="{Binding Path=Size.Height}"
+                                                Width="{Binding Path=Size.Width}">
+                                            <Button Background="{Binding Path=CurrentBackgroundBrush}"
+                                                    FontFamily="{Binding Path=Font.Family}"
+                                                    FontSize="{Binding Path=Font.Size}"
+                                                    FontStyle="{Binding Path=Font.Style}"
+                                                    FontStretch="{Binding Path=Font.Stretch}"
+                                                    FontWeight="{Binding Path=Font.Weight}"
+                                                    Foreground="{Binding Path=CurrentForegroundBrush}"
+                                                    Focusable="False"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Margin="1,1,1,1">
+                                                <Viewbox>
+                                                    <Label Content="{Binding Path=Name}" Focusable="False" />
+                                                </Viewbox>
+                                            </Button>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Viewbox>
+
+            <FlowDocumentScrollViewer Document="{Binding Path=TextExerciseViewModel.FlowDocument}"
+                                      Focusable="False"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Auto"                                      
+            />
+        </StackPanel>
+    </Grid>
+</Window>

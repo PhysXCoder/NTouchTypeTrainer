@@ -1,7 +1,7 @@
 ﻿namespace NTouchTypeTrainer.Domain.Enums
 {
     /// <summary>
-    /// 	Hardware Keys (names according to UK QWERTY keyboard)
+    /// Hardware Keys (names according to UK qwerty keyboard)
     /// </summary>
     public enum HardwareKey
     {

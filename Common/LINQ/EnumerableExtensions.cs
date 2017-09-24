@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace NTouchTypeTrainer.Common.LINQ
@@ -7,9 +8,23 @@ namespace NTouchTypeTrainer.Common.LINQ
     {
         public static void ForEach<TElement>(this IEnumerable<TElement> enumerable, Action<TElement> action)
         {
-            foreach (var element in enumerable)
+            if (enumerable != null)
             {
-                action(element);
+                foreach (var element in enumerable)
+                {
+                    action(element);
+                }
+            }
+        }
+
+        public static void ForEach(this IEnumerable enumerable, Action<object> action)
+        {
+            if (enumerable != null)
+            {
+                foreach (var element in enumerable)
+                {
+                    action(element);
+                }
             }
         }
     }

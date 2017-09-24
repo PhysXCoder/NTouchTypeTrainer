@@ -1,5 +1,7 @@
-﻿using NTouchTypeTrainer.Domain;
+﻿using NTouchTypeTrainer.Common.Serialization;
 using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Domain.Keyboard;
+using NTouchTypeTrainer.Domain.Keyboard.Keys;
 using NTouchTypeTrainer.Interfaces.Common;
 using System;
 using System.Collections.Generic;
@@ -36,13 +38,13 @@ namespace NTouchTypeTrainer.Serialization
             outputInstance = null;
             var positionsDict = new Dictionary<KeyPosition, Finger>();
 
-            int iRow = 0;
+            var iRow = -1;
             var lines = exportedString.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in lines)
             {
                 ++iRow;
 
-                int iKey = 0;
+                var iKey = -1;
                 var fingerStrings = line.Split(new[] { KeySeparator }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var fingerString in fingerStrings)
                 {

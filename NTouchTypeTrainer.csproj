@@ -1,178 +1,220 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{506A79C7-9259-4D4A-943F-996B0B7B2CF4}</ProjectGuid>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BF89B3FC-74F1-4211-87E0-3F8FBDC7668A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>NTouchTypeTrainer</RootNamespace>
     <AssemblyName>NTouchTypeTrainer</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <Optimize>true</Optimize>
-    <DebugType>full</DebugType>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Caliburn.Micro, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
-      <HintPath>packages\Caliburn.Micro.Core.3.0.3\lib\net45\Caliburn.Micro.dll</HintPath>
+      <HintPath>packages\Caliburn.Micro.Core.3.1.0\lib\net45\Caliburn.Micro.dll</HintPath>
     </Reference>
-    <Reference Include="Eto, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Eto.Forms.2.3.0\lib\net45\Eto.dll</HintPath>
+    <Reference Include="Caliburn.Micro.Platform, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>packages\Caliburn.Micro.3.1.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
     </Reference>
-    <Reference Include="Eto.Wpf, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Eto.Platform.Wpf.2.3.0\lib\net45\Eto.Wpf.dll</HintPath>
+    <Reference Include="Caliburn.Micro.Platform.Core, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>packages\Caliburn.Micro.3.1.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>packages\NLog.4.4.5\lib\net45\NLog.dll</HintPath>
+      <HintPath>packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>
+    <Reference Include="StructureMap, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\StructureMap.4.5.1\lib\net45\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Caliburn.Micro.3.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\LINQ\EnumerableExtensions.cs" />
-    <Compile Include="Common\DataBinding\BindableEquatableCollection.cs" />
-    <Compile Include="Common\DataBinding\BindingExtensions.cs" />
-    <Compile Include="Common\DataBinding\ObservableDictionary.cs" />
-    <Compile Include="Common\Exceptions\DeadlockException.cs" />
-    <Compile Include="Common\Files\FileStreamProvider.cs" />
-    <Compile Include="Common\LINQ\IntExtensions.cs" />
-    <Compile Include="Common\LINQ\ListExtensions.cs" />
-    <Compile Include="Common\RegexExtensions\MatchExtension.cs" />
-    <Compile Include="Domain\Enums\ExerciseType.cs" />
-    <Compile Include="Domain\Enums\ExerciseTypeExtensions.cs" />
-    <Compile Include="Domain\Enums\ModifierExtensions.cs" />
-    <Compile Include="Domain\Exercises\Exercise.cs" />
-    <Compile Include="Domain\Exercises\ExerciseBlock.cs" />
-    <Compile Include="Domain\Exercises\FixedExercise.cs" />
-    <Compile Include="Domain\KeyboardKey.cs" />
-    <Compile Include="Domain\Exercises\RandomizedBlocksExercise.cs" />
-    <Compile Include="Interfaces\Common\Files\IFileReaderWriter.cs" />
-    <Compile Include="Interfaces\Common\Files\IFileStreamProvider.cs" />
-    <Compile Include="Common\Files\StringFileReaderWriter.cs" />
-    <Compile Include="Common\GuiExtensions\EventExtensions.cs" />
-    <Compile Include="Common\GuiExtensions\FontsExtensions.cs" />
-    <Compile Include="Common\Graphics\GraphicsProvider.cs" />
-    <Compile Include="Common\GuiExtensions\SizeExtensions.cs" />
-    <Compile Include="Common\GuiExtensions\SizeFExtensions.cs" />
-    <Compile Include="Common\Logging\LoggingExtensions.cs" />
-    <Compile Include="Common\Strings\StringBuilderExtensions.cs" />
-    <Compile Include="Common\Strings\ToStringConverterHelper.cs" />
-    <Compile Include="Common\Threading\ActionDelayer.cs" />
-    <Compile Include="Common\Threading\GuiDispatcher.cs" />
-    <Compile Include="Common\Threading\MonitorSynchronizationProvider.cs" />
-    <Compile Include="Interfaces\Common\Graphics\IGraphicsProvider.cs" />
-    <Compile Include="Interfaces\Common\Threading\IGuiDispatcher.cs" />
-    <Compile Include="Interfaces\Common\Threading\ISynchronizationProvider.cs" />
-    <Compile Include="Interfaces\Domain\IExercise.cs" />
-    <Compile Include="Interfaces\Domain\IFingerColors.cs" />
-    <Compile Include="Interfaces\Domain\IFingerPositions.cs" />
-    <Compile Include="Interfaces\Domain\IKeyboardKey.cs" />
-    <Compile Include="Interfaces\Domain\IMappingTarget.cs" />
-    <Compile Include="Interfaces\Domain\IMappedHardwareKey.cs" />
-    <Compile Include="Interfaces\Domain\IVisualKeyboardLayout.cs" />
-    <Compile Include="Interfaces\Views\IDependentSizeGroup.cs" />
-    <Compile Include="Interfaces\Views\ISharedSizeGroup.cs" />
-    <Compile Include="Interfaces\Views\ISizeGroup.cs" />
-    <Compile Include="Domain\Enums\Finger.cs" />
-    <Compile Include="Domain\Enums\FingerExtensions.cs" />
-    <Compile Include="Domain\Enums\HardwareKeyExtensions.cs" />
-    <Compile Include="Domain\FingerColors.cs" />
-    <Compile Include="Domain\KeyPosition.cs" />
-    <Compile Include="Domain\VisualKeyboardLayout.cs" />
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Bootstrapping\Bootstrapper.cs" />
+    <Compile Include="Common\Drawing\StringMeasurer.cs" />
+    <Compile Include="Common\Files\FileFilter.cs" />
+    <Compile Include="Common\Gui\Font.cs" />
+    <Compile Include="Common\Gui\SizeExtensions.cs" />
+    <Compile Include="Common\Primitives\DoubleExtensions.cs" />
+    <Compile Include="Common\Primitives\EnumExtensions.cs" />
+    <Compile Include="Domain\Exercises\RunningExercise.cs" />
+    <Compile Include="Interfaces\Common\Gui\IFont.cs" />
+    <Compile Include="Interfaces\Domain\Exercises\IRunningExercise.cs" />
+    <Compile Include="Interfaces\Domain\Keyboard\Keys\MappingTargets\IHardwareKeyMappingTarget.cs" />
+    <Compile Include="Messages\ExpectedKeyChangedMsg.cs" />
     <Compile Include="Serialization\ExerciseImporter.cs" />
     <Compile Include="Serialization\FingerColorsImporter.cs" />
-    <Compile Include="Domain\FingerPositions.cs" />
-    <Compile Include="Messages\SizeGroupChangedMsg.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Interfaces\Domain\IKeyboardKeyMapping.cs" />
-    <Compile Include="Interfaces\Domain\IMechanicalKeyboardLayout.cs" />
-    <Compile Include="Domain\MechanicalKeyboardLayout.cs" />
-    <Compile Include="Domain\KeyMapping.cs" />
-    <Compile Include="Domain\Enums\HardwareKey.cs" />
-    <Compile Include="Domain\Enums\Modifier.cs" />
-    <Compile Include="Interfaces\Common\IImmutable.cs" />
-    <Compile Include="Domain\MappedHardwareKey.cs" />
-    <Compile Include="Domain\MappedCharacter.cs" />
-    <Compile Include="Interfaces\Common\IStringImport.cs" />
-    <Compile Include="Serialization\BaseImporter.cs" />
     <Compile Include="Serialization\FingerPositionsImporter.cs" />
     <Compile Include="Serialization\MechanicalKeyboardLayoutImporter.cs" />
     <Compile Include="Serialization\VisualKeyboardLayoutImporter.cs" />
-    <Compile Include="ViewModels\AllKeysViewModel.cs" />
-    <Compile Include="ViewModels\KeyboardViewModel.cs" />
-    <Compile Include="ViewModels\KeyViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\FontViewModel.cs" />
+    <Compile Include="ViewModels\KeyboardViewModel.cs" />
+    <Compile Include="ViewModels\KeyRowViewModel.cs" />
+    <Compile Include="ViewModels\KeyViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\MechanicalKeyboardLayoutViewModel.cs" />
     <Compile Include="ViewModels\TextExerciseViewModel.cs" />
     <Compile Include="Views\Common\DependentSizeGroup.cs" />
     <Compile Include="Views\Common\SharedSizeGroup.cs" />
-    <Compile Include="Views\Controls\HardwareKeyControl.cs" />
-    <Compile Include="Views\Controls\ProportionalSizeHardwareKeyControl.cs" />
-    <Compile Include="Views\Controls\SharedSizeHardwareKeyControl.cs" />
     <Compile Include="Views\DialogProvider.cs" />
-    <Compile Include="Interfaces\Views\IDialogProvider.cs" />
-    <Compile Include="Views\KeyboardView.cs" />
-    <Compile Include="Views\TestForm.cs" />
-    <Compile Include="Views\TextExerciseView.cs" />
+    <Compile Include="Views\MainWindowView.xaml.cs">
+      <DependentUpon>MainWindowView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="app.config" />
-    <None Include="Domain\DomainClassDiagram.cd" />
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
+    <Compile Include="Common\DataBinding\BindableEquatableCollection.cs" />
+    <Compile Include="Common\DataBinding\ObservableDictionary.cs" />
+    <Compile Include="Common\DataStructures\Range.cs" />
+    <Compile Include="Common\Exceptions\DeadlockException.cs" />
+    <Compile Include="Common\Files\FileStreamProvider.cs" />
+    <Compile Include="Common\Files\StringFileReaderWriter.cs" />
+    <Compile Include="Common\Gui\ColorExtensions.cs" />
+    <Compile Include="Common\Gui\DefaultThemeProvider.cs" />
+    <Compile Include="Common\LINQ\EnumerableExtensions.cs" />
+    <Compile Include="Common\LINQ\IntExtensions.cs" />
+    <Compile Include="Common\LINQ\ListExtensions.cs" />
+    <Compile Include="Common\Logging\LoggingExtensions.cs" />
+    <Compile Include="Common\RegEx\MatchExtension.cs" />
+    <Compile Include="Common\Serialization\BaseImporter.cs" />
+    <Compile Include="Common\Strings\StringBuilderExtensions.cs" />
+    <Compile Include="Common\Strings\StringExtensions.cs" />
+    <Compile Include="Common\Strings\ToStringConverterHelper.cs" />
+    <Compile Include="Common\Threading\ActionDelayer.cs" />
+    <Compile Include="Common\Threading\MonitorSynchronizationProvider.cs" />
+    <Compile Include="Domain\Enums\ExerciseType.cs" />
+    <Compile Include="Domain\Enums\ExerciseTypeExtensions.cs" />
+    <Compile Include="Domain\Enums\Finger.cs" />
+    <Compile Include="Domain\Enums\FingerExtensions.cs" />
+    <Compile Include="Domain\Enums\HardwareKey.cs" />
+    <Compile Include="Domain\Enums\HardwareKeyExtensions.cs" />
+    <Compile Include="Domain\Enums\Modifier.cs" />
+    <Compile Include="Domain\Enums\ModifierExtensions.cs" />
+    <Compile Include="Domain\Exercises\Exercise.cs" />
+    <Compile Include="Domain\Exercises\ExerciseBlock.cs" />
+    <Compile Include="Domain\Exercises\FixedExercise.cs" />
+    <Compile Include="Domain\Exercises\RandomizedBlocksExercise.cs" />
+    <Compile Include="Domain\Keyboard\FingerColors.cs" />
+    <Compile Include="Domain\Keyboard\FingerPositions.cs" />
+    <Compile Include="Domain\Keyboard\Keys\KeyboardKey.cs" />
+    <Compile Include="Domain\Keyboard\Keys\KeyMapping.cs" />
+    <Compile Include="Domain\Keyboard\Keys\KeyPosition.cs" />
+    <Compile Include="Domain\Keyboard\Keys\MappingTargets\CharacterMappingTarget.cs" />
+    <Compile Include="Domain\Keyboard\Keys\MappingTargets\HardwareKeyMappingTarget.cs" />
+    <Compile Include="Domain\Keyboard\MechanicalKeyboardLayout.cs" />
+    <Compile Include="Domain\Keyboard\VisualKeyboardLayout.cs" />
+    <Compile Include="Interfaces\Common\Files\IFileReaderWriter.cs" />
+    <Compile Include="Interfaces\Common\Files\IFileStreamProvider.cs" />
+    <Compile Include="Interfaces\Common\Gui\IThemeProvider.cs" />
+    <Compile Include="Interfaces\Common\IImmutable.cs" />
+    <Compile Include="Interfaces\Common\IStringImport.cs" />
+    <Compile Include="Interfaces\Common\Threading\IGuiDispatcher.cs" />
+    <Compile Include="Interfaces\Common\Threading\ISynchronizationProvider.cs" />
+    <Compile Include="Interfaces\Domain\Exercises\IExercise.cs" />
+    <Compile Include="Interfaces\Domain\Keyboard\IFingerColors.cs" />
+    <Compile Include="Interfaces\Domain\Keyboard\IFingerPositions.cs" />
+    <Compile Include="Interfaces\Domain\Keyboard\Keys\IKeyboardKey.cs" />
+    <Compile Include="Interfaces\Domain\Keyboard\Keys\IKeyboardKeyMapping.cs" />
+    <Compile Include="Interfaces\Domain\Keyboard\Keys\MappingTargets\IMappingTarget.cs" />
+    <Compile Include="Interfaces\Domain\Keyboard\IMechanicalKeyboardLayout.cs" />
+    <Compile Include="Interfaces\Domain\Keyboard\IVisualKeyboardLayout.cs" />
+    <Compile Include="Interfaces\View\IDependentSizeGroup.cs" />
+    <Compile Include="Interfaces\View\IDialogProvider.cs" />
+    <Compile Include="Interfaces\View\ISharedSizeGroup.cs" />
+    <Compile Include="Interfaces\View\ISizeGroup.cs" />
+    <Compile Include="Messages\SizeGroupChangedMsg.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\MainWindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ViewResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\LiberationMono-Bold.ttf" />
+    <Resource Include="Resources\Fonts\LiberationMono-BoldItalic.ttf" />
+    <Resource Include="Resources\Fonts\LiberationMono-Italic.ttf" />
+    <Resource Include="Resources\Fonts\LiberationMono-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
