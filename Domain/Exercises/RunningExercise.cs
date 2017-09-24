@@ -17,6 +17,8 @@ namespace NTouchTypeTrainer.Domain.Exercises
         public int NextExpectedIndex
             => _pressedSequence.Count;
 
+        public bool AllowCorrections { get; set; }
+
         /// <summary>
         /// Null OR reference to the next expected mapping target
         /// </summary>
@@ -65,7 +67,7 @@ namespace NTouchTypeTrainer.Domain.Exercises
                 var isOtherKeyPressedPreviously = PressedSequence.Count > 0;
                 var isBackspaceToDeleteLastEntry = isBackspace && isOtherKeyPressedPreviously;
 
-                if (isBackspaceToDeleteLastEntry)
+                if (isBackspaceToDeleteLastEntry && AllowCorrections)
                 {
                     _pressedSequence.RemoveAt(_pressedSequence.Count - 1);
                     sequenceChanged = true;
