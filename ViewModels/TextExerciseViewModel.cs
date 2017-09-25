@@ -102,11 +102,16 @@ namespace NTouchTypeTrainer.ViewModels
                 : null;
 
         /// <summary>
-        /// Holds a list of start- and stop indexes for the control sequences in the Text. 
+        /// Holds a list of start and stop indexes for the control sequences in the Text. 
         /// E.g. "Press Ctrl+C to copy something": starting index is 6, end index is 12. 
         /// "Ctrl+C" will get highlighted differently to indicate that it is a key / key combination and not regular text. 
         /// </summary>
         public ObservableCollection<Range<int>> HardwareKeyTextRanges { get; }
+
+        /// <summary>
+        /// Holds a list of start and stop indexes for wrongly pressed keys / key combinations.
+        /// </summary>
+        public ObservableCollection<Range<int>> WrongTargetsRanges { get; }
 
         /// <summary>
         /// Keys pressed by the user. Used to compare the users input against the MappingTargetSequence to train.
@@ -121,6 +126,7 @@ namespace NTouchTypeTrainer.ViewModels
             _flowDocument = new FlowDocument(new Paragraph());
             _mappingTargetSequence = new ObservableCollection<IMappingTarget>();
             HardwareKeyTextRanges = new ObservableCollection<Range<int>>();
+            WrongTargetsRanges = new ObservableCollection<Range<int>>();
             PressedTargetSequence = new ObservableCollection<IMappingTarget>();
 
             InitIndexes();
@@ -143,7 +149,7 @@ namespace NTouchTypeTrainer.ViewModels
             MappingTargetSequence = new ObservableCollection<IMappingTarget>(runningExercise.Exercise.ExpectedSequence);
 
             InitIndexes();
-            UpdateTextAndHardwareKeyIndexesBySequence();
+            UpdateNonselectionHighlightingIndexesBySequence();
             UpdateFlowDocument();
         }
 
@@ -151,7 +157,7 @@ namespace NTouchTypeTrainer.ViewModels
         {
             // ToDo: Add error highlighting etc
             UpdateMappingTargetSequenceIndex();
-            UpdateSelectionIndex();
+            UpdateSelectionandErrorRanges();
             UpdateFlowDocument();
         }
 
@@ -175,6 +181,7 @@ namespace NTouchTypeTrainer.ViewModels
         {
             var keyInfos = (length: 0, stringRepresentation: string.Empty, isKeyCombination: false);
 
+            // Check for hardware key. Get length.
             if (key is CharacterMappingTarget mappedChar)
             {
                 keyInfos = (length: 1, stringRepresentation: mappedChar.Character.ToString(), isKeyCombination: false);
@@ -201,10 +208,11 @@ namespace NTouchTypeTrainer.ViewModels
                     + $"{nameof(TextExerciseViewModel)}.{nameof(GetLengthAndRepresentation)}!");
             }
 
+            // Return infos
             return keyInfos;
         }
 
-        private void UpdateTextAndHardwareKeyIndexesBySequence()
+        private void UpdateNonselectionHighlightingIndexesBySequence()
         {
             HardwareKeyTextRanges.Clear();
 
@@ -219,11 +227,13 @@ namespace NTouchTypeTrainer.ViewModels
 
                     textBuilder.Append(stringRepresentation);
 
+                    var currentRange = new Range<int>(iRtfText, iRtfText + rtfTextLength - 1);
+
                     if (isKeyCombination)
                     {
-                        HardwareKeyTextRanges.Add(
-                            new Range<int>(iRtfText, iRtfText + rtfTextLength - 1));
+                        HardwareKeyTextRanges.Add(currentRange);
                     }
+
 
                     iRtfText += rtfTextLength;
                 });
@@ -231,22 +241,35 @@ namespace NTouchTypeTrainer.ViewModels
             Text = textBuilder.ToString();
         }
 
-        private void UpdateSelectionIndex()
+        private void UpdateSelectionandErrorRanges()
         {
             var textLength = 0;
+            WrongTargetsRanges.Clear();
 
             var expectedMappingTargets = _runningExercise.Exercise.ExpectedSequence.ToList();
             for (var iTarget = 0; iTarget < expectedMappingTargets.Count; iTarget++)
             {
                 var currentMappingTarget = expectedMappingTargets[iTarget];
+                var currentLength = GetLength(currentMappingTarget);
+                var currentRange = new Range<int>(textLength, textLength + currentLength - 1);
+
+                if (iTarget < _runningExercise.PressedSequence.Count)
+                {
+                    var isWrong = _runningExercise.ErrorIndexes.Contains(iTarget);
+                    if (isWrong)
+                    {
+                        WrongTargetsRanges.Add(currentRange);
+                    }
+                }
+
                 var iterationEnd = (_runningExercise.NextExpectedIndex == iTarget);
                 if (!iterationEnd)
                 {
-                    textLength += GetLength(currentMappingTarget);
+                    textLength += currentLength;
                 }
                 else
                 {
-                    _selectedTextRange = new Range<int>(textLength, textLength + GetLength(currentMappingTarget) - 1);
+                    _selectedTextRange = currentRange;
                     return;
                 }
             }
@@ -302,8 +325,10 @@ namespace NTouchTypeTrainer.ViewModels
 
         private IEnumerable<Range<int>> GetKeyRanges()
         {
-            IEnumerable<Range<int>> hardwareKeyRanges = HardwareKeyTextRanges;
+            // 1. Hardware key ranges
+            IList<Range<int>> keyRanges = HardwareKeyTextRanges.ToList();
 
+            // 2. Selection highlighting range
             var isValidSelectionHighlighting =
                 _selectedTextRange.Start >= 0 &&
                 _selectedTextRange.Stop < Text.Length;
@@ -313,12 +338,18 @@ namespace NTouchTypeTrainer.ViewModels
                 // Avoid collisions (collision = there's a hardware key range at the same index)
                 // Highlighting range has higher priority. So filter out the hardware key ranges when conflicting.
                 // Then add highlighting range.
-                hardwareKeyRanges = HardwareKeyTextRanges
+                keyRanges = HardwareKeyTextRanges
                     .Where(range => range.Start != _selectedTextRange.Start)
-                    .Concat(new[] { _selectedTextRange });
+                    .Concat(new[] { _selectedTextRange })
+                    .ToList();
             }
 
-            return hardwareKeyRanges;
+            // 3. Error highlighting             
+            keyRanges = keyRanges
+                .Concat(WrongTargetsRanges.Where(range => keyRanges.All(r => r.Start != range.Start)))  // Again avoid collissions
+                .ToList();
+
+            return keyRanges;
         }
 
         private static Range<int> GetNextTextRange(Stack<Range<int>> orderedRanges, int currentIndex)
@@ -347,8 +378,23 @@ namespace NTouchTypeTrainer.ViewModels
             {
                 var currentText = Text.Substring(iTextStart, textLen);
                 run = new Run(currentText);
+                ColorTextElementIfWrong(run, new Range<int>(iTextStart, iTextStop));
             }
             return run;
+        }
+
+        private void ColorTextElementIfWrong(TextElement run, Range<int> currentRange)
+        {
+            if (IsWrong(currentRange))
+            {
+                run.Foreground = _themeProvider.WrongTextBrush;
+                run.Background = _themeProvider.WrongTextBackgroundBrush;
+            }
+        }
+
+        private bool IsWrong(Range<int> rangeToCheck)
+        {
+            return WrongTargetsRanges.Any(range => range != null && range.Equals(rangeToCheck));
         }
 
         private Run CreateHighlightedTextRun(Range<int> currentRange)
@@ -362,17 +408,21 @@ namespace NTouchTypeTrainer.ViewModels
             var run = new Run(currentText);
 
             var isSelectionHighlighting = currentRange.Equals(_selectedTextRange);
+            var isWrong = IsWrong(currentRange);
             if (isSelectionHighlighting)
             {
                 // selection hightlighting
                 run.Background = new SolidColorBrush(Colors.Blue);  // ToDo: get these via theme provider
                 run.Foreground = new SolidColorBrush(Colors.White);
             }
-            else
+            else if (!isWrong)
             {
                 // hardwarekey highlighting
                 run.Background = new SolidColorBrush(Colors.Gray);
             }
+
+            ColorTextElementIfWrong(run, currentRange);
+
             return run;
         }
 

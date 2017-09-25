@@ -5,11 +5,15 @@ namespace NTouchTypeTrainer.Interfaces.Common.Gui
 {
     public interface IThemeProvider
     {
-        Color Color { get; }
+        Color WindowColor { get; }
 
-        Brush BackgroundBrush { get; }
+        Brush WrongTextBrush { get; }
 
-        Brush ForegroundBrush { get; }
+        Brush WrongTextBackgroundBrush { get; }
+
+        Brush ButtonBackgroundBrush { get; }
+
+        Brush ButtonForegroundBrush { get; }
 
         IFont ButtonFont { get; }
 

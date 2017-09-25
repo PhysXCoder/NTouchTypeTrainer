@@ -10,6 +10,8 @@ namespace NTouchTypeTrainer.Interfaces.Domain.Exercises
 
         IReadOnlyList<IMappingTarget> PressedSequence { get; }
 
+        IReadOnlyList<int> ErrorIndexes { get; }
+
         IMappingTarget NextExpectedMappingTarget { get; }
 
         int NextExpectedIndex { get; }

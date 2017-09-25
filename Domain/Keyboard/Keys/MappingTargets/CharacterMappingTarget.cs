@@ -40,8 +40,20 @@ namespace NTouchTypeTrainer.Domain.Keyboard.Keys.MappingTargets
             return (Character == other.Character);
         }
 
+        public bool Equals(HardwareKeyMappingTarget other)
+        {
+            return other?.Equals(this) ?? false;
+        }
+
         public bool Equals(IMappingTarget other)
-            => Equals(other as CharacterMappingTarget);
+        {
+            if (other is HardwareKeyMappingTarget hardwareKeyMappingTarget)
+            {
+                return Equals(hardwareKeyMappingTarget);
+            }
+
+            return Equals(other as CharacterMappingTarget);
+        }
 
         public override bool Equals(object obj)
         {

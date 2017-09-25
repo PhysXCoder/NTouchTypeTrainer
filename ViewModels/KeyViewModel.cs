@@ -170,10 +170,10 @@ namespace NTouchTypeTrainer.ViewModels
             _name = "DefaultKeyName";
             _size = new Size(1, 1);
 
-            _normalBackgroundBrush = _themeProvider.BackgroundBrush;
-            _highlightedBackgroundBrush = _themeProvider.BackgroundBrush;
-            _normalForegroundBrush = _themeProvider.ForegroundBrush;
-            _highlightedForegroundBrush = _themeProvider.ForegroundBrush;
+            _normalBackgroundBrush = _themeProvider.ButtonBackgroundBrush;
+            _highlightedBackgroundBrush = _themeProvider.ButtonBackgroundBrush;
+            _normalForegroundBrush = _themeProvider.ButtonForegroundBrush;
+            _highlightedForegroundBrush = _themeProvider.ButtonForegroundBrush;
 
             UpdateColors();
             UpdateSizeRequest();

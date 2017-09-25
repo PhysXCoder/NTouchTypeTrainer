@@ -10,9 +10,13 @@ namespace NTouchTypeTrainer.Domain.Exercises
     public class RunningExercise : IRunningExercise
     {
         private readonly List<IMappingTarget> _pressedSequence;
+        private readonly List<int> _errorIndexes;
 
         public IReadOnlyList<IMappingTarget> PressedSequence
             => _pressedSequence.AsReadOnly();
+
+        public IReadOnlyList<int> ErrorIndexes
+            => _errorIndexes.AsReadOnly();
 
         public int NextExpectedIndex
             => _pressedSequence.Count;
@@ -47,6 +51,7 @@ namespace NTouchTypeTrainer.Domain.Exercises
         public RunningExercise(IExercise exercise)
         {
             _pressedSequence = new List<IMappingTarget>();
+            _errorIndexes = new List<int>();
             Exercise = exercise;
         }
 
@@ -54,9 +59,13 @@ namespace NTouchTypeTrainer.Domain.Exercises
         {
             var sequenceChanged = false;
 
-            if (pressedKey.Equals(NextExpectedMappingTarget))
+            var currentIndex = _pressedSequence.Count;          // Index of the current press in the list (after it's added)
+            var isCorrectKey = EvaluateCorrectness(pressedKey);
+
+            if (isCorrectKey)
             {
                 _pressedSequence.Add(pressedKey);
+                SetCorrectness(currentIndex, true);
                 sequenceChanged = true;
             }
             else
@@ -69,7 +78,9 @@ namespace NTouchTypeTrainer.Domain.Exercises
 
                 if (isBackspaceToDeleteLastEntry && AllowCorrections)
                 {
-                    _pressedSequence.RemoveAt(_pressedSequence.Count - 1);
+                    var indexToRemove = _pressedSequence.Count - 1;
+                    SetCorrectness(indexToRemove, true);
+                    _pressedSequence.RemoveAt(indexToRemove);
                     sequenceChanged = true;
                 }
                 else
@@ -80,6 +91,7 @@ namespace NTouchTypeTrainer.Domain.Exercises
                     {
                         // Add it (wrong input input...)
                         _pressedSequence.Add(pressedKey);
+                        SetCorrectness(currentIndex, false);
                         sequenceChanged = true;
                     }
                 }
@@ -88,6 +100,28 @@ namespace NTouchTypeTrainer.Domain.Exercises
             if (sequenceChanged)
             {
                 PressedSequenceChanged?.Invoke(this);
+            }
+        }
+
+        private bool EvaluateCorrectness(IHardwareKeyMappingTarget pressedKey)
+        {
+            var isCorrect = pressedKey.Equals(NextExpectedMappingTarget);
+            return isCorrect;
+        }
+
+        private void SetCorrectness(int mappingTargetIndex, bool isCorrect)
+        {
+            if (isCorrect)
+            {
+                _errorIndexes.Remove(mappingTargetIndex);
+            }
+            else
+            {
+                if (!_errorIndexes.Contains(mappingTargetIndex))
+                {
+                    _errorIndexes.Add(mappingTargetIndex);
+                    _errorIndexes.Sort();
+                }
             }
         }
 

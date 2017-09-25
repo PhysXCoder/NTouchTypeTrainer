@@ -1,10 +1,9 @@
 ﻿using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Interfaces.Common;
 using NTouchTypeTrainer.Interfaces.Common.Gui;
-using NTouchTypeTrainer.Interfaces.Domain;
+using NTouchTypeTrainer.Interfaces.Domain.Keyboard;
 using NTouchTypeTrainer.Serialization;
 using System.Windows.Media;
-using NTouchTypeTrainer.Interfaces.Domain.Keyboard;
 
 namespace NTouchTypeTrainer.Domain.Keyboard
 {
@@ -36,7 +35,7 @@ namespace NTouchTypeTrainer.Domain.Keyboard
 
         private void SetDefaultColors()
         {
-            DefaultColor = _themesProvider.Color;
+            DefaultColor = _themesProvider.WindowColor;
 
             SmallLeftFingerColor = Colors.DeepSkyBlue;
             RingLeftFingerColor = Colors.Turquoise;

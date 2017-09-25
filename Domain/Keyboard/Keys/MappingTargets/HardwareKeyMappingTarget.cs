@@ -69,7 +69,38 @@ namespace NTouchTypeTrainer.Domain.Keyboard.Keys.MappingTargets
             => Name;
 
         public bool Equals(IMappingTarget other)
-            => Equals(other as HardwareKeyMappingTarget);
+        {
+            if (other is CharacterMappingTarget charMappingTarget)
+            {
+                return Equals(charMappingTarget);
+            }
+
+            return Equals(other as HardwareKeyMappingTarget);
+        }
+
+        public bool Equals(CharacterMappingTarget other)
+        {
+            var equals = false;
+
+            // Try to convert char to key
+            switch (Modifiers)
+            {
+                case Modifier.Shift:
+                    equals = other.Character.ToString() == HardwareKey.ToString().ToUpper();
+                    break;
+                case Modifier.None:
+                    equals = other.Character.ToString() == HardwareKey.ToString().ToLower();
+                    break;
+            }
+
+            // Special case: Space
+            if (!equals)
+            {
+                equals |= (other.Character == ' ' && HardwareKey == HardwareKey.Space);
+            }
+
+            return equals;
+        }
 
         public bool Equals(HardwareKeyMappingTarget other)
         {

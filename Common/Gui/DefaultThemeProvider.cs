@@ -1,5 +1,5 @@
-﻿using System;
-using NTouchTypeTrainer.Interfaces.Common.Gui;
+﻿using NTouchTypeTrainer.Interfaces.Common.Gui;
+using System;
 using System.Windows;
 using System.Windows.Media;
 
@@ -7,11 +7,15 @@ namespace NTouchTypeTrainer.Common.Gui
 {
     public class DefaultThemeProvider : IThemeProvider
     {
-        public Color Color { get; private set; }
+        public Color WindowColor { get; private set; }
 
-        public Brush BackgroundBrush { get; private set; }
+        public Brush WrongTextBrush { get; private set; }
 
-        public Brush ForegroundBrush { get; private set; }
+        public Brush WrongTextBackgroundBrush { get; private set; }
+
+        public Brush ButtonBackgroundBrush { get; private set; }
+
+        public Brush ButtonForegroundBrush { get; private set; }
 
         public IFont ButtonFont { get; private set; }
 
@@ -26,9 +30,11 @@ namespace NTouchTypeTrainer.Common.Gui
 
         private void InitProperties()
         {
-            Color = SystemColors.WindowColor;
-            BackgroundBrush = SystemColors.ControlBrush;
-            ForegroundBrush = SystemColors.ControlTextBrush;
+            WindowColor = SystemColors.WindowColor;
+            WrongTextBrush = new SolidColorBrush(Colors.Red);
+            WrongTextBackgroundBrush = new SolidColorBrush(Colors.DarkCyan);
+            ButtonBackgroundBrush = SystemColors.ControlBrush;
+            ButtonForegroundBrush = SystemColors.ControlTextBrush;
 
             var defaultWindow = new Window();
             ButtonFont = new Font
