@@ -5,6 +5,7 @@ using NTouchTypeTrainer.Domain.Keyboard;
 using NTouchTypeTrainer.Domain.Keyboard.Keys.MappingTargets;
 using NTouchTypeTrainer.Interfaces.Common.Files;
 using NTouchTypeTrainer.Interfaces.Common.Gui;
+using NTouchTypeTrainer.Interfaces.Common.Sound;
 using NTouchTypeTrainer.Interfaces.Domain.Exercises;
 using NTouchTypeTrainer.Interfaces.Domain.Keyboard;
 using NTouchTypeTrainer.Interfaces.View;
@@ -54,13 +55,14 @@ namespace NTouchTypeTrainer.ViewModels
             IThemeProvider themeProvider,
             IDialogProvider dialogProvider,
             IFileReaderWriter<string> stringFileReaderWriter,
+            ISoundPlayer soundPlayer,
             ISizeGroup sizeGroup)
         {
             _dialogProvider = dialogProvider;
             _stringFileReaderWriter = stringFileReaderWriter;
 
             _keyboardViewModel = new KeyboardViewModel(themeProvider, sizeGroup, eventAggregator);
-            _textExerciseViewModel = new TextExerciseViewModel(themeProvider, eventAggregator);
+            _textExerciseViewModel = new TextExerciseViewModel(themeProvider, eventAggregator, soundPlayer);
 
             eventAggregator.Subscribe(this);   // ToDo: is this necessary after everything ocmes from Dependency injection?
 

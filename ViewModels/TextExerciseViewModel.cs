@@ -4,6 +4,7 @@ using NTouchTypeTrainer.Common.LINQ;
 using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Domain.Keyboard.Keys.MappingTargets;
 using NTouchTypeTrainer.Interfaces.Common.Gui;
+using NTouchTypeTrainer.Interfaces.Common.Sound;
 using NTouchTypeTrainer.Interfaces.Domain.Exercises;
 using NTouchTypeTrainer.Interfaces.Domain.Keyboard.Keys.MappingTargets;
 using NTouchTypeTrainer.Messages;
@@ -22,6 +23,7 @@ namespace NTouchTypeTrainer.ViewModels
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IThemeProvider _themeProvider;
+        private readonly ISoundPlayer _soundPlayer;
 
         private IRunningExercise _runningExercise;
         private IMappingTarget _lastCurrentMappingTarget;
@@ -30,6 +32,12 @@ namespace NTouchTypeTrainer.ViewModels
         private Range<int> _selectedTextRange;
         private int _mappingTargetSequenceIndex;
         private ObservableCollection<IMappingTarget> _mappingTargetSequence;
+
+        // ToDo: Several, configurable sounds
+        private static readonly Uri ErrorSound =
+            // new Uri("pack://application:,,,/Resources/Sounds/142608__autistic-lucario__error.wav");            
+            // new Uri("pack://application:,,,/Resources/Sounds/363920__samsterbirdies__8-bit-error.wav");
+            new Uri("pack://application:,,,/Resources/Sounds/325113__fisch12345__error.wav");
 
         public string Text
         {
@@ -118,10 +126,14 @@ namespace NTouchTypeTrainer.ViewModels
         /// </summary>
         public ObservableCollection<IMappingTarget> PressedTargetSequence { get; }
 
-        public TextExerciseViewModel(IThemeProvider themeProvider, IEventAggregator eventAggregator)
+        public TextExerciseViewModel(
+            IThemeProvider themeProvider,
+            IEventAggregator eventAggregator,
+            ISoundPlayer soundPlayer)
         {
             _themeProvider = themeProvider;
             _eventAggregator = eventAggregator;
+            _soundPlayer = soundPlayer;
 
             _flowDocument = new FlowDocument(new Paragraph());
             _mappingTargetSequence = new ObservableCollection<IMappingTarget>();
@@ -132,9 +144,16 @@ namespace NTouchTypeTrainer.ViewModels
             InitIndexes();
         }
 
-        public void EvaluateInput(IHardwareKeyMappingTarget pressedKey)
+        public KeyCorrectness EvaluateInput(IHardwareKeyMappingTarget pressedKey)
         {
-            _runningExercise?.EvaluateKeyUp(pressedKey);
+            var correctness = _runningExercise?.EvaluateKeyUp(pressedKey) ?? KeyCorrectness.Indeterminate;
+
+            if (correctness == KeyCorrectness.Wrong)
+            {
+                _soundPlayer.Play(ErrorSound);
+            }
+
+            return correctness;
         }
 
         public void SetRunningExercise(IRunningExercise runningExercise)
@@ -179,7 +198,7 @@ namespace NTouchTypeTrainer.ViewModels
         private (int TextLength, string StringRepresentation, bool IsKeyCombination)
         GetLengthAndRepresentation(IMappingTarget key)
         {
-            var keyInfos = (length: 0, stringRepresentation: string.Empty, isKeyCombination: false);
+            var keyInfos = (length: 0, stringRepresentation: String.Empty, isKeyCombination: false);
 
             // Check for hardware key. Get length.
             if (key is CharacterMappingTarget mappedChar)

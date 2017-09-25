@@ -87,8 +87,11 @@
     <Compile Include="Common\Gui\SizeExtensions.cs" />
     <Compile Include="Common\Primitives\DoubleExtensions.cs" />
     <Compile Include="Common\Primitives\EnumExtensions.cs" />
+    <Compile Include="Common\Sound\SoundPlayer.cs" />
+    <Compile Include="Domain\Enums\KeyCorrectness.cs" />
     <Compile Include="Domain\Exercises\RunningExercise.cs" />
     <Compile Include="Interfaces\Common\Gui\IFont.cs" />
+    <Compile Include="Interfaces\Common\Sound\ISoundPlayer.cs" />
     <Compile Include="Interfaces\Domain\Exercises\IRunningExercise.cs" />
     <Compile Include="Interfaces\Domain\Keyboard\Keys\MappingTargets\IHardwareKeyMappingTarget.cs" />
     <Compile Include="Messages\ExpectedKeyChangedMsg.cs" />
@@ -216,6 +219,15 @@
     <Resource Include="Resources\Fonts\LiberationMono-Italic.ttf" />
     <Resource Include="Resources\Fonts\LiberationMono-Regular.ttf" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="License.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Sounds\142608__autistic-lucario__error.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Sounds\325113__fisch12345__error.wav" />
+    <Resource Include="Resources\Sounds\363920__samsterbirdies__8-bit-error.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

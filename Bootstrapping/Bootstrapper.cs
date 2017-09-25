@@ -1,8 +1,10 @@
 ﻿using Caliburn.Micro;
 using NTouchTypeTrainer.Common.Files;
 using NTouchTypeTrainer.Common.Gui;
+using NTouchTypeTrainer.Common.Sound;
 using NTouchTypeTrainer.Interfaces.Common.Files;
 using NTouchTypeTrainer.Interfaces.Common.Gui;
+using NTouchTypeTrainer.Interfaces.Common.Sound;
 using NTouchTypeTrainer.Interfaces.View;
 using NTouchTypeTrainer.ViewModels;
 using NTouchTypeTrainer.Views;
@@ -47,6 +49,8 @@ namespace NTouchTypeTrainer.Bootstrapping
 
             configExpression.For<IFileStreamProvider>().Use<FileStreamProvider>();
             configExpression.For<IFileReaderWriter<string>>().Use<StringFileReaderWriter>();
+
+            configExpression.For<ISoundPlayer>().Use<SoundPlayer>();
 
             configExpression.For<IDialogProvider>().Use<DialogProvider>().Singleton();
             configExpression.For<IWindowManager>().Use<WindowManager>().Singleton();

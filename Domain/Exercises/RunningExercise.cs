@@ -21,6 +21,7 @@ namespace NTouchTypeTrainer.Domain.Exercises
         public int NextExpectedIndex
             => _pressedSequence.Count;
 
+        // ToDo: Extract this into options (as well as colors and the error sound and prhaps more)
         public bool AllowCorrections { get; set; }
 
         /// <summary>
@@ -55,18 +56,20 @@ namespace NTouchTypeTrainer.Domain.Exercises
             Exercise = exercise;
         }
 
-        public void EvaluateKeyUp(IHardwareKeyMappingTarget pressedKey)
+        public KeyCorrectness EvaluateKeyUp(IHardwareKeyMappingTarget pressedKey)
         {
             var sequenceChanged = false;
 
             var currentIndex = _pressedSequence.Count;          // Index of the current press in the list (after it's added)
             var isCorrectKey = EvaluateCorrectness(pressedKey);
+            KeyCorrectness correctness;
 
             if (isCorrectKey)
             {
                 _pressedSequence.Add(pressedKey);
                 SetCorrectness(currentIndex, true);
                 sequenceChanged = true;
+                correctness = KeyCorrectness.Correct;
             }
             else
             {
@@ -80,6 +83,7 @@ namespace NTouchTypeTrainer.Domain.Exercises
                 {
                     var indexToRemove = _pressedSequence.Count - 1;
                     SetCorrectness(indexToRemove, true);
+                    correctness = KeyCorrectness.Indeterminate;
                     _pressedSequence.RemoveAt(indexToRemove);
                     sequenceChanged = true;
                 }
@@ -93,6 +97,11 @@ namespace NTouchTypeTrainer.Domain.Exercises
                         _pressedSequence.Add(pressedKey);
                         SetCorrectness(currentIndex, false);
                         sequenceChanged = true;
+                        correctness = KeyCorrectness.Wrong;
+                    }
+                    else
+                    {
+                        correctness = KeyCorrectness.Indeterminate;
                     }
                 }
             }
@@ -101,6 +110,8 @@ namespace NTouchTypeTrainer.Domain.Exercises
             {
                 PressedSequenceChanged?.Invoke(this);
             }
+
+            return correctness;
         }
 
         private bool EvaluateCorrectness(IHardwareKeyMappingTarget pressedKey)

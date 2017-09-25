@@ -1,4 +1,5 @@
-﻿using NTouchTypeTrainer.Interfaces.Domain.Keyboard.Keys.MappingTargets;
+﻿using NTouchTypeTrainer.Domain.Enums;
+using NTouchTypeTrainer.Interfaces.Domain.Keyboard.Keys.MappingTargets;
 using System;
 using System.Collections.Generic;
 
@@ -16,7 +17,7 @@ namespace NTouchTypeTrainer.Interfaces.Domain.Exercises
 
         int NextExpectedIndex { get; }
 
-        void EvaluateKeyUp(IHardwareKeyMappingTarget pressedKey);
+        KeyCorrectness EvaluateKeyUp(IHardwareKeyMappingTarget pressedKey);
 
         event Action<IRunningExercise> PressedSequenceChanged;
     }
