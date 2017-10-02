@@ -5,7 +5,7 @@ namespace NTouchTypeTrainer.Common.LINQ
 {
     public static class IntExtensions
     {
-        public static void Repeat(this int numberOfRepeats, Action repeat, Action ifRepeated = null)
+        public static void Repeat(this int numberOfRepeats, Action repeat, Action afterRepeated = null)
         {
             Enumerable.Range(0, numberOfRepeats)
                 .ForEach(repeatCount =>
@@ -15,7 +15,7 @@ namespace NTouchTypeTrainer.Common.LINQ
 
             if (numberOfRepeats > 0)
             {
-                ifRepeated?.Invoke();
+                afterRepeated?.Invoke();
             }
         }
     }

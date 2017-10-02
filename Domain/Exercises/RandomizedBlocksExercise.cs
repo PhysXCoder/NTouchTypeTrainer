@@ -64,12 +64,11 @@ namespace NTouchTypeTrainer.Domain.Exercises
                                 keys.AddRange(GetRandomGroupText(exerciseBlock));
                                 keys.Add(GroupSeparator);
                             },
-                            ifRepeated: () => keys.RemoveLast(GroupSeparator)
+                            afterRepeated: () => keys.RemoveLast(GroupSeparator)
                         );
 
                         keys.Add(RowSeparator);
-                    },
-                    ifRepeated: () => keys.RemoveLast(RowSeparator)
+                    }
                 );
             });
 
