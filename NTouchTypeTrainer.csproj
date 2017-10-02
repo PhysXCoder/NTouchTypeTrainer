@@ -109,6 +109,9 @@
     <Compile Include="ViewModels\MechanicalKeyboardLayoutViewModel.cs" />
     <Compile Include="ViewModels\TextExerciseViewModel.cs" />
     <Compile Include="ViewModels\WpfKeyConverter.cs" />
+    <Compile Include="Views\BindableRichTextBox.xaml.cs">
+      <DependentUpon>BindableRichTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Common\DependentSizeGroup.cs" />
     <Compile Include="Views\Common\SharedSizeGroup.cs" />
     <Compile Include="Views\DialogProvider.cs" />
@@ -204,6 +207,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\BindableRichTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

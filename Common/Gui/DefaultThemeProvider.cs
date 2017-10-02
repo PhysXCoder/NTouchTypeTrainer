@@ -23,6 +23,8 @@ namespace NTouchTypeTrainer.Common.Gui
 
         public FontFamily TextFontFamily { get; private set; }
 
+        public double TextFontSize { get; private set; }
+
         public DefaultThemeProvider()
         {
             InitProperties();
@@ -47,6 +49,7 @@ namespace NTouchTypeTrainer.Common.Gui
             };
 
             TextFontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Resources/Fonts/#Liberation Mono");
+            TextFontSize = 16;
 
             PaddingSize = new Size(8, 5);
         }

@@ -19,6 +19,8 @@ namespace NTouchTypeTrainer.Interfaces.Common.Gui
 
         FontFamily TextFontFamily { get; }
 
+        double TextFontSize { get; }
+
         Size PaddingSize { get; }
     }
 }

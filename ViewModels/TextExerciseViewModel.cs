@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using NTouchTypeTrainer.Common.DataStructures;
 using NTouchTypeTrainer.Common.LINQ;
+using NTouchTypeTrainer.Common.Serialization;
 using NTouchTypeTrainer.Domain.Enums;
 using NTouchTypeTrainer.Domain.Keyboard.Keys.MappingTargets;
 using NTouchTypeTrainer.Interfaces.Common.Gui;
@@ -14,6 +15,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -174,7 +177,6 @@ namespace NTouchTypeTrainer.ViewModels
 
         private void _runningExercise_PressedSequenceChanged(IRunningExercise obj)
         {
-            // ToDo: Add error highlighting etc
             UpdateMappingTargetSequenceIndex();
             UpdateSelectionandErrorRanges();
             UpdateFlowDocument();
@@ -304,13 +306,17 @@ namespace NTouchTypeTrainer.ViewModels
 
         private void UpdateFlowDocument()
         {
-            // Prepare the ducoment
-            var paragraph = new Paragraph();
+            // Prepare the document
+            var paragraph = new Paragraph()
+            {
+                BreakColumnBefore = false,
+                BreakPageBefore = false
+            };
             FlowDocument = new FlowDocument(paragraph)
             {
-                FontFamily = _themeProvider.TextFontFamily
+                FontFamily = _themeProvider.TextFontFamily,
+                FontSize = _themeProvider.TextFontSize
             };
-            FlowDocument.FontSize += 3;
 
             // Get ranges for marking / highlighting
             var highlightedKeyRanges = GetKeyRanges();
@@ -324,21 +330,34 @@ namespace NTouchTypeTrainer.ViewModels
                 var highlightedTextRange = GetNextTextRange(orderedRangesStack, currentTextIndex);
 
                 // First copy the unformatted text (up to the range)
-                var run = CreateRegularTextRun(currentTextIndex, highlightedTextRange);
-                if (run != null)
-                {
-                    paragraph.Inlines.Add(run);
-                }
+                var textBlocks = CreateRegularTextBlocks(currentTextIndex, highlightedTextRange).ToList();
+                AddTextBlocks(textBlocks, paragraph);
 
                 // Then the highlighted / marked text
-                run = CreateHighlightedTextRun(highlightedTextRange);
-                if (run != null)
-                {
-                    paragraph.Inlines.Add(run);
-                }
+                textBlocks = CreateHighlightedTextBlocks(highlightedTextRange).ToList();
+                AddTextBlocks(textBlocks, paragraph);
 
                 // Advance index
                 currentTextIndex = highlightedTextRange?.Stop + 1 ?? Text.Length;
+            }
+        }
+
+        private static void AddTextBlocks(IEnumerable<TextblockLinebreakPair> textBlockPairs, Paragraph paragraph)
+        {
+            foreach (var textBlockPair in textBlockPairs)
+            {
+                if (textBlockPair.IsLineBreak)
+                {
+                    paragraph.Inlines.Add(new LineBreak());
+                }
+
+                if (!string.IsNullOrEmpty(textBlockPair.TextBlock.Text))
+                {
+                    var block = textBlockPair.TextBlock;
+                    block.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+                    paragraph.Inlines.Add(block);
+                }
             }
         }
 
@@ -387,36 +406,36 @@ namespace NTouchTypeTrainer.ViewModels
             return isRangeValid ? range : null;
         }
 
-        private Run CreateRegularTextRun(int currentIndex, Range<int> currentRange)
+        private IEnumerable<TextblockLinebreakPair> CreateRegularTextBlocks(int currentIndex, Range<int> currentRange)
         {
             var iTextStart = currentIndex;
             var iTextStop = currentRange?.Start ?? Text.Length;
             var textLen = iTextStop - iTextStart;
-            Run run = null;
+
+            var textBlocks = new List<TextblockLinebreakPair>();
+
             if (textLen > 0)
             {
                 var currentText = Text.Substring(iTextStart, textLen);
-                run = new Run(currentText);
-                ColorTextElementIfWrong(run, new Range<int>(iTextStart, iTextStop));
+
+                var lines = SplitByLinebreaks(currentText);
+
+                var firstBlock = true;
+                foreach (var line in lines)
+                {
+                    var textBlock = CreateNonwrappingTextBlock(line);
+                    ColorTextElementIfWrong(textBlock, new Range<int>(iTextStart, iTextStop));
+
+                    textBlocks.Add(new TextblockLinebreakPair(textBlock, !firstBlock));
+
+                    firstBlock = false;
+                }
             }
-            return run;
+
+            return textBlocks;
         }
 
-        private void ColorTextElementIfWrong(TextElement run, Range<int> currentRange)
-        {
-            if (IsWrong(currentRange))
-            {
-                run.Foreground = _themeProvider.WrongTextBrush;
-                run.Background = _themeProvider.WrongTextBackgroundBrush;
-            }
-        }
-
-        private bool IsWrong(Range<int> rangeToCheck)
-        {
-            return WrongTargetsRanges.Any(range => range != null && range.Equals(rangeToCheck));
-        }
-
-        private Run CreateHighlightedTextRun(Range<int> currentRange)
+        private IEnumerable<TextblockLinebreakPair> CreateHighlightedTextBlocks(Range<int> currentRange)
         {
             if (currentRange == null)
             {
@@ -424,25 +443,82 @@ namespace NTouchTypeTrainer.ViewModels
             }
 
             var currentText = Text.Substring(currentRange.Start, currentRange.Stop - currentRange.Start + 1);
-            var run = new Run(currentText);
 
-            var isSelectionHighlighting = currentRange.Equals(_selectedTextRange);
-            var isWrong = IsWrong(currentRange);
-            if (isSelectionHighlighting)
+            var lines = SplitByLinebreaks(currentText);
+
+            var textBlocks = new List<TextblockLinebreakPair>();
+
+            var firstBlock = true;
+            foreach (var line in lines)
             {
-                // selection hightlighting
-                run.Background = new SolidColorBrush(Colors.Blue);  // ToDo: get these via theme provider
-                run.Foreground = new SolidColorBrush(Colors.White);
+                var textBlock = CreateNonwrappingTextBlock(line);
+
+                var isSelectionHighlighting = currentRange.Equals(_selectedTextRange);
+                var isWrong = IsWrong(currentRange);
+                if (isSelectionHighlighting)
+                {
+                    // selection hightlighting
+                    textBlock.Background = new SolidColorBrush(Colors.Blue); // ToDo: get these via theme provider
+                    textBlock.Foreground = new SolidColorBrush(Colors.White);
+                }
+                else if (!isWrong)
+                {
+                    // hardwarekey highlighting
+                    textBlock.Background = new SolidColorBrush(Colors.Gray);
+                }
+
+                ColorTextElementIfWrong(textBlock, currentRange);
+
+                textBlocks.Add(new TextblockLinebreakPair(textBlock, !firstBlock));
+
+                firstBlock = false;
             }
-            else if (!isWrong)
+
+            return textBlocks;
+        }
+
+        private struct TextblockLinebreakPair
+        {
+            public TextBlock TextBlock { get; }
+
+            public bool IsLineBreak { get; }
+
+            public TextblockLinebreakPair(TextBlock block, bool isNewline)
             {
-                // hardwarekey highlighting
-                run.Background = new SolidColorBrush(Colors.Gray);
+                TextBlock = block;
+                IsLineBreak = isNewline;
             }
+        }
 
-            ColorTextElementIfWrong(run, currentRange);
+        private static TextBlock CreateNonwrappingTextBlock(string currentText)
+        {
+            var textBlock = new TextBlock()
+            {
+                Text = currentText,
+                TextWrapping = TextWrapping.NoWrap
+            };
 
-            return run;
+            return textBlock;
+        }
+
+        private static IEnumerable<string> SplitByLinebreaks(string currentText)
+        {
+            var lines = currentText.Split(new[] { BaseImporter.NewLine }, StringSplitOptions.None);
+            return lines;
+        }
+
+        private void ColorTextElementIfWrong(TextBlock text, Range<int> currentRange)
+        {
+            if (IsWrong(currentRange))
+            {
+                text.Foreground = _themeProvider.WrongTextBrush;
+                text.Background = _themeProvider.WrongTextBackgroundBrush;
+            }
+        }
+
+        private bool IsWrong(Range<int> rangeToCheck)
+        {
+            return WrongTargetsRanges.Any(range => range != null && range.Equals(rangeToCheck));
         }
 
         public void Dispose()

@@ -1,9 +1,10 @@
 ﻿<Window x:Class="NTouchTypeTrainer.Views.MainWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:cal="http://www.caliburnproject.org"
+        xmlns:views="clr-namespace:NTouchTypeTrainer.Views"
         mc:Ignorable="d"
         Title="MainWindowView" Height="700" Width="700" Closed="Window_Closed"
         cal:Message.Attach="[Event KeyDown] = [Action KeyDown($executionContext)]">
@@ -23,10 +24,11 @@
         <StackPanel>
             <Viewbox>
                 <ItemsControl x:Name="KeyboardView"
-                              ItemsSource="{Binding KeyboardViewModel.Rows}"
-                              HorizontalContentAlignment="Stretch"
-                              VerticalContentAlignment="Stretch"
-                              Focusable="False">
+                          ItemsSource="{Binding KeyboardViewModel.Rows}"
+                          HorizontalContentAlignment="Stretch"
+                          VerticalContentAlignment="Stretch"
+                          HorizontalAlignment="Center"
+                          Focusable="False">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <ItemsControl x:Name="KeyRowView" 
@@ -70,12 +72,8 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </Viewbox>
-
-            <FlowDocumentScrollViewer Document="{Binding Path=TextExerciseViewModel.FlowDocument}"
-                                      Focusable="False"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Auto"                                      
-            />
+            <views:BindableRichTextBox Document="{Binding Path=TextExerciseViewModel.FlowDocument}" 
+                                       HorizontalAlignment="Center" />
         </StackPanel>
     </Grid>
 </Window>

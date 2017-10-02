@@ -2,11 +2,11 @@
 {
     public abstract class BaseImporter
     {
-        protected const string NewLine = "\r\n";
-        protected const string KeySeparator = " ";
-        protected const string RowSeparator = NewLine;
-        protected const string Undefined = "UD";
-        protected const string Separator = ":";
+        public const string NewLine = "\r\n";
+        public const string KeySeparator = " ";
+        public const string RowSeparator = NewLine;
+        public const string Undefined = "UD";
+        public const string Separator = ":";
     }
 }
 
