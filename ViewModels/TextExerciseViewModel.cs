@@ -330,11 +330,11 @@ namespace NTouchTypeTrainer.ViewModels
                 var highlightedTextRange = GetNextTextRange(orderedRangesStack, currentTextIndex);
 
                 // First copy the unformatted text (up to the range)
-                var textBlocks = CreateRegularTextBlocks(currentTextIndex, highlightedTextRange).ToList();
+                var textBlocks = CreateRegularTextBlocks(currentTextIndex, highlightedTextRange)?.ToList();
                 AddTextBlocks(textBlocks, paragraph);
 
                 // Then the highlighted / marked text
-                textBlocks = CreateHighlightedTextBlocks(highlightedTextRange).ToList();
+                textBlocks = CreateHighlightedTextBlocks(highlightedTextRange)?.ToList();
                 AddTextBlocks(textBlocks, paragraph);
 
                 // Advance index
@@ -342,8 +342,13 @@ namespace NTouchTypeTrainer.ViewModels
             }
         }
 
-        private static void AddTextBlocks(IEnumerable<TextblockLinebreakPair> textBlockPairs, Paragraph paragraph)
+        private static void AddTextBlocks(IList<TextblockLinebreakPair> textBlockPairs, Paragraph paragraph)
         {
+            if (paragraph == null || textBlockPairs == null || !textBlockPairs.Any())
+            {
+                return;
+            }
+
             foreach (var textBlockPair in textBlockPairs)
             {
                 if (textBlockPair.IsLineBreak)
